@@ -18,6 +18,12 @@ BM.battle = (function () {
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const MELEE_TYPES = ['corte', 'impacto', 'sangue'];
+  // escala global: o V1 causes menos dano, os inimigos causam mais
+  const ESCALA_JOGADOR = 0.40;
+  const ESCALA_INIMIGO = 1.00;
+  // ATQ/DEF de referência do V1 no nível base de cada camada (para escalar os inimigos)
+  const BASE_ATK = { limbo: 38, lust: 56, gluttony: 74 };
+  const BASE_DEF = { limbo: 28, lust: 40, gluttony: 52 };
 
   function log(msg, cls) {
     if (!S) return;
@@ -136,6 +142,7 @@ BM.battle = (function () {
   function addStyle(n) {
     S.style.points = Math.max(0, S.style.points + n);
     S.style.rank = styleRank();
+    try { BM.save.noteLayerStyle(S.style.points); } catch (e) { /* ignora */ }
   }
 
   /* ---------------- aplicação de movimento ---------------- */
@@ -147,6 +154,8 @@ BM.battle = (function () {
     const def = defOf(target);
     const hits = move.hits || 1;
     let total = 0, anyHit = false, crit = false, eff = 1, parried = false;
+    // teto por golpe: nenhum movimento pode levar mais que isto do HP máximo do alvo
+    const capTotal = Math.round(target.maxHp * (target.isBoss ? 0.45 : 0.60));
 
     for (let i = 0; i < hits; i++) {
       if (Math.random() * 100 > (move.acc == null ? 100 : move.acc)) continue;
@@ -154,12 +163,16 @@ BM.battle = (function () {
       eff = effVs(target.faction, move.type);
       const isCrit = isPlayer ? (S.player.critNext || chance(0.0625)) : chance(0.05);
       if (isCrit) crit = true;
-      const base = move.power * (0.6 + 0.4 * (atk / Math.max(1, def))) * (1 + lvl / 25);
+      const ratio = atk / Math.max(1, def);
+      const mult = Math.min(1.75, 0.6 + 0.4 * ratio);
+      const base = move.power * mult * (1 + lvl / 25) * ESCALA_JOGADOR;
       let d = base * eff * (isCrit ? 1.5 : 1) * rand(0.9, 1.1);
       // passiva do Knuckleblaster empurra; passiva Hellwhip ignora penalidade de distância
       if (isPlayer && attacker.velBoost > 0) d *= 1.2;
       if (isPlayer && S.enemy.canParry && Math.random() < 0.18) { d *= 0.45; parried = true; }
-      const final = Math.max(1, Math.round(d));
+      let final = Math.max(1, Math.round(d));
+      if (total + final > capTotal) final = Math.max(0, capTotal - total);
+      if (final <= 0) continue;
       total += final;
       damage(target, final, isPlayer ? 'player' : 'enemy');
       float('-' + final, isPlayer ? 'enemy' : 'player', isCrit ? 'crit' : '');
@@ -235,10 +248,10 @@ BM.battle = (function () {
         log(target.name + ' está sangrando.', 'hl');
         break;
       case 'drain':
-        heal(S.player, Math.min(0.5, (dmgDealt / S.player.maxHp) * 0.5), 'dreno');
+        heal(S.player, Math.min(0.8, (dmgDealt / S.player.maxHp) * 0.8), 'dreno');
         break;
       case 'healSelf': {
-        const pct = (S.enemy.status && S.enemy.status.sangramento) ? 0.40 : 0.25;
+        const pct = (S.enemy.status && S.enemy.status.sangramento) ? 0.20 : 0.12;
         heal(S.player, pct, 'transfusão');
         break;
       }
@@ -326,10 +339,19 @@ BM.battle = (function () {
     const enemy = S.enemy;
     const p = S.player;
 
+    // 0) precisão do golpe (depende da dificuldade)
+    const acc = Math.min(0.99, (move.acc || 90) / 100 + ((S.diff && S.diff.accBonus) || 0) / 100);
+    if (!chance(acc)) {
+      log(enemy.name + ' erra o golpe.', 'ok');
+      addStyle(10);
+      return;
+    }
+
     // 1) parry
     if (move.parryable !== false && S.passives.parry) {
       const res = await ui().promptParry ? await ui().promptParry(S.parryCfg) : 'miss';
       if (res === 'perfect') {
+        S.parryFalhas = 0;
         const reflect = (S.layerMod && S.layerMod.reflect) ? S.layerMod.reflect : 0.5;
         const back = Math.round(move.power * 0.6 * reflect);
         damage(enemy, back, 'enemy');
@@ -349,7 +371,19 @@ BM.battle = (function () {
         applyEnemyDamage(dmg, move);
         return;
       }
-      log('Parry falhou!', 'warn');
+      // duas falhas seguidas: o parry é perdido e conta como erro
+      S.parryFalhas = (S.parryFalhas || 0) + 1;
+      if (S.parryFalhas >= 2) {
+        S.parryFalhas = 0;
+        S.parryErros = (S.parryErros || 0) + 1;
+        S.passives.parry = false;
+        S.parryBreak = true;
+        try { const stt = BM.save.get().stats; stt.parriesErro = (stt.parriesErro || 0) + 1; } catch (e) { }
+        log('PARRY PERDIDO! O Feedbacker falhou duas vezes.', 'bad');
+        shake(3);
+      } else {
+        log('Parry falhou! Mais um e o Feedbacker quebra.', 'warn');
+      }
     }
 
     // 2) Dash
@@ -377,17 +411,23 @@ BM.battle = (function () {
 
     // 4) dano
     const eff = effVs(p.faction || 'casca', move.type);
-    const base = move.power * (0.6 + 0.4 * (enemy.atk / Math.max(1, defOf(p)))) * (1 + enemy.level / 25);
+    const base = move.power * (0.6 + 0.4 * (enemy.atk / Math.max(1, defOf(p)))) * (1 + enemy.level / 25) * ESCALA_INIMIGO;
     let d = base * eff * rand(0.9, 1.1) * (S.diff.dmgEnemy || 1);
     if (move.kind === 'ranged') d *= (S.dist === 0 ? 1.2 : (S.dist === 2 ? 0.8 : 1));
     else if (MELEE_TYPES.indexOf(move.type) >= 0) d *= (S.dist === 2 ? 1.2 : (S.dist === 0 ? 0.8 : 1));
-    const final = Math.max(1, Math.round(d));
+    let final = Math.max(1, Math.round(d));
+    if (S.layerMod && S.layerMod.atkMul) final = Math.round(final * S.layerMod.atkMul);
+    if (S.layerMod && S.layerMod.dmgPlayer) final = Math.round(final * S.layerMod.dmgPlayer);
+    if (S.parryBreak) { final = Math.round(final * 1.3); S.parryBreak = false; log('O Feedbackor quebrado deixa o golpe mais fundo.', 'bad'); }
+    const capInimigo = Math.round(p.maxHp * 0.40);
+    if (final > capInimigo) final = capInimigo;
     applyEnemyDamage(final, move);
   }
 
   function applyEnemyDamage(dmg, move) {
     const p = S.player;
     damage(p, dmg, 'enemy');
+    try { BM.save.addLayerDamage(dmg); } catch (e) { /* ignora */ }
     float('-' + dmg, 'player', '');
     log(move.name + ' causa ' + dmg + ' de dano em V1.', 'hl');
     addStyle(-20);
@@ -406,7 +446,8 @@ BM.battle = (function () {
     const list = cands.length ? cands : e.moves;
     const scored = list.map(m => {
       let s = 1;
-      if (m.kind === 'heal') s = (e.hp / e.maxHp < 0.45) ? 3.2 : 0.15;
+      // inimigos curam pouco, com recarga, e param de curar se a luta se arrasta
+      if (m.kind === 'heal' || m.effect === 'healSelf') s = 0;   // inimigos não se curam
       else if (m.kind === 'buff') s = e.buffed ? 0.15 : 1.1;
       else {
         if (m.range === 'perto') s *= (S.dist === 2 ? 1.8 : 0.45);
@@ -533,11 +574,9 @@ BM.battle = (function () {
     tickStatus(e, 'enemy');
     if (e.hp <= 0) { S.over = 'win'; return; }
 
-    if (intent.kind === 'heal') {
-      const amount = Math.round(e.maxHp * (intent.heal || 0.15));
-      e.hp = Math.min(e.maxHp, e.hp + amount);
-      float('+' + amount, 'enemy', 'heal');
-      log(e.name + ' se cura (' + amount + ' HP).', 'ok');
+    if (intent.kind === 'heal' || intent.effect === 'healSelf') {
+      // inimigos nunca se curam: o golpe vira um ataque comum
+      await enemyAttack({ name: 'Ataque', type: 'impacto', power: 14, acc: 92, kind: 'melee', range: 'perto', parryable: true });
     } else if (intent.kind === 'buff') {
       if (intent.effect === 'buffDef') { e.bonusDef = 0.3; e.bonusAtk = 0; e.buffTurns = 3; e.buffed = true; log(e.name + ' endurece a carcaça.', 'warn'); }
       if (intent.effect === 'buffAtk') { e.bonusAtk = 0.3; e.bonusDef = 0; e.buffTurns = 3; e.buffed = true; log(e.name + ' acelera os circuitos.', 'warn'); }
@@ -550,9 +589,14 @@ BM.battle = (function () {
 
   async function endOfRound() {
     const e = S.enemy;
-    // checagem de vitória
+    // checagem de vitória (ou fuga)
     if (S.enemy.hp <= 0 && !S.over) {
-      S.over = 'win';
+      if (S.enemy.flee) {
+        S.over = 'fugiu';
+        log('>>> ' + S.enemy.name + ' ESCAPA! <<<', 'warn');
+      } else {
+        S.over = 'win';
+      }
       return;
     }
     if (S.player.hp <= 0 && !S.over) { S.over = 'lose'; return; }
@@ -562,6 +606,7 @@ BM.battle = (function () {
       log('>>> ' + e.name + ' ENTRA EM OVERCLOCK! <<<', 'warn');
       shake(3);
     }
+    if (e.healCd > 0) e.healCd--;
     if (e.buffTurns > 0) {
       e.buffTurns--;
       if (e.buffTurns === 0) { e.bonusDef = 0; e.bonusAtk = 0; e.buffed = false; log(e.name + ' perde o bônus.', ''); }
@@ -573,6 +618,7 @@ BM.battle = (function () {
 
   /* ---------------- API principal ---------------- */
   function finishTurn() {
+    if (!S) return;               // a batalha pode ter sido encerrada no meio do turno
     S.busy = false;
     refresh();
     if (S.over && BM.main && BM.main.onBattleOver) { try { BM.main.onBattleOver(S.over); } catch (e) { /* ignora */ } }
@@ -580,28 +626,37 @@ BM.battle = (function () {
 
   async function runTurn(action) {
     if (!S || S.over) return;
+    const st = S;                 // guarda a batalha deste turno
     S.busy = true;
     refresh();
     flash();
-    const st = await startPlayerTurn();
-    if (st === 'stunned') {
+    const res = await startPlayerTurn();
+    if (S !== st) return;
+    if (res === 'stunned') {
       await sleep(350);
+      if (S !== st) return;
       if (!S.over) await enemyTurn();
+      if (S !== st) return;
       if (!S.over) await endOfRound();
       finishTurn();
       return;
     }
-    if (st === 'charged') {
+    if (res === 'charged') {
+      if (S !== st) return;
       if (!S.over) await enemyTurn();
+      if (S !== st) return;
       if (!S.over) await endOfRound();
       finishTurn();
       return;
     }
-    if (st === 'dead') { finishTurn(); return; }
+    if (res === 'dead') { finishTurn(); return; }
     await performPlayerAction(action);
+    if (S !== st) return;
     refresh();
     await sleep(280);
+    if (S !== st) return;
     if (!S.over) await enemyTurn();
+    if (S !== st) return;
     if (!S.over) await endOfRound();
     finishTurn();
   }
@@ -613,12 +668,19 @@ BM.battle = (function () {
     const layer = D.LAYERS[opts.layerIndex || 0];
     const enemyDef = D.ENEMIES[opts.enemyId];
     const isBoss = !!enemyDef.boss;
-    const enemyLevel = (opts.layerIndex === 1 ? 16 : 7) + (isBoss ? 3 : 0);
+    const enemyLevel = (layer.baseLevel || 7) + (isBoss ? 3 : 0);
+    const diff = D.DIFFICULTIES[data.settings.dificuldade] || D.DIFFICULTIES.standard;
 
+    // o inimigo escala junto com o V1 (mantém a duração das lutas estável)
+    const layerId = layer.id;
+    const hpScale = Math.max(0.70, Math.min(1.80, st.atk / BASE_ATK[layerId]));
+    const atkScale = Math.max(0.70, Math.min(1.80, st.def / BASE_DEF[layerId]));
+    const diffHp = diff.hpMul || 1, diffAtk = diff.atkMul || 1;
+    const enemyHp = Math.round(enemyDef.hp * hpScale * diffHp);
     const enemy = {
       id: enemyDef.id, name: enemyDef.name, faction: enemyDef.faction,
       sprite: enemyDef.sprite, isPlayer: false,
-      hp: enemyDef.hp, maxHp: enemyDef.hp, atk: enemyDef.atk, def: enemyDef.def,
+      hp: enemyHp, maxHp: enemyHp, atk: Math.round(enemyDef.atk * atkScale * diffAtk), def: Math.round(enemyDef.def * hpScale),
       vel: enemyDef.vel, level: enemyLevel, status: {}, cooldowns: {},
       moves: enemyDef.moves.slice(), intent: null, phase: 1, isBoss: isBoss,
       bossName: enemyDef.name
@@ -645,7 +707,6 @@ BM.battle = (function () {
       if (a && a.passive) passives[a.passive.id] = true;
     });
 
-    const diff = D.DIFFICULTIES[data.settings.dificuldade] || D.DIFFICULTIES.normal;
 
     S = {
       layerIndex: opts.layerIndex || 0,
@@ -664,6 +725,7 @@ BM.battle = (function () {
       },
       enemy: enemy,
       dist: 1,
+      fugiu: false,
       turn: 1,
       busy: false,
       over: null,
@@ -672,9 +734,13 @@ BM.battle = (function () {
       lastMove: null,
       usedMoves: [],
       parryCfg: {
-        perfect: 0.14, good: 0.30,
+        perfect: data.settings.parryAssist ? 0.18 : 0.12,
+        good: data.settings.parryAssist ? 0.34 : 0.24,
         ms: data.settings.parryAssist ? diff.parryMs * 1.4 : diff.parryMs
-      }
+      },
+      parryFalhas: 0,
+      parryErros: 0,
+      parryBreak: false
     };
 
     enemy.canParry = !!passives.parry && isBoss;

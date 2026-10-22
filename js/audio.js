@@ -1,21 +1,42 @@
 /* ============================================================
    BLOODMACH — audio.js
-   Efeitos sintetizados via WebAudio (sem arquivos externos).
+   Efeitos sintetizados via WebAudio + música em MP3 (assets/music).
    ============================================================ */
 var BM = (window.BM = window.BM || {});
 
 BM.audio = (function () {
   'use strict';
 
+  /* ---------------- faixas ---------------- */
+  const TRACKS = {
+    titulo:  { file: 'assets/music/lobby-title.mp3',   loop: true },
+    oficina: { file: 'assets/music/lobby-title.mp3',   loop: true },
+    loja:    { file: 'assets/music/shop.mp3',          loop: true },
+    music1:     { file: 'assets/music/music-1.mp3',      loop: true },
+    music1boss: { file: 'assets/music/music-1-boss.mp3', loop: true },
+    music2:     { file: 'assets/music/music-2.mp3',      loop: true },
+    music2boss: { file: 'assets/music/music-2-boss.mp3', loop: true },
+    final:   { file: 'assets/music/music-1-boss.mp3', loop: true },
+    creditos:    { file: 'assets/music/lobby-title.mp3',  loop: true },
+    desligamento:{ file: 'assets/music/power-off-v1.mp3',  loop: true }
+  };
+
   let ctx = null, master = null, sfx = null, music = null, ambientOn = false, ambientNodes = null;
-  let enabled = true, volume = 0.7, musicVolume = 0.4;
+  let enabled = true, volume = 0.7, musicVolume = 0.45;
+
+  /* ---------------- estado da música ---------------- */
+  const els = {};          // cache de <audio> por faixa
+  let currentKey = null;
+  let currentEl = null;
+  let musicOk = false;     // a faixa atual carregou de verdade
+  let unlockBound = false;
 
   function ensure() {
     if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return ctx; }
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
     ctx = new AC();
-    master = ctx.createGain(); master.gain.value = volume; master.connect(ctx.destination);
+    master = ctx.createGain(); master.gain.value = enabled ? volume : 0; master.connect(ctx.destination);
     sfx = ctx.createGain(); sfx.gain.value = 1; sfx.connect(master);
     music = ctx.createGain(); music.gain.value = musicVolume; music.connect(master);
     return ctx;
@@ -91,9 +112,10 @@ BM.audio = (function () {
     warn()     { tone({ type:'square', freq:220, to:180, dur:0.20, vol:0.13 }); },
     start()    { tone({ type:'sawtooth', freq:70, to:40, dur:1.1, vol:0.22, filter:'lowpass', filterFreq:400 }); },
     shutdown() { [440, 349, 262, 196, 147].forEach((f, i) => tone({ type:'sine', freq:f, dur:0.7, vol:0.14, delay:i * 0.18 })); },
+    rank()     { [659, 784, 988, 1319].forEach((f, i) => tone({ type:'triangle', freq:f, dur:0.6, vol:0.15, delay:i * 0.12 })); }
   };
 
-  /* -------- ambiente -------- */
+  /* ---------------- ambiente (fallback) ---------------- */
   function startAmbient() {
     if (!ensure() || ambientOn) return;
     ambientOn = true;
@@ -122,15 +144,94 @@ BM.audio = (function () {
     ambientNodes = null; ambientOn = false;
   }
 
+  /* ---------------- música ---------------- */
+  function fade(el, from, to, ms, done) {
+    const t0 = Date.now();
+    const step = () => {
+      const p = Math.min(1, (Date.now() - t0) / ms);
+      el.volume = Math.max(0, Math.min(1, from + (to - from) * p));
+      if (p < 1) requestAnimationFrame(step); else if (done) done();
+    };
+    step();
+  }
+
+  function getEl(key) {
+    if (typeof Audio === 'undefined') return null;
+    if (els[key]) return els[key];
+    const tr = TRACKS[key];
+    if (!tr) return null;
+    const a = new Audio();
+    a.preload = 'auto';
+    a.loop = !!tr.loop;
+    a.src = tr.file;
+    a.volume = 0;
+    a.addEventListener('error', function () { musicOk = false; });
+    els[key] = a;
+    return a;
+  }
+
+  function unlock() {
+    if (unlockBound) return;
+    unlockBound = true;
+    const retry = function () {
+      if (currentKey && currentEl && currentEl.paused) {
+        const p = currentEl.play();
+        if (p && p.catch) p.catch(() => { });
+        fade(currentEl, 0, musicVolume, 900);
+      }
+      if (!musicOk) startAmbient();
+    };
+    document.addEventListener('pointerdown', retry, { once: false });
+    document.addEventListener('keydown', retry, { once: false });
+  }
+
+  function playMusic(key) {
+    if (!key) return;
+    if (key === currentKey) return;
+    currentKey = key;
+    unlock();
+
+    // desvanecimento da faixa anterior
+    if (currentEl) {
+      const old = currentEl;
+      try { old.pause(); } catch (e) { }
+      fade(old, old.volume, 0, 500, function () { old.pause(); });
+      currentEl = null;
+    }
+
+    const a = getEl(key);
+    if (!a) { musicOk = false; startAmbient(); return; }
+    currentEl = a;
+    musicOk = true;
+    try { a.currentTime = 0; } catch (e) { }
+    const p = a.play();
+    if (p && p.catch) p.catch(function () { musicOk = false; startAmbient(); });
+    fade(a, 0, musicVolume, 1200);
+    stopAmbient();
+  }
+
+  function stopMusic() {
+    if (currentEl) { try { currentEl.pause(); } catch (e) { } }
+    currentKey = null;
+    currentEl = null;
+  }
+
   return {
-    play(name) { const f = SFX[name]; if (f) { try { f(); } catch (e) { /* ignora */ } } },
+    play(name) { const f = SFX[name]; if (f) { try { f(); } catch (e) { } } },
     ensure,
     setEnabled(v) { enabled = !!v; if (!enabled && ctx) master.gain.value = 0; else if (enabled && ctx) master.gain.value = volume; },
     setVolume(v) { volume = v; if (ctx) master.gain.value = enabled ? v : 0; },
-    setMusicVolume(v) { musicVolume = v; if (ctx) music.gain.value = v; },
+    setMusicVolume(v) {
+      musicVolume = v;
+      if (ctx) music.gain.value = v;
+      if (currentEl) currentEl.volume = v;
+    },
     getVolume() { return volume; },
     getMusicVolume() { return musicVolume; },
     startAmbient, stopAmbient,
-    get ambient() { return ambientOn; }
+    get ambient() { return ambientOn; },
+    playMusic, stopMusic,
+    get currentTrack() { return currentKey; },
+    TRACKS
   };
 })();

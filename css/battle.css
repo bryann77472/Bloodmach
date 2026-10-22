@@ -31,16 +31,32 @@
   border-top:1px solid rgba(255,255,255,.03);
 }
 
-.fighter{ position:absolute; bottom:8%; width:38%; display:flex; align-items:flex-end; gap:8px; z-index:3; }
+.fighter{ position:absolute; bottom:6%; width:38%; height:76%; display:flex; align-items:flex-end; gap:8px; z-index:3; }
+.fighter::before{
+  content:""; position:absolute; left:50%; bottom:-4%; transform:translateX(-50%);
+  width:78%; height:40%; border-radius:50%; pointer-events:none; z-index:-1;
+  background:radial-gradient(closest-side, rgba(255,96,60,.18), transparent 76%);
+}
 .fighter.player{ left:3%; }
 .fighter.enemy{ right:3%; flex-direction:row-reverse; }
-.fighter .f-sprite{ flex:1 1 auto; min-width:0; }
-.fighter .f-sprite svg{ width:100%; height:auto; display:block; filter:drop-shadow(0 12px 20px rgba(0,0,0,.6)); }
+.fighter .f-sprite{ flex:1 1 auto; min-width:0; height:100%; display:flex; align-items:flex-end; justify-content:center; }
+.fighter .f-sprite svg, .fighter .f-sprite img{ height:100%; width:auto; max-width:100%; display:block; object-fit:contain; filter:drop-shadow(0 12px 20px rgba(0,0,0,.6)); }
+.fighter .f-sprite img.sprite-v2{ filter:sepia(.95) saturate(5.5) hue-rotate(-22deg) brightness(1.08) contrast(1.05) drop-shadow(0 12px 20px rgba(0,0,0,.6)); }
+.dialogue-portraits .por img.sprite-v2{ filter:sepia(.95) saturate(5.5) hue-rotate(-22deg) brightness(1.05); }
 .fighter.hurt .f-sprite{ animation: hurt .3s; }
 .fighter.hurt .f-sprite svg{ filter:drop-shadow(0 0 16px var(--crimson2)) brightness(1.6); }
 @keyframes hurt{ 0%,100%{transform:none; filter:none} 30%{transform:translateX(-8px)} 60%{transform:translateX(6px)} }
 .fighter.attacking .f-sprite{ animation: lunge .3s ease; }
 .fighter.enemy.attacking .f-sprite{ animation: lungeR .3s ease; }
+.fighter.enemy.gigante{ width:76%; height:100%; bottom:0; }
+.fighter.enemy.gigante .f-sprite{ height:300%; align-items:flex-end; }
+.fighter.enemy.gigante .f-panel{ width:min(280px,40%); }
+.fighter.enemy.fugindo .f-sprite{ animation:fugirEnemigo 1.2s ease-in forwards; }
+@keyframes fugirEnemigo{
+  0%{ transform:translateX(0) scale(1); opacity:1; }
+  35%{ transform:translateX(20px) scale(.97); opacity:.9; filter:brightness(1.5); }
+  100%{ transform:translateX(150%) scale(.65); opacity:0; filter:blur(7px); }
+}
 @keyframes lunge{ 50%{ transform:translateX(26px) scale(1.03);} }
 @keyframes lungeR{ 50%{ transform:translateX(-26px) scale(1.03);} }
 
@@ -66,7 +82,7 @@
 
 @media (max-width:700px){
   .f-panel{ width:58%; }
-  .fighter{ bottom:6%; width:46%; }
+  .fighter{ bottom:5%; width:48%; height:70%; }
 }
 
 /* ---------------- CENTRO / INTENÇÃO ---------------- */
@@ -150,21 +166,37 @@
 /* ---------------- PARRY ---------------- */
 .parry-layer{
   position:absolute; inset:0; z-index:60; display:none; place-items:center;
-  background:rgba(4,2,3,.55); backdrop-filter:blur(1px);
+  background:rgba(4,2,3,.62); backdrop-filter:blur(1px); cursor:crosshair;
 }
 .parry-layer.on{ display:grid; }
-.parry-box{ width:min(520px,86%); text-align:center; }
-.parry-title{ font-size:.86rem; letter-spacing:.28em; text-transform:uppercase; color:#bfe0ff; margin-bottom:8px; }
-.parry-track{
-  position:relative; height:26px; background:#0b0709; border:1px solid var(--line2); overflow:hidden;
+.parry-title-float{
+  position:absolute; top:18%; left:0; right:0; text-align:center;
+  font-size:.86rem; letter-spacing:.28em; text-transform:uppercase; color:#bfe0ff;
+  text-shadow:0 0 18px rgba(120,180,255,.5); pointer-events:none;
 }
-.parry-good{ position:absolute; top:0; bottom:0; background:rgba(240,180,41,.25); }
-.parry-good.left{ }
-.parry-good.right{ }
-.parry-perfect{ position:absolute; top:0; bottom:0; width:14%; background:rgba(87,214,139,.4); box-shadow:0 0 18px rgba(87,214,139,.5); }
-.parry-marker{ position:absolute; top:-2px; bottom:-2px; width:4px; background:#fff; box-shadow:0 0 12px #fff; transform:translateX(-2px); }
-.parry-hint{ margin-top:8px; font-size:.72rem; letter-spacing:.16em; color:var(--ash); text-transform:uppercase; }
-.parry-result{ margin-top:10px; font-size:1.1rem; letter-spacing:.24em; text-transform:uppercase; }
+.parry-hint-float{
+  position:absolute; bottom:8%; left:0; right:0; text-align:center;
+  font-size:.72rem; letter-spacing:.16em; color:var(--ash); text-transform:uppercase; pointer-events:none;
+}
+.parry-result-float{
+  position:absolute; top:26%; left:0; right:0; text-align:center;
+  font-size:1.3rem; letter-spacing:.24em; text-transform:uppercase; pointer-events:none;
+}
+/* a circunferência do parry */
+.parry-circle{
+  position:absolute; border-radius:50%; pointer-events:none;
+  border:3px solid rgba(255,255,255,.9);
+  box-shadow:0 0 26px rgba(255,255,255,.35), inset 0 0 34px rgba(255,255,255,.10);
+  background:radial-gradient(circle, rgba(255,255,255,.10), rgba(255,255,255,0) 72%);
+}
+.parry-circle.zona-boa{
+  border-color:rgba(240,180,41,.95);
+  box-shadow:0 0 30px rgba(240,180,41,.55), inset 0 0 34px rgba(240,180,41,.16);
+}
+.parry-circle.zona-perfeita{
+  border-color:rgba(87,214,139,.95);
+  box-shadow:0 0 38px rgba(87,214,139,.7), inset 0 0 36px rgba(87,214,139,.22);
+}
 .parry-result.perfect{ color:var(--ok); text-shadow:0 0 22px rgba(87,214,139,.6); }
 .parry-result.good{ color:var(--warn); }
 .parry-result.miss{ color:var(--bad); }

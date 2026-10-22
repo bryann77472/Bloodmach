@@ -13,6 +13,7 @@ BM.ui = (function () {
   let current = 'title';
   let shopReturn = 'title';
   let loadoutReturn = 'lobby';
+  let atoSel = null;   // ato escolhido no lobby
   let dialogueQueue = null;
 
   /* ---------------- helpers ---------------- */
@@ -37,8 +38,16 @@ BM.ui = (function () {
   /* =========================================================
      TÍTULO
      ========================================================= */
+  function musicFor(layerIndex, isBoss) {
+    // a música reveza entre as camadas: music1/music1boss, music2/music2boss, music1…
+    const par = (layerIndex || 0) % 2;
+    if (par === 0) return isBoss ? 'music1boss' : 'music1';
+    return isBoss ? 'music2boss' : 'music2';
+  }
+
   function title() {
     current = 'title';
+    BM.audio.playMusic('titulo');
     const has = BM.save.hasSave();
     const d = has ? BM.save.get() : null;
     mount(`
@@ -79,6 +88,7 @@ BM.ui = (function () {
      ========================================================= */
   function shop(returnTo) {
     current = 'shop';
+    BM.audio.playMusic('loja');
     if (returnTo) shopReturn = returnTo;
     const d = BM.save.get();
     mount(`
@@ -90,8 +100,8 @@ BM.ui = (function () {
             <span class="badge">LOJA</span>
           </div>
           <div class="shop-wallet">
-            <div class="wallet"><span class="w-ico">◆</span><span id="w-scrap">${fmt(d.v1.scrap)}</span> <span class="dim">SUCATA</span></div>
-            <div class="wallet core"><span class="w-ico">✷</span><span id="w-cores">${fmt(d.v1.cores)}</span> <span class="dim">NÚCLEOS</span></div>
+            <div class="wallet"><span class="w-ico">${BM.sprites.scrapSprite()}</span><span id="w-scrap">${fmt(d.v1.scrap)}</span> <span class="dim">SUCATA</span></div>
+            <div class="wallet core"><span class="w-ico">${BM.sprites.coreSprite()}</span><span id="w-cores">${fmt(d.v1.cores)}</span> <span class="dim">NÚCLEOS</span></div>
             <button class="btn small" data-a="back">Voltar</button>
           </div>
         </div>
@@ -139,7 +149,7 @@ BM.ui = (function () {
         const equipped = BM.save.equippedArms().indexOf(a.id) >= 0;
         return `
         <div class="card ${equipped ? 'equipped' : ''} ${owned ? '' : 'locked'}">
-          <div class="card-art">${BM.sprites.v1(a.corHex)}
+          <div class="card-art">${BM.sprites.armSprite(a.id)}
             ${owned ? '' : `<div class="lockveil">${esc(st.reason || 'BLOQUEADO')}</div>`}
           </div>
           <div class="card-body">
@@ -172,7 +182,7 @@ BM.ui = (function () {
         const eq = d.equip.legs === l.id;
         return `
         <div class="card ${eq ? 'equipped' : ''} ${owned ? '' : 'locked'}">
-          <div class="card-art" style="font-size:2rem;color:${l.peso > 0 ? '#ff6b4a' : (l.peso < 0 ? '#3fd8d8' : '#8a7f78')}">${l.peso > 0 ? '◆' : (l.peso < 0 ? '◇' : '⬢')}</div>
+          <div class="card-art">${BM.sprites.legSprite(l.id)}</div>
           <div class="card-body">
             <div class="card-name">${l.name}${eq ? '<span class="badge hot">EQUIPADA</span>' : ''}</div>
             <div class="card-role">${l.desc}</div>
@@ -200,7 +210,7 @@ BM.ui = (function () {
         const eq = d.equip.chassis === c.id;
         return `
         <div class="card ${eq ? 'equipped' : ''} ${owned ? '' : 'locked'}">
-          <div class="card-art" style="font-size:2rem;color:${c.peso > 0 ? '#ff6b4a' : (c.peso < 0 ? '#3fd8d8' : '#8a7f78')}">${c.peso > 0 ? '▣' : (c.peso < 0 ? '▢' : '■')}</div>
+          <div class="card-art">${BM.sprites.chassisSprite(c.id)}</div>
           <div class="card-body">
             <div class="card-name">${c.name}${eq ? '<span class="badge hot">EQUIPADA</span>' : ''}</div>
             <div class="card-role">${c.desc}</div>
@@ -225,7 +235,7 @@ BM.ui = (function () {
         const count = BM.save.itemCount(i.id);
         return `
         <div class="card ${st.ok ? '' : 'locked'}">
-          <div class="card-art" style="font-size:1.6rem">${i.heal ? '✚' : (i.crit ? '◉' : (i.fixedDamage ? '✷' : (i.cureStatus ? '☗' : '⚒')))}</div>
+          <div class="card-art">${BM.sprites.itemSprite(i.id)}</div>
           <div class="card-body">
             <div class="card-name">${i.name}</div>
             <div class="card-role">${i.desc}</div>
@@ -240,6 +250,7 @@ BM.ui = (function () {
     }
     grid.innerHTML = html;
     renderShopSide();
+    refreshWallet();
 
     on('[data-buy-arm]', 'click', ev => doBuy('arm', ev.currentTarget.getAttribute('data-buy-arm')));
     on('[data-buy-leg]', 'click', ev => doBuy('leg', ev.currentTarget.getAttribute('data-buy-leg')));
@@ -259,12 +270,23 @@ BM.ui = (function () {
     });
   }
 
+  function refreshWallet() {
+    const d = BM.save.get();
+    const ws = el('#w-scrap'); if (ws) ws.textContent = fmt(d.v1.scrap);
+    const wc = el('#w-cores'); if (wc) wc.textContent = fmt(d.v1.cores);
+  }
+
   function doBuy(kind, id) {
     const r = BM.save.buy(kind, id);
     if (r.ok) {
       BM.audio.play('buy');
-      toast('Comprado: ' + id, 'ok');
+      const nome = kind === 'arm' ? (D.ARMS.find(a => a.id === id) || {}).name
+        : kind === 'leg' ? (D.LEGS.find(a => a.id === id) || {}).name
+        : kind === 'chassis' ? (D.CHASSIS.find(a => a.id === id) || {}).name
+        : (D.ITEMS.find(a => a.id === id) || {}).name;
+      toast('Comprado: ' + (nome || id), 'ok');
       renderShop(document.querySelector('.tab.on').getAttribute('data-tab'));
+      refreshWallet();
       BM.save.persist();
     } else {
       BM.audio.play('cancel');
@@ -320,6 +342,7 @@ BM.ui = (function () {
      ========================================================= */
   function loadout(returnTo) {
     current = 'loadout';
+    BM.audio.playMusic('oficina');
     if (returnTo) loadoutReturn = returnTo;
     const d = BM.save.get();
     const arms = BM.save.availableArms();
@@ -340,7 +363,7 @@ BM.ui = (function () {
             ${arms.map(a => `
               <div class="arm-col" data-arm="${a.id}">
                 <div class="arm-head">
-                  <span class="arm-swatch" style="background:${a.corHex};color:${a.corHex}"></span>
+                  <span class="arm-icon">${BM.sprites.armSprite(a.id)}</span>
                   <span class="arm-name">${a.name}</span>
                 </div>
                 <div class="arm-passive"><b>${a.passive.name}:</b> ${a.passive.desc}</div>
@@ -408,6 +431,7 @@ BM.ui = (function () {
      ========================================================= */
   function lobby() {
     current = 'lobby';
+    BM.audio.playMusic('oficina');
     const d = BM.save.get();
     const st = BM.save.v1Stats();
     const unlocked = d.progress.unlockedLayers;
@@ -436,27 +460,65 @@ BM.ui = (function () {
               </div>
             </div>
             <div>
-              <div class="section-title">Camadas</div>
-              <div class="grid2">
-                ${D.LAYERS.map((L, i) => {
-                  const locked = i >= unlocked;
-                  return `<div class="layer-card ${locked ? 'locked' : ''}">
+              <div class="section-title">Atos</div>
+              <div class="grid3">
+                ${D.ACTS.map(a => {
+                  const actNum = parseInt(String(a.id).replace('act', ''), 10);
+                  const actIdx = D.ACTS.indexOf(a);
+                  const camadas = D.LAYERS.filter(L => L.act === actNum);
+                  const feitas = camadas.filter(L => d.flags['camada' + D.LAYERS.indexOf(L) + 'Feita']).length;
+                  // um ato só abre quando todas as camadas do ato anterior foram concluídas
+                  const prevAct = actIdx > 0 ? D.ACTS[actIdx - 1] : null;
+                  const prevDone = !prevAct || (prevAct.layers || []).every(lid => {
+                    const L = D.LAYERS.find(x => x.id === lid);
+                    return !!L && !!d.flags['camada' + D.LAYERS.indexOf(L) + 'Feita'];
+                  });
+                  const bloqueado = a.wip || !prevDone;
+                  const status = a.wip ? 'EM DESENVOLVIMENTO' : (prevDone ? 'ABERTA' : 'BLOQUEADA');
+                  return `<div class="act-card ${bloqueado ? 'locked' : ''} ${atoSel === a.id ? 'sel' : ''}">
                     <div class="row" style="justify-content:space-between">
-                      <div class="title-sm">Camada ${L.roman}</div>
-                      <div class="badge ${locked ? '' : 'hot'}">${locked ? 'BLOQUEADA' : 'ABERTA'}</div>
+                      <div class="title-sm">Ato ${a.num}</div>
+                      <div class="badge ${bloqueado ? '' : 'hot'}">${status}</div>
+                    </div>
+                    <h3>${a.name}</h3>
+                    <div class="act-art">${BM.sprites.actArt(a.id)}</div>
+                    <div class="layer-info">${a.desc}</div>
+                    <div class="layer-info dim">${camadas.length} camadas · ${feitas}/${camadas.length} concluídas</div>
+                    ${a.wip
+                      ? `<button class="btn small wide" data-act-wip="${a.id}">WIP</button>`
+                      : (prevDone
+                        ? `<button class="btn small wide ${atoSel === a.id ? '' : 'primary'}" data-act="${a.id}">${atoSel === a.id ? 'ABERTO' : 'ENTRAR NO ATO'}</button>`
+                        : `<button class="btn small wide" disabled>Conclua o ato anterior</button>`)}
+                  </div>`;
+                }).join('')}
+              </div>
+            </div>
+            ${atoSel ? `<div>
+              <div class="section-title">Camadas do Ato ${(D.ACTS.find(x => x.id === atoSel) || {}).num || ''}</div>
+              <div class="grid3">
+                ${D.LAYERS.filter(L => L.act === parseInt(String(atoSel).replace('act', ''), 10)).map(L => {
+                  const idx = D.LAYERS.indexOf(L);
+                  const feita = !!d.flags['camada' + idx + 'Feita'];
+                  const prev = idx > 0 ? D.LAYERS[idx - 1] : null;
+                  // bloqueada = a camada anterior do mesmo ato ainda não foi concluída
+                  const bloqueada = !feita && !!prev && prev.act === L.act && !d.flags['camada' + (idx - 1) + 'Feita'];
+                  return `<div class="layer-card ${bloqueada ? 'locked' : ''}">
+                    <div class="row" style="justify-content:space-between">
+                      <div class="title-sm">Camada ${L.order}</div>
+                      <div class="badge ${bloqueada ? '' : (feita ? 'ok' : 'hot')}">${bloqueada ? 'BLOQUEADA' : (feita ? 'CONCLUÍDA' : 'ABERTA')}</div>
                     </div>
                     <h3>${L.name}</h3>
                     <div class="layer-art">${BM.sprites.layerArt(L.id)}</div>
                     <div class="layer-info">${L.subtitle} — ${L.desc}</div>
                     <div class="layer-mod">◈ ${L.modifier.name}: ${L.modifier.desc}</div>
                     <div class="layer-info dim">Chefe: ${D.ENEMIES[L.boss].name} · ${L.encounters.length} encontros</div>
-                    <button class="btn small wide ${locked ? '' : 'primary'}" data-layer="${i}" ${locked ? 'disabled' : ''}>
-                      ${locked ? 'Derrote o chefe anterior' : 'Entrar na camada'}
+                    <button class="btn small wide ${bloqueada ? '' : 'primary'}" data-layer="${idx}" ${bloqueada ? 'disabled' : ''}>
+                      ${bloqueada ? 'Conclua a camada anterior' : (feita ? 'Entrar novamente' : 'Entrar na camada')}
                     </button>
                   </div>`;
                 }).join('')}
               </div>
-            </div>
+            </div>` : ''}
           </div>
           <div class="hub-side">
             <div class="panel">
@@ -507,6 +569,18 @@ BM.ui = (function () {
     });
     on('[data-a="title"]', 'click', () => { BM.audio.play('cancel'); title(); });
     on('[data-layer]', 'click', ev => BM.main.startLayer(parseInt(ev.currentTarget.getAttribute('data-layer'), 10)));
+    on('[data-act]', 'click', ev => {
+      atoSel = ev.currentTarget.getAttribute('data-act');
+      BM.audio.play('confirm');
+      lobby();
+    });
+    on('[data-act-wip]', 'click', ev => {
+      const a = D.ACTS.find(x => x.id === ev.currentTarget.getAttribute('data-act-wip'));
+      BM.audio.play('warn');
+      BM.ui.modal('ATO ' + a.num + ' — ' + a.name.toUpperCase(),
+        'Este ato ainda está em desenvolvimento. O conteúdo será implementado em uma atualização futura.',
+        [{ texto: 'ENTENDI', classe: 'primary' }]);
+    });
   }
 
   /* =========================================================
@@ -514,6 +588,7 @@ BM.ui = (function () {
      ========================================================= */
   function layerMap(layerIndex) {
     current = 'map';
+    BM.audio.playMusic(musicFor(layerIndex, false));
     const L = D.LAYERS[layerIndex];
     const d = BM.save.get();
     const node = d.progress.node;
@@ -524,11 +599,11 @@ BM.ui = (function () {
     mount(`
       <div class="screen" style="overflow:auto">
         <div class="hub-top">
-          <div class="hub-brand">CAMADA ${L.roman} — ${L.name.toUpperCase()}</div>
+          <div class="hub-brand">CAMADA ${L.order} — ${L.name.toUpperCase()}</div>
           <div class="hub-stats">
             <span class="badge">${L.subtitle}</span>
             <span class="badge warn">◈ ${L.modifier.name}</span>
-            <button class="btn small" data-a="lobby">Oficina</button>
+            <button class="btn small danger" data-a="desistir">DESISTIR</button>
           </div>
         </div>
         <div style="padding:16px;max-width:900px;margin:0 auto;width:100%">
@@ -561,13 +636,19 @@ BM.ui = (function () {
                 <div class="dim" style="font-size:.78rem">Integridade ${en.hp} · Ataque ${en.atk} · Defesa ${en.def}${en.boss ? ' · CHEFE' : ''}</div>
                 <div class="dim" style="font-size:.72rem">Fraquezas: ${D.FACTIONS[en.faction].weak.join(', ')} · Resiste a: ${D.FACTIONS[en.faction].resist.join(', ')}</div>
               </div>
-              <button class="btn primary" data-a="fight">${isBoss ? 'ENFRENTAR CHEFE' : 'LUTAR'}</button>
+              <button class="btn primary" data-a="fight">${isBoss ? 'ENFRENTAR CHEFE' : 'AVANÇAR →'}</button>
             </div>
           </div>
         </div>
       </div>`);
-    on('[data-a="lobby"]', 'click', () => { BM.audio.play('cancel'); lobby(); });
     on('[data-a="fight"]', 'click', () => BM.main.startBattle(enemyId, layerIndex));
+    on('[data-a="desistir"]', 'click', () => {
+      BM.audio.play('cancel');
+      BM.ui.modal('DESISTIR DA CAMADA',
+        'Os recursos coletados nesta camada serão perdidos. O V1 volta à oficina com a mesma quantidade de Sucata e XP que tinha antes de entrar.',
+        [{ texto: 'CONTINUAR', classe: 'primary' },
+         { texto: 'DESISTIR', classe: 'danger', acao: function () { BM.main.abandonLayer(layerIndex); } }]);
+    });
   }
 
   /* =========================================================
@@ -651,6 +732,7 @@ BM.ui = (function () {
   function battle() {
     current = 'battle';
     battleKeys();
+    BM.audio.playMusic(musicFor(BM.battle.state.layerIndex, BM.battle.state.isBoss));
     const S = BM.battle.state;
     const layer = S.layer;
     const arms = BM.save.equippedArms().map(id => D.ARMS.find(a => a.id === id)).filter(Boolean);
@@ -690,17 +772,9 @@ BM.ui = (function () {
           <div class="aux" id="aux"></div>
         </div>
         <div class="parry-layer" id="parry-layer">
-          <div class="parry-box">
-            <div class="parry-title">PARRY</div>
-            <div class="parry-track" id="parry-track">
-              <div class="parry-good left" id="parry-good-l"></div>
-              <div class="parry-good right" id="parry-good-r"></div>
-              <div class="parry-perfect" id="parry-perfect"></div>
-              <div class="parry-marker" id="parry-marker"></div>
-            </div>
-            <div class="parry-hint">ESPAÇO / CLIQUE NO MOMENTO CERTO</div>
-            <div class="parry-result" id="parry-result"></div>
-          </div>
+          <div class="parry-title parry-title-float">PARRY</div>
+          <div class="parry-hint parry-hint-float" id="parry-hint">CLIQUE NO CÍRCULO QUANDO ELE FECHAR</div>
+          <div class="parry-result parry-result-float" id="parry-result"></div>
         </div>
       </div>`);
     battleUpdate();
@@ -804,6 +878,10 @@ BM.ui = (function () {
         BM.battle.runTurn({ type:'move', id: n.getAttribute('data-move') });
       }));
     }
+    // fuga do inimigo
+    const fg = el('#f-enemy');
+    if (fg) fg.classList.toggle('fugindo', S.over === 'fugiu');
+
     // aux
     const aux = el('#aux');
     if (aux) {
@@ -879,72 +957,93 @@ BM.ui = (function () {
   }
 
   /* ---------------- PARRY ---------------- */
+  /* =========================================================
+   * PARRY — circunferência aleatória
+   * Uma circunferência aparece em um ponto aleatório da tela e
+   * encolhe até o fim da janela. Só é possível parar clicando
+   * dentro dela: verde = perfeito, amarelo = bom, branco = cedo.
+   * ========================================================= */
   function promptParry(cfg) {
     return new Promise(resolve => {
       const layer = el('#parry-layer');
-      const track = el('#parry-track');
-      const marker = el('#parry-marker');
-      const goodL = el('#parry-good-l');
-      const goodR = el('#parry-good-r');
-      const perfect = el('#parry-perfect');
       const result = el('#parry-result');
-      if (!layer || !track) { resolve('miss'); return; }
-      const pw = cfg.perfect * 100, gw = cfg.good * 100;
-      perfect.style.left = ((100 - pw) / 2) + '%';
-      perfect.style.width = pw + '%';
-      goodL.style.left = ((100 - pw) / 2 - gw) + '%';
-      goodL.style.width = gw + '%';
-      goodR.style.left = ((100 + pw) / 2) + '%';
-      goodR.style.width = gw + '%';
-      result.textContent = '';
+      const hint = el('#parry-hint');
+      if (!layer) { resolve('miss'); return; }
+
+      const total = Math.max(320, cfg.ms || 1000);
+      const pctPerfect = Math.max(0.04, cfg.perfect || 0.12);
+      const pctGood = Math.max(0.08, cfg.good || 0.22);
+      if (result) result.textContent = '';
+      if (hint) hint.textContent = 'CLIQUE NO CÍRCULO QUANDO ELE FECHAR';
       layer.classList.add('on');
-      const W = track.clientWidth;
-      let pos = rand(W * 0.1, W * 0.4), dir = 1, last = null, done = false;
-      const speed = W / (cfg.ms / 1000);
-      // loop temporal (independe de framerate e funciona em qualquer navegador)
-      const timer = setInterval(function () {
+
+      // posição aleatória na tela
+      const W = (window.innerWidth || 1280);
+      const H = (window.innerHeight || 720);
+      const cx = Math.round(rand(W * 0.16, W * 0.84));
+      const cy = Math.round(rand(H * 0.16, H * 0.70));
+      const R0 = Math.round(Math.max(76, Math.min(150, Math.min(W, H) * 0.17)));
+      const R1 = Math.round(R0 * 0.32);
+
+      const circle = document.createElement('div');
+      circle.className = 'parry-circle';
+      circle.style.left = cx + 'px';
+      circle.style.top = cy + 'px';
+      layer.appendChild(circle);
+
+      const t0 = (window.performance && performance.now) ? performance.now() : Date.now();
+      let raf = 0, done = false;
+
+      function agora() {
+        return (window.performance && performance.now) ? performance.now() : Date.now();
+      }
+      function desenhar() {
         if (done) return;
-        const ts = performance.now();
-        if (last == null) last = ts;
-        const dt = (ts - last) / 1000; last = ts;
-        pos += dir * speed * dt;
-        if (pos > W) { pos = W; dir = -1; }
-        if (pos < 0) { pos = 0; dir = 1; }
-        marker.style.left = pos + 'px';
-      }, 16);
-      const timeout = setTimeout(() => finish('miss'), cfg.ms * 2.6);
+        const t = Math.min(1, (agora() - t0) / total);
+        const r = R0 + (R1 - R0) * t;
+        circle.style.width = (r * 2) + 'px';
+        circle.style.height = (r * 2) + 'px';
+        circle.style.marginLeft = (-r) + 'px';
+        circle.style.marginTop = (-r) + 'px';
+        if (t >= 1 - pctPerfect) circle.className = 'parry-circle zona-perfeita';
+        else if (t >= 1 - pctPerfect - pctGood) circle.className = 'parry-circle zona-boa';
+        else circle.className = 'parry-circle';
+        if (t >= 1) { finish('miss'); return; }
+        raf = requestAnimationFrame(desenhar);
+      }
+
       function finish(res) {
         if (done) return;
         done = true;
-        clearTimeout(timeout);
-        clearInterval(timer);
-        result.className = 'parry-result ' + res;
-        result.textContent = res === 'perfect' ? 'PERFEITO!' : (res === 'good' ? 'BOM' : 'FALHOU');
+        if (raf) cancelAnimationFrame(raf);
+        layer.removeEventListener('pointerdown', clickHandler);
+        if (result) {
+          result.className = 'parry-result parry-result-float ' + res;
+          result.textContent = res === 'perfect' ? 'PERFEITO!' : (res === 'good' ? 'BOM' : 'FALHOU');
+        }
         BM.audio.play(res === 'miss' ? 'parryMiss' : 'parry');
         setTimeout(() => {
           layer.classList.remove('on');
+          if (circle && circle.parentNode) circle.parentNode.removeChild(circle);
           resolve(res);
         }, res === 'perfect' ? 420 : 260);
       }
-      function press() {
-        const pct = pos / W;            // 0..1
-        const off = Math.abs(pct - 0.5);
-        if (off <= (pw / 2) / 100) finish('perfect');
-        else if (off <= (pw / 2 + gw) / 100) finish('good');
-        else finish('miss');
+
+      function clickHandler(ev) {
+        if (done) return;
+        const t = Math.min(1, (agora() - t0) / total);
+        const px = (ev.clientX != null) ? ev.clientX : 0;
+        const py = (ev.clientY != null) ? ev.clientY : 0;
+        const r = R0 + (R1 - R0) * t;
+        const dentro = Math.hypot(px - cx, py - cy) <= r;
+        if (!dentro) return;                 // clique fora: ignora, o círculo continua
+        if (t >= 1 - pctPerfect) finish('perfect');
+        else if (t >= 1 - pctPerfect - pctGood) finish('good');
+        else finish('miss');                 // clicou cedo demais
       }
-      const keyHandler = ev => {
-        if (ev.key === ' ' || ev.key === 'Enter') { ev.preventDefault(); press(); }
-      };
-      document.addEventListener('keydown', keyHandler);
-      const trackHandler = () => press();
-      track.addEventListener('pointerdown', trackHandler);
-      const cleanup = () => {
-        document.removeEventListener('keydown', keyHandler);
-        track.removeEventListener('pointerdown', trackHandler);
-      };
-      const obs = new MutationObserver(() => { if (!layer.classList.contains('on')) { cleanup(); obs.disconnect(); } });
-      obs.observe(layer, { attributes: true, attributeFilter: ['class'] });
+
+      layer.addEventListener('pointerdown', clickHandler);
+      raf = requestAnimationFrame(desenhar);
     });
   }
 
@@ -983,15 +1082,16 @@ BM.ui = (function () {
     mount(`
       <div class="screen result">
         <div class="panel result-card">
-          <div class="title-sm">${win ? 'VITÓRIA' : (info.result === 'fled' ? 'FUGA' : 'SISTEMA CRÍTICO')}</div>
+          <div class="title-sm">${win ? 'VITÓRIA' : (info.result === 'fled' ? 'FUGA' : (info.result === 'fugiu' ? 'O INIMIGO ESCAPOU' : 'SISTEMA CRÍTICO'))}</div>
           ${win ? `<div class="rank-badge ${rank.key === 'SSS' ? 'sss' : ''}">${rank.key}</div>` : ''}
           <div class="result-lines">
             ${win ? `
               <div class="rline"><span>Inimigo</span><span>${info.enemyName}</span></div>
               <div class="rline"><span>Estilo</span><span>${info.stylePoints} pts</span></div>
               <div class="rline"><span>Multiplicador</span><span>×${rank.mult.toFixed(2)}</span></div>
-              <div class="rline"><span>Sucata</span><span>+${fmt(info.scrap)}</span></div>
-              <div class="rline"><span>Experiência</span><span>+${fmt(info.xp)}</span></div>
+              <div class="rline"><span>Sucata acumulada</span><span>+${fmt(info.scrap)}</span></div>
+              <div class="rline"><span>Experiência acumulada</span><span>+${fmt(info.xp)}</span></div>
+              <div class="dim" style="font-size:.68rem;margin:6px 0">Liberados só ao concluir a camada. Se desistir ou morrer, tudo se perde.</div>
               ${info.levels && info.levels.length ? `<div class="rline"><span style="color:var(--brass)">NÍVEL ${info.levels[info.levels.length - 1]}</span><span style="color:var(--brass)">NÍVEL ${info.levels[info.levels.length - 1]}!</span></div>` : ''}
             ` : (info.result === 'fled'
               ? `<div class="rline"><span>Você fugiu da batalha.</span><span></span></div>`
@@ -1016,6 +1116,284 @@ BM.ui = (function () {
   /* =========================================================
      OPÇÕES
      ========================================================= */
+  /* ============================================================
+     CENA: GABRIEL SANGRANDO E FUGINDO
+     ============================================================ */
+  function gabrielBleed(onDone) {
+    current = 'gabrielBleed';
+    const s = BM.sprites.gabriel();
+    mount(
+      '<div class="screen scene-bleed" id="bleed">' +
+      '<div class="bleed-stage">' +
+      '<div class="bleed-fx"></div>' +
+      '<div class="bleed-drop" style="left:44%;top:34%;animation-delay:.1s"></div>' +
+      '<div class="bleed-drop" style="left:48%;top:38%;animation-delay:.7s"></div>' +
+      '<div class="bleed-drop" style="left:55%;top:30%;animation-delay:1.2s"></div>' +
+      '<div class="bleed-drop" style="left:52%;top:44%;animation-delay:1.5s"></div>' +
+      '<div class="bleed-gabriel" id="bleed-g">' + s + '</div>' +
+      '</div>' +
+      '<div class="bleed-caption" id="bleed-cap"></div>' +
+      '</div>');
+    const cap = el('#bleed-cap');
+    const g = el('#bleed-g');
+    setTimeout(function () {
+      cap.innerHTML = '<div class="bc-title">GABRIEL ESTÁ SANGRANDO</div>' +
+        '<div class="bc-text">A carne do anjo cede. O sangue desce pelo piso em brasa.</div>';
+      cap.classList.add('on');
+    }, 900);
+    setTimeout(function () {
+      g.classList.add('foge');
+      cap.innerHTML = '<div class="bc-title">ELE FOGE</div>' +
+        '<div class="bc-text">As lâminas se recolhem. Gabriel desaparece no escuro.</div>';
+    }, 2600);
+    setTimeout(function () {
+      if (onDone) onDone();
+    }, 4600);
+  }
+
+/* ============================================================
+     SPRITES/UI SNIPPETS — introduções de chefe e modal
+     ============================================================ */
+  /* =========================================================
+   * INTRODUÇÃO DE INIMIGO — cutscene antes de cada batalha
+   * ========================================================= */
+  /* =========================================================
+   * INTRODUÇÃO DE CHEFE — cutscene antes da luta de chefe
+   * Somente os chefes têm cutscene; inimigos comuns entram direto.
+   * ========================================================= */
+  function enemyIntro(enemyId, layerIndex, onDone) {
+    const enemy = D.ENEMIES[enemyId];
+    if (!enemy) { if (onDone) onDone(); return; }
+    if (!enemy.boss) { if (onDone) onDone(); return; }
+    current = 'enemyIntro';
+    const lines = [];               // chefes não falam: só a imagem e o nome
+    const gigante = !!enemy.giant;
+    BM.audio.playMusic(musicFor(layerIndex, true));
+    mount(
+      '<div class="screen scene-boss' + (gigante ? ' gigante' : '') + '" id="scene-boss">' +
+      '<div class="boss-stage"><div class="boss-sprite" id="boss-sprite">' + BM.sprites.get(enemy.sprite) + '</div></div>' +
+      '<div class="boss-title" id="boss-title">' + enemy.name + '</div>' +
+      '<div class="boss-sub" id="boss-sub">' + D.FACTIONS[enemy.faction].name.toUpperCase() + ' · CHEFE</div>' +
+      '<div class="boss-box" id="boss-box"></div>' +
+      '<div class="boss-hint" id="boss-hint">CLIQUE PARA ENFRENTAR</div>' +
+      '</div>');
+    let i = 0;
+    let pronto = false;            // as falas acabaram: o próximo clique inicia a luta
+    const box = el('#boss-box');
+    const hint = el('#boss-hint');
+    function show() {
+      if (i < lines.length) {
+        const l = lines[i];
+        box.innerHTML = '<div class="boss-text">' + l + '</div>';
+        box.classList.remove('on');
+        void box.offsetWidth;
+        box.classList.add('on');
+        i++;
+        hint.textContent = 'CLIQUE PARA CONTINUAR';
+      } else {
+        pronto = true;
+        hint.textContent = 'CLIQUE PARA ENFRENTAR';
+      }
+    }
+    el('#scene-boss').addEventListener('click', function () {
+      if (pronto) { pronto = false; if (onDone) onDone(); return; }
+      show();
+    });
+    setTimeout(function () {
+      var cena = el('#scene-boss');
+      if (cena && cena.classList) cena.classList.add('pronto');
+    }, 1500);
+    show();
+  }
+
+  /* (mantido por compatibilidade) */
+  function bossIntro(bossId, layerIndex, onDone) { enemyIntro(bossId, layerIndex, onDone); }
+
+  /* =========================================================
+   * ESCOLHA DE DIFICULDADE — mostrada na primeira vez que o jogo abre
+   * ========================================================= */
+  function difficultyPick(onPick) {
+    current = 'difficulty';
+    BM.audio.playMusic('titulo');
+    const chaves = ['lenient', 'standard', 'violent'];
+    mount(`
+      <div class="screen diff-screen">
+        <div class="panel diff-panel">
+          <div class="title-sm">ESCOLHA A DIFICULDADE</div>
+          <div class="dim" style="font-size:.82rem;margin:6px 0 16px">
+            A dificuldade define a vida e os ataques dos inimigos, a janela do parry e a recompensa.
+            Pode ser mudada depois nas Opções.
+          </div>
+          <div class="grid3">
+            ${chaves.map(k => {
+              const df = D.DIFFICULTIES[k];
+              return `<div class="diff-card ${k === 'standard' ? 'padrao' : ''}">
+                <h3>${df.name}</h3>
+                <div class="diff-label">${df.label}</div>
+                <div class="layer-info">${df.desc}</div>
+                <ul class="diff-list">
+                  <li>Vida dos inimigos <b>×${df.hpMul.toFixed(2)}</b></li>
+                  <li>Ataque dos inimigos <b>×${df.atkMul.toFixed(2)}</b></li>
+                  <li>Janela do parry <b>${df.parryMs} ms</b></li>
+                  <li>Dano no V1 <b>×${df.dmgEnemy.toFixed(2)}</b></li>
+                  <li>Sucata <b>×${df.scrap.toFixed(2)}</b></li>
+                </ul>
+                <button class="btn primary wide" data-diff="${k}">${df.name.toUpperCase()}</button>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>
+      </div>`);
+    on('[data-diff]', 'click', ev => {
+      const k = ev.currentTarget.getAttribute('data-diff');
+      BM.audio.play('confirm');
+      BM.save.setDificuldade(k);
+      if (onPick) onPick(k);
+    });
+  }
+
+  /* =========================================================
+   * MODAL DE CONFIRMAÇÃO
+   * ========================================================= */
+  function modal(titulo, texto, botoes) {
+    const m = document.createElement('div');
+    m.className = 'modal';
+    m.innerHTML =
+      '<div class="panel modal-card">' +
+      '<div class="panel-head"><span>' + titulo + '</span></div>' +
+      '<div class="dim" style="font-size:.86rem;margin-bottom:14px">' + texto + '</div>' +
+      '<div class="modal-actions" id="modal-acoes"></div>' +
+      '</div>';
+    document.body.appendChild(m);
+    const acoes = m.querySelector('#modal-acoes');
+    botoes.forEach(function (b) {
+      const btn = document.createElement('button');
+      btn.className = 'btn ' + (b.classe || '');
+      btn.textContent = b.texto;
+      btn.addEventListener('click', function () {
+        m.remove();
+        if (b.acao) b.acao();
+      });
+      acoes.appendChild(btn);
+    });
+    m.addEventListener('click', function (ev) { if (ev.target === m) m.remove(); });
+    return m;
+  }
+
+  /* ============================================================
+     CUTSCENE DE MORTE — V1 desligando e caindo
+     ============================================================ */
+  function deathScene(onDone) {
+    current = 'death';
+    const s = BM.sprites.v1();
+    mount(
+      '<div class="screen scene-death" id="death">' +
+      '<div class="death-stage">' +
+      '<div class="death-spark sp1"></div><div class="death-spark sp2"></div><div class="death-spark sp3"></div>' +
+      '<div class="death-v1" id="death-v1">' + s + '</div>' +
+      '</div>' +
+      '<div class="death-caption" id="death-cap"></div>' +
+      '</div>');
+    const v1 = el('#death-v1');
+    const cap = el('#death-cap');
+    BM.audio.play('ko');
+    // 1. o olho apaga
+    setTimeout(function () {
+      v1.classList.add('apagando');
+      cap.innerHTML = '<div class="dc-title">INTEGRIDADE CRÍTICA</div>';
+      cap.classList.add('on');
+    }, 700);
+    // 2. desliga e cai
+    setTimeout(function () {
+      v1.classList.add('desligando');
+      BM.audio.play('shutdown');
+    }, 1500);
+    // 3. no chão
+    setTimeout(function () {
+      v1.classList.add('nochao');
+      cap.innerHTML = '<div class="dc-title">SISTEMA OFFLINE</div>' +
+        '<div class="dc-text">Integridade 0%. Combustível 0%. Objetivo: —</div>';
+      BM.audio.play('lose');
+    }, 2900);
+    // 4. game over
+    setTimeout(function () { if (onDone) onDone(); }, 4200);
+  }
+
+  /* ============================================================
+     GAME OVER — sem checkpoint, a camada recomeça
+     ============================================================ */
+  function gameOver(info) {
+    current = 'gameover';
+    const d = BM.save.get();
+    mount(
+      '<div class="screen result">' +
+      '<div class="panel result-card">' +
+      '<div class="title-sm">V1 DESTRUÍDO</div>' +
+      '<div class="gameover-title">GAME OVER</div>' +
+      '<div class="dim" style="margin:6px 0 12px">Sem checkpoint. <b>' + info.layerName + '</b> recomeça do primeiro inimigo — todos precisam cair de novo.</div>' +
+      '<div class="result-lines">' +
+      '<div class="rline"><span>Camada</span><span>' + info.layerName + '</span></div>' +
+      '<div class="rline"><span>Vitórias na camada</span><span>' + (info.wins || 0) + '</span></div>' +
+      '<div class="rline"><span>Mortes totais</span><span>' + d.stats.mortes + '</span></div>' +
+      '</div>' +
+      '<div class="row" style="justify-content:center;flex-wrap:wrap">' +
+      (info.kit ? '<button class="btn" data-a="kit">Usar Kit de Reparo</button>' : '') +
+      '<button class="btn primary" data-a="retry">Recomeçar a camada</button>' +
+      '<button class="btn" data-a="lobby">Oficina</button>' +
+      '</div>' +
+      '</div></div>');
+    on('[data-a="kit"]', 'click', ev => {
+      if (ev.currentTarget.disabled) return;
+      ev.currentTarget.disabled = true;
+      BM.main.useRepairKit();
+    });
+    on('[data-a="retry"]', 'click', () => {
+      BM.audio.play('confirm');
+      BM.main.restartLayer(info.layerIndex);
+    });
+    on('[data-a="lobby"]', 'click', () => {
+      BM.audio.play('cancel');
+      BM.main.abandonLayer(info.layerIndex);
+    });
+  }
+
+  /* =========================================================
+   * RESULTADO DA CAMADA (rank P)
+   * ========================================================= */
+  function layerResult(info) {
+    current = 'resultCamada';
+    const r = info.rank;
+    BM.audio.playMusic(musicFor(info.layerIndex, true));
+    const cat = (nome, letra, nota) =>
+      '<div class="rank-cat"><span>' + nome + '</span><b>' + letra + '</b><i>' + nota + '</i></div>';
+    mount(
+      '<div class="screen result">' +
+      '<div class="panel result-card">' +
+      '<div class="title-sm">' + info.layerName.toUpperCase() + (info.fugiu ? ' — O CHEFE ESCAPOU' : ' CONCLUÍDA') + '</div>' +
+      '<div class="rank-badge ' + (r.perfeito ? 'p' : '') + '">' + r.final + '</div>' +
+      (r.perfeito ? '<div class="badge ok">PERFEITO — TEMPO, VIDA E ESTILO EM S</div>' : '') +
+      '<div class="rank-cats">' +
+      cat('Tempo', r.tempo, Math.round(r.elapsed) + 's (alvo ' + r.alvo + 's)') +
+      cat('Vida perdida', r.vida, Math.round(r.lossPct * 100) + '% do HP') +
+      cat('Estilo', r.estilo, r.styleMax + ' pts') +
+      '</div>' +
+      (info.pago && (info.pago.scrap || info.pago.xp) ?
+        '<div class="result-lines" style="text-align:left">' +
+        '<div class="rline"><span>Sucata recebida</span><span>+' + fmt(info.pago.scrap) + '</span></div>' +
+        '<div class="rline"><span>Experiência</span><span>+' + fmt(info.pago.xp) + '</span></div>' +
+        (info.pago.levels && info.pago.levels.length ? '<div class="rline"><span style="color:var(--brass)">Nível ' + info.pago.levels[info.pago.levels.length - 1] + '</span><span style="color:var(--brass)">SUBIU!</span></div>' : '') +
+        '</div>' : '') +
+      '<div class="dim" style="font-size:.72rem;margin-bottom:12px">Rank da camada = o menor entre tempo, vida e estilo. Se os três forem S, o resultado é P.</div>' +
+      '<button class="btn primary" data-a="cont">CONTINUAR</button>' +
+      '</div></div>');
+    on('[data-a="cont"]', 'click', ev => {
+      if (ev.currentTarget.disabled) return;
+      ev.currentTarget.disabled = true;
+      BM.audio.play('confirm');
+      BM.main.afterLayer(info);
+    });
+  }
+
   function options() {
     current = 'options';
     const s = BM.save.get().settings;
@@ -1026,7 +1404,7 @@ BM.ui = (function () {
           <div class="opt-row">
             <label>Dificuldade<span class="hint">Ajusta a velocidade da barra de parry e o dano recebido.</span></label>
             <select id="opt-diff">
-              ${Object.keys(D.DIFFICULTIES).map(k => `<option value="${k}" ${s.dificuldade === k ? 'selected' : ''}>${D.DIFFICULTIES[k].name}</option>`).join('')}
+              ${Object.keys(D.DIFFICULTIES).map(k => `<option value="${k}" ${s.dificuldade === k ? 'selected' : ''}>${D.DIFFICULTIES[k].label || D.DIFFICULTIES[k].name}</option>`).join('')}
             </select>
           </div>
           <div class="opt-row">
@@ -1073,7 +1451,7 @@ BM.ui = (function () {
     el('#opt-diff').addEventListener('change', ev => {
       BM.save.setSetting('dificuldade', ev.target.value);
       BM.audio.play('select');
-      toast('Dificuldade: ' + D.DIFFICULTIES[ev.target.value].name, 'ok');
+      toast('Dificuldade: ' + (D.DIFFICULTIES[ev.target.value].label || D.DIFFICULTIES[ev.target.value].name), 'ok');
     });
     el('#opt-vol').addEventListener('input', ev => {
       const v = ev.target.value / 100;
@@ -1091,6 +1469,7 @@ BM.ui = (function () {
      ========================================================= */
   function credits() {
     current = 'credits';
+    BM.audio.playMusic('creditos');
     mount(`
       <div class="screen credits">
         <div class="credits-inner">
@@ -1112,6 +1491,7 @@ BM.ui = (function () {
 
   function ending() {
     current = 'ending';
+    BM.audio.playMusic('desligamento');
     mount(`
       <div class="screen" style="overflow:auto">
         <div style="max-width:620px;margin:0 auto;padding:24px 16px;width:100%">
@@ -1185,6 +1565,7 @@ BM.ui = (function () {
 
   function postCredits() {
     current = 'credits';
+    BM.audio.playMusic('creditos');
     const d = BM.save.get();
     mount(`
       <div class="screen credits">
@@ -1217,6 +1598,8 @@ BM.ui = (function () {
     mount, el, els, toast,
     get current() { return current; },
     title, shop, loadout, lobby, layerMap, dialogue, battle, battleUpdate,
-    battleLog, floatText, shake, flashTurn, promptParry, result, options, credits, ending, postCredits
+    battleLog, floatText, shake, flashTurn, promptParry, result, layerResult, gabrielBleed,
+    deathScene, gameOver, enemyIntro, bossIntro, modal, options, credits, ending, postCredits,
+    difficultyPick
   };
 })();

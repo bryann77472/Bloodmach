@@ -26,25 +26,122 @@ sem instalar nada. O progresso é salvo em `localStorage` automaticamente.
 ## O que tem no jogo
 
 ### Campanha
-- **2 camadas**: **Gluttony** (o Corpo do Rei Minos) e **Heresy** (a Catedral Ardente).
-- **5 inimigos + 1 chefe** por camada.
-- Modificadores de camada: *Digestão Ácida* (cura −30%) e *Fogo da Fé* (Fogo/Luz +20%, parry perfeito reflete 75%).
-- Chefe de Gluttony: **V2** — copia seus 2 braços e seus 4 movimentos, e **morre de verdade**.
-- Chefe final de Heresy: **Gabriel** — 2 fases, com `SENTENÇA` inevitável.
+A **Oficina** tem **Atos** (coluna esquerda, acima das camadas). Cada ato tem um card
+com **número, status, nome, arte, descrição e botão de entrada** — igual aos cards de
+camada. O **Ato I — Infinity Hyperdeath** está liberado; os Atos II e III mostram
+*WORK IN PROGRESS*.
+
+**Ato I** tem **3 camadas**, com **6 inimigos + 1 chefe** cada:
+
+| Camada | Ambiente | Modificador | Chefe |
+|---|---|---|---|
+| **1. Limbo** | A Cidade Submersa | *Maré Morta* — dano recebido +10% | **V2** (ele **foge**) |
+| **2. Lust** | O Corpo do Rei Minos | *Luxúria* — inimigos golpeiam 18% mais forte | **O Corpo do Rei Minos** (gigante) |
+| **3. Gluttony** | A Fábrica de Digestão | *Digestão Ácida* — toda cura 30% menor | **Gabriel** |
+
+Cada camada é mais dura que a anterior: inimigos com **mais HP e mais ATQ** (a base de
+escala junto com o seu nível). **A camada só abre quando a anterior é concluída** —
+finishar Limbo abre Lust, finishar Lust abre Gluttony.
+- Modificadores de camada: *Maré Morta* (dano +10%), *Luxúria* (inimigos +18% ATQ) e *Digestão Ácida* (cura −30%).
+- **V2** é o chefe de Limbo: copia seus 2 braços e seus 4 movimentos, usa parry… e **foge**
+  quando é derrotado (sem recompensas, mas a camada continua).
+- **O Corpo do Rei Minos** é o chefe de Lust: um corpo gigante que ocupa a tela inteira,
+  desenhado a partir da referência do jogo original (a cavidade do tórax vista do V1).
+- **Cutscene só dos chefes**: antes de encarar um chefe, ele aparece em tela cheia com
+  o nome e a facção (sem falar, como no original) e a luta começa quando você clica.
+  Os **inimigos comuns entram direto na luta**, sem cutscene.
+- Chefe final de Gluttony: **Gabriel** — 2 fases, com `SENTENÇA` inevitável.
+- Depois de derrotá-lo, **Gabriel sangra**, **foge** em brasa e só então aparece a tela de desligamento do V1.
+- **Dentro da camada não há saída**: ao entrar, só se avança para o próximo inimigo.
+  A saída e a troca de loadout só existem na **Oficina**, antes de começar.
+- **Sem checkpoint.** Se o V1 morre, tem uma cutscene dele **desligando e caindo**
+  (com a música *power off v1*), depois **GAME OVER**: a camada recomeça do primeiro inimigo
+  e todos precisam cair de novo. Só o **Kit de Reparto** (item) salva: revive o V1 com 30%
+  de HP e a luta continua.
+- **Cortar a camada:** o botão **DESISTIR** no mapa abre uma confirmação. Os recursos
+  coletados na camada são perdidos e o V1 volta à oficina com a mesma quantidade de
+  Sucata e XP que tinha antes de entrar.
+- **Recursos só entram na mochila ao concluir a camada.** Durante a camada, a Sucata e a
+  XP ficam **acumuladas** (aparecem na tela de resultado de cada luta). Se você morrer ou
+  desistir, tudo se perde; se terminar a camada, o total é entregue com o rank.
 - **Final:** depois de Gabriel, V1 pode **se desligar**. Um final escolhido, não uma fuga.
+
+### Dificuldade
+Na **primeira vez que o jogo abre** aparece a escolha de dificuldade (depois dá para
+mudar nas **Opções**):
+
+| Dificuldade | Vida dos inimigos | Ataque | Janela do parry | Dano no V1 | Sucata |
+|---|---|---|---|---|---|
+| **Lenient** (fácil) | ×0,78 | ×0,72 | 1500 ms | ×0,80 | ×0,9 |
+| **Standard** (normal) | ×1,00 | ×1,00 | 1050 ms | ×1,00 | ×1,0 |
+| **Violent** (difícil) | ×1,35 | ×1,28 | 820 ms | ×1,22 | ×1,4 |
+
+Além da vida e do dano, os inimigos ficam **mais imprecisos no Lenient** e mais
+certeiros no Violent.
+
+### Rank da camada
+No fim de cada camada o jogo avalia três categorias:
+
+| Categoria | S |
+|---|---|
+| **Tempo** | dentro do alvo da camada (540s / 600s / 660s) |
+| **Vida perdida** | até 10% do HP máximo |
+| **Estilo** | 320+ pontos |
+
+O rank final é **o pior** entre os três (D → C → B → A → S).
+Se **os três forem S**, o resultado é **P (perfeito)** e você ganha um bônus de
+Sucata e um Núcleo.
 
 ### Combate
 - **4 movimentos** por batalha. Sem PP — cada técnica tem **recarga em turnos**.
 - Você equipa **2 braços** (8 movimentos) e escolhe **4**. Se vierem de braços
   diferentes, você está usando **4 braços** e ganha as passivas de cada um.
 - **Sangue = cura**: técnicas marcadas `+X% SANGUE` curam quando acertam.
-- **Parry** (só com o Feedbacker equipado): barra com marcador em movimento.
-  Centro = perfeito (anula, reflete, atordoa), laterais = bom (metade do dano).
+- **Parry** (só com o Feedbacker equipado): uma **circunferência aparece em um ponto
+  aleatório da tela** e encolhe até o fim da janela. Você só para o golpe **clicando
+  dentro do círculo** — não existe mais barra nem tecla espaço.
+  O anel fica **verde** na zona perfeita (anula, reflete, atordoa) e **amarelo** na
+  zona boa (metade do dano). As duas zonas são **pequenas**: o verde é só os últimos
+  12% da janela e o amarelo os 24% anteriores.
+  **Duas falhas seguidas** (o círculo fecha sem você clicar) **perdem o parry**: o
+  Feedbacker quebra pelo resto da luta, o golpe seguinte entra 30% mais fundo e a
+  falha é contada como **erro de parry**.
 - **Reflexo 50%** contra ataques **imparáveis**, ajustado pelo **peso total**
   (pernas + carcaça): leve 70% → médio 50% → pesado 30%.
 - **Distância** Perto / Médio / Longe muda dano de corpo a corpo e de projétil.
-- **Estilo** D → SSS multiplica a Sucata no fim da batalha.
+- **Estilo** D → SSS durante a luta.
 - Status: Sangramento, Derretido, Ferrugem, Coágulo, Atordoado, Exposto, Postura.
+
+**Sem hit-kill:** nenhum movimento pode tirar mais de 45% (chefe) ou 60% (comum)
+do HP máximo do alvo, o multiplicador ATQ/DEF é limitado e o HP dos inimigos
+escala com o seu nível. Nível 20 não mata o Gabriel em um golpe.
+
+**Ritmo de luta:** o dano do V1 é escalado para baixo e o dos inimigos para cima, e os
+inimigos ajustam HP e ATQ junto com o seu nível. Uma luta comum dura **6 a 14 turnos**
+e um chefe **12 a 18**. Uma camada inteira (6 inimigos + chefe) leva cerca de
+**10 minutos** de jogo.
+
+### Elenco (18 inimigos + 3 chefes, sprites próprios)
+Baseado nos inimigos **originais de Ultrakill** — os que não existem no jogo foram
+removidos (Vulture, Crawler, Glutton, Bloated Husk, Glutton Arm, Plagueborn).
+- **Limbo**: Husk, Stray, Wretch, Caged Thing, **Drone**, **Ceremoniar**
+- **Lust**: Enthusiast, Corporal, Journeyman, Husk Fanatic, Lustful Husk, **Ceremoniar II**
+- **Gluttony**: Soothsayer, Filet Machine, **Big John**, **Tallow Golem**, **Drone II**, **Ceremoniar III**
+- **Chefes**: V2, O Corpo do Rei Minos, Gabriel
+- **Nenhum inimigo se cura** — não existe golpe de cura no elenco, e o modificador de
+  cura da Lust foi trocado por um de ataque.
+
+### Música
+São **duas trilhas de camada** que se revezam entre as camadas e duas de chefe:
+
+| Camada | Trilha | Chefe |
+|---|---|---|
+| **1. Limbo** | music 1 | music 1 boss |
+| **2. Lust** | music 2 | music 2 boss |
+| **3. Gluttony** | music 1 | music 1 boss |
+| **4. …** | music 2 | music 2 boss |
+
+A regra é a alternância por número da camada: ímpar → *music 1*, par → *music 2*.
 
 ### Equipamento
 | Braço | Cor | Papel |
@@ -65,6 +162,23 @@ sem instalar nada. O progresso é salvo em `localStorage` automaticamente.
 - No **título**, logo abaixo do botão **JOGAR**.
 - No **lobby/Oficina**, num terminal, antes de entrar na camada.
 - Vende braços, pernas, carcaças e consumíveis, com **Sucata** e **Núcleos**.
+  O saldo da carteira é atualizado a cada compra.
+
+### Música
+Trilha original em MP3, com crossfade entre telas:
+
+| Tela | Faixa |
+|---|---|
+| Título / Oficina | `assets/music/lobby-title.mp3` |
+| Loja | `assets/music/shop.mp3` |
+| Gluttony (combate) | `assets/music/gluttony.mp3` |
+| Gluttony (chefe V2) | `assets/music/gluttony-boss.mp3` |
+| Heresy (combate) | `assets/music/heresy.mp3` |
+| Heresy (chefe Gabriel) | `assets/music/heresy-boss.mp3` |
+| Desligamento do V1 (final e toda morte) | `assets/music/power-off-v1.mp3` |
+
+O volume da música fica em *Opções*. Se um arquivo faltar, o jogo continua
+funcionando com o ambiente sintetizado.
 
 ---
 
@@ -72,24 +186,31 @@ sem instalar nada. O progresso é salvo em `localStorage` automaticamente.
 
 ```
 index.html
+assets/
+  music/      → faixas .mp3
+  sprites/    → v1.webp / v2.webp (referência da arte original)
 css/    base.css  title.css  battle.css  shop.css
-js/     data.js     braços, pernas, carcaças, itens, inimigos, camadas, história
-        sprites.js  arte vetorial procedural (V1, V2, Gabriel, inimigos, cenários)
-        audio.js    efeitos sintetizados via WebAudio (sem arquivos)
-        save.js     localStorage, progressão, inventário, preferências
+js/     data.js     braços, pernas, carcaças, itens, inimigos, camadas, história, rank
+        sprites.js  V1/V2 (arte real) + inimigos e cenários vetoriais
+        audio.js    efeitos WebAudio + música MP3 com crossfade
+        save.js     localStorage, progressão, inventário, preferências, rank
         battle.js   motor de turnos: dano, status, distância, estilo, parry, IA
         ui.js       todas as telas
         main.js     fluxo do jogo
 ```
 
-Toda a arte é SVG gerado em código e todo o som é sintetizado em tempo real.
-Nenhuma dependência, nenhum build.
+Todo o jogo é **vetorial**: V1, V2, Gabriel, inimigos, cenários e os itens da
+loja são desenhados em SVG no mesmo estilo (os PNGs do V1/V2 serviram de
+referência para a recriação). O **V2 é o V1 em laranja-vermelho**, com o mesmo
+desenho e cores trocadas. A loja tem sprite próprio para cada braço, perna,
+carcaça, consumível, sucata e núcleo. Todo o som é sintetizado ou tocado de
+arquivos MP3. Nenhuma dependência, nenhum build.
 
 ---
 
-## notas
+## Notas
 
 - Projeto de fã. V1, V2, Gabriel e as camadas vêm de *Ultrakill* (Arsenic Games).
-  Sem fins lucrativos, com arte e som próprios.
+  Sem fins lucrativos.
 - Dificuldade, volume, tremor de tela e **assistência de parry** ficam em *Opções*.
 - O save é apagado com o botão *Apagar Save* no lobby.

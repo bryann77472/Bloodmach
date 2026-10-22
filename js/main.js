@@ -40,8 +40,12 @@ BM.main = (function () {
   function newGame() {
     BM.save.newGame();
     BM.save.applySettings();
-    BM.audio.startAmbient();
-    BM.ui.dialogue(D.STORY.intro, function () { beginTutorial(); });
+    BM.audio.ensure();
+    // primeira vez: escolhe a dificuldade antes de começar
+    BM.ui.difficultyPick(function () {
+      BM.audio.startAmbient();
+      BM.ui.dialogue(D.STORY.intro, function () { beginTutorial(); });
+    });
   }
 
   function continueGame() {
@@ -55,7 +59,7 @@ BM.main = (function () {
   function beginTutorial() {
     battleHandled = false;
     pending = { type: 'tutorial' };
-    BM.battle.start({ enemyId: 'husk_glutao', layerIndex: 0 });
+    BM.battle.start({ enemyId: 'husk', layerIndex: 0 });
     BM.ui.battle();
   }
 
@@ -65,8 +69,17 @@ BM.main = (function () {
     d.progress.layer = index;
     d.progress.node = 0;
     currentHp = null;
+    BM.save.resetLayerStats();
     BM.save.persist();
     BM.audio.play('confirm');
+    const camada = D.LAYERS[index];
+    const fala = D.STORY[camada.id + 'Start'];
+    if (fala && !d.flags['camada' + index + 'Vista']) {
+      d.flags['camada' + index + 'Vista'] = true;
+      BM.save.persist();
+      BM.ui.dialogue(fala, function () { BM.ui.layerMap(index); });
+      return;
+    }
     BM.ui.layerMap(index);
   }
 
@@ -78,13 +91,15 @@ BM.main = (function () {
     const L = D.LAYERS[layerIndex];
     const node = d.progress.node;
     if (currentHp == null) currentHp = st.maxHp;
-    // checkpoint: recupera parte da integridade
-    if (L.checkpoints.indexOf(node) >= 0) {
-      currentHp = Math.max(currentHp, Math.round(st.maxHp * 0.5));
-    }
     pending = { type: 'layer', layerIndex: layerIndex, enemyId: enemyId };
-    BM.battle.start({ enemyId: enemyId, layerIndex: layerIndex, hp: currentHp });
-    BM.ui.battle();
+    const enemyDef = D.ENEMIES[enemyId];
+    function comecar() {
+      BM.battle.start({ enemyId: enemyId, layerIndex: layerIndex, hp: currentHp });
+      BM.ui.battle();
+    }
+    // cutscene de entrada: somente os chefes têm (aparece sem falar)
+    if (enemyDef && enemyDef.boss) BM.ui.enemyIntro(enemyId, layerIndex, comecar);
+    else comecar();
   }
 
   /* ---------------- fim de batalha ---------------- */
@@ -103,24 +118,40 @@ BM.main = (function () {
       const diff = D.DIFFICULTIES[d.settings.dificuldade] || D.DIFFICULTIES.normal;
       const scrap = Math.round(en.scrap * rank.mult * diff.scrap);
       const xp = en.exp;
-      BM.save.addScrap(scrap);
-      const levels = BM.save.addXp(xp);
+      // recursos ficam acumulados: só entram na mochila ao concluir a camada
+      BM.save.addPending('scrap', scrap);
+      BM.save.addPending('xp', xp);
       d.stats.estiloMax = Math.max(d.stats.estiloMax, S.style.points);
       currentHp = Math.min(BM.save.v1Stats().maxHp, S.player.hp + Math.round(BM.save.v1Stats().maxHp * 0.12));
       BM.save.persist();
-      if (levels.length) { BM.audio.play('levelup'); BM.ui.toast('NÍVEL ' + levels[levels.length - 1] + '!', 'ok'); }
+      const acum = BM.save.pending();
       BM.ui.result({
         result: 'win', rank: rank, stylePoints: S.style.points,
-        scrap: scrap, xp: xp, levels: levels, enemyName: S.enemy.name
+        scrap: acum.scrap, xp: acum.xp, levels: [], enemyName: S.enemy.name
       });
     } else if (result === 'lose') {
       d.stats.mortes++;
-      const lost = Math.round(d.v1.scrap * 0.2);
-      BM.save.addScrap(-lost);
-      currentHp = null;
       BM.save.persist();
-      BM.audio.play('lose');
-      BM.ui.result({ result: 'lose', lost: lost });
+      currentHp = null;
+      const li = pending && pending.type === 'layer' ? pending.layerIndex : d.progress.layer;
+      // música de desligamento do V1 + cutscene: ele desliga e cai, depois game over
+      BM.audio.playMusic('desligamento');
+      BM.ui.deathScene(function () {
+        BM.ui.gameOver({
+          layerIndex: li,
+          layerName: D.LAYERS[li].name,
+          wins: d.progress.node,
+          kit: BM.save.itemCount('kit_reparo') > 0
+        });
+      });
+    } else if (result === 'fugiu') {
+      // o inimigo escapou: sem recompensas, mas a camada continua
+      BM.audio.play('warn');
+      const enF = D.ENEMIES[S.enemy.id];
+      const bossF = !!enF.boss;
+      BM.ui.result({ result: 'fugiu', enemyName: S.enemy.name });
+      pending = pending || {};
+      pending.bossFugiu = bossF;
     } else {
       BM.audio.play('cancel');
       BM.ui.result({ result: 'fled' });
@@ -149,6 +180,20 @@ BM.main = (function () {
         return;
       }
       BM.ui.layerMap(layerIndex);
+    } else if (info.result === 'fugiu') {
+      // o inimigo escapou: segue para o próximo (ou encerra a camada se era o chefe)
+      BM.battle.end();
+      const layerIndexF = pending && pending.type === 'layer' ? pending.layerIndex : d.progress.layer;
+      if (pending && pending.bossFugiu) {
+        d.flags['camada' + layerIndexF + 'Feita'] = true;
+        if (layerIndexF + 1 < D.LAYERS.length) d.progress.unlockedLayers = Math.max(d.progress.unlockedLayers, layerIndexF + 2);
+        const pagoF = BM.save.collectPending();
+        BM.ui.layerResult({ layerIndex: layerIndexF, layerName: D.LAYERS[layerIndexF].name, rank: BM.save.layerRank(D.LAYERS[layerIndexF].id), bossId: D.LAYERS[layerIndexF].boss, pago: pagoF, fugiu: true });
+        return;
+      }
+      d.progress.node++;
+      BM.save.persist();
+      BM.ui.layerMap(layerIndexF);
     } else if (info.result === 'lose') {
       BM.battle.end();
       if (pending && pending.type === 'tutorial') {
@@ -156,7 +201,7 @@ BM.main = (function () {
           { who: 'MOTOR', text: 'SISTEMA CRÍTICO. O V1 foi consertado de novo. Tente outra vez.', portrait: 'motor' }
         ], function () {
           pending = { type: 'tutorial' };
-          BM.battle.start({ enemyId: 'husk_glutao', layerIndex: 0 });
+          BM.battle.start({ enemyId: 'husk', layerIndex: 0 });
           BM.ui.battle();
         });
         return;
@@ -172,6 +217,29 @@ BM.main = (function () {
     }
   }
 
+  function restartLayer(index) {
+    const d = BM.save.get();
+    d.progress.layer = index;
+    d.progress.node = 0;
+    currentHp = null;
+    BM.save.resetLayerStats();
+    BM.save.persist();
+    BM.ui.layerMap(index);
+  }
+
+  function abandonLayer(index) {
+    const d = BM.save.get();
+    d.progress.layer = index;
+    d.progress.node = 0;
+    currentHp = null;
+    // recursos coletados na camada são perdidos
+    BM.save.discardPending();
+    BM.save.resetLayerStats();
+    BM.save.persist();
+    BM.ui.toast('Camada abandonada. Recursos perdidos.', 'bad');
+    BM.ui.lobby();
+  }
+
   function useRepairKit() {
     const d = BM.save.get();
     if (!BM.save.useItem('kit_reparo')) return;
@@ -182,7 +250,7 @@ BM.main = (function () {
     const layerIndex = pending && pending.type === 'layer' ? pending.layerIndex : d.progress.layer;
     if (pending && pending.type === 'tutorial') {
       pending = { type: 'tutorial' };
-      BM.battle.start({ enemyId: 'husk_glutao', layerIndex: 0, hp: currentHp });
+      BM.battle.start({ enemyId: 'husk', layerIndex: 0, hp: currentHp });
       BM.ui.battle();
       return;
     }
@@ -199,24 +267,55 @@ BM.main = (function () {
       d.progress.unlockedLayers = Math.max(d.progress.unlockedLayers, 2);
       d.progress.node = 0;
       BM.save.persist();
+    } else if (bossId === 'gabriel') {
+      d.flags.gabrielDead = true;
+      BM.save.persist();
+    }
+    // a camada foi concluída: libera a próxima
+    d.flags['camada' + layerIndex + 'Feita'] = true;
+    if (layerIndex + 1 < D.LAYERS.length) d.progress.unlockedLayers = Math.max(d.progress.unlockedLayers, layerIndex + 2);
+    // recursos da camada entram na mochila agora (concluída)
+    const pago = BM.save.collectPending();
+    if (pago.levels.length) { BM.audio.play('levelup'); BM.ui.toast('NÍVEL ' + pago.levels[pago.levels.length - 1] + '!', 'ok'); }
+    // rank da camada: tempo, vida perdida e estilo
+    const rank = BM.save.layerRank(D.LAYERS[layerIndex].id);
+    if (rank.perfeito) {
+      d.flags.rankP = d.flags.rankP || {};
+      if (!d.flags.rankP[layerIndex]) {
+        d.flags.rankP[layerIndex] = true;
+        BM.save.addScrap(250);
+        BM.save.addCores(1);
+        d.v1.cores = d.v1.cores + 1;
+      }
+      BM.save.persist();
+    }
+    BM.ui.layerResult({ layerIndex: layerIndex, layerName: D.LAYERS[layerIndex].name, rank: rank, bossId: bossId, pago: pago });
+  }
+
+  function afterLayer(info) {
+    currentHp = null;
+    if (info.bossId === 'v2') {
       BM.ui.dialogue(D.STORY.afterV2, function () {
-        currentHp = null;
         BM.ui.lobby();
       });
       return;
     }
-    if (bossId === 'gabriel') {
-      d.flags.gabrielDead = true;
-      BM.save.persist();
-      BM.ui.dialogue(D.STORY.gabrielAfter, function () {
-        BM.ui.dialogue(D.STORY.ending, function () {
-          BM.ui.ending();
-        });
+    if (info.bossId === 'minos') {
+      BM.ui.dialogue(D.STORY.afterMinos, function () {
+        BM.ui.lobby();
       });
       return;
     }
-    currentHp = null;
-    BM.ui.lobby();
+    if (info.bossId !== 'gabriel') { BM.ui.lobby(); return; }
+    BM.ui.gabrielBleed(function () {
+      BM.ui.dialogue(D.STORY.gabrielAfter, function () {
+        BM.ui.dialogue(D.STORY.gabrielFoge, function () {
+          BM.ui.dialogue(D.STORY.ending, function () {
+            BM.ui.ending();
+          });
+        });
+      });
+    });
   }
 
   function finishGame() {
@@ -238,7 +337,7 @@ BM.main = (function () {
 
   return {
     boot, playPressed, newGame, continueGame, beginTutorial,
-    startLayer, startBattle, onBattleOver, afterBattle, useRepairKit,
+    startLayer, startBattle, onBattleOver, afterBattle, afterLayer, useRepairKit, restartLayer, abandonLayer,
     finishGame, openLoadout, backFromOptions
   };
 })();

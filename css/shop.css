@@ -47,6 +47,7 @@
   position:relative; overflow:hidden;
 }
 .card-art svg{ height:92%; width:auto; }
+.wallet .w-ico svg{ height:18px; width:auto; display:block; }
 .card-art .lockveil{
   position:absolute; inset:0; display:grid; place-items:center; text-align:center; padding:10px;
   font-size:.66rem; letter-spacing:.1em; color:var(--ash); text-transform:uppercase;

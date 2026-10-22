@@ -24,12 +24,14 @@ BM.save = (function () {
       },
       equip: { legs: 'servico', chassis: 'v1' },
       loadout: ['jab_rapido', 'rajada_tres', 'puxao', 'soco_foguete'],
-      items: { bolsa_sangue: 3, adrenalina: 1, moeda: 1 },
-      progress: { layer: 0, node: 0, unlockedLayers: 1, checkpoint: null },
+      items: { bolsa_sangue: 3, adrenalina: 1, moeda: 1, kit_reparo: 1 },
+      progress: { layer: 0, node: 0, unlockedLayers: 1, checkpoint: null,
+        layerStats: { t0: 0, dmg: 0, styleMax: 0, maxHp: 0 },
+        pending: { scrap: 0, xp: 0 } },
       flags: { tutorial: false, v2Dead: false, nucleo_v2: false, gabrielDead: false, ending: false, ngPlus: false },
       settings: {
         som: true, volume: 0.7, musica: 0.4, tremor: true,
-        dificuldade: 'normal', parryAssist: false, textoRápido: false
+        dificuldade: 'standard', parryAssist: false, textoRápido: false
       },
       stats: { batalhas: 0, vitorias: 0, mortes: 0, parries: 0, execucoes: 0, estiloMax: 0, fugas: 0 }
     };
@@ -53,6 +55,10 @@ BM.save = (function () {
       data.stats = Object.assign(d.stats, parsed.stats || {});
       data.items = parsed.items || d.items;
       if (!Array.isArray(data.loadout) || !data.loadout.length) data.loadout = d.loadout;
+      // migração das dificuldades antigas
+      const difAntigo = { facil: 'lenient', normal: 'standard', dificil: 'violent' };
+      if (difAntigo[data.settings.dificuldade]) data.settings.dificuldade = difAntigo[data.settings.dificuldade];
+      if (!BM.DATA.DIFFICULTIES[data.settings.dificuldade]) data.settings.dificuldade = 'standard';
     } catch (e) { data = null; }
     return data;
   }
@@ -144,6 +150,84 @@ BM.save = (function () {
   function addScrap(n) { get().v1.scrap = Math.max(0, get().v1.scrap + n); }
   function addCores(n) { get().v1.cores = Math.max(0, get().v1.cores + n); }
 
+  /* ---------------- estatísticas de camada ---------------- */
+  function layerStats() {
+    const d = get();
+    if (!d.progress.layerStats) d.progress.layerStats = { t0: 0, dmg: 0, styleMax: 0, maxHp: 0 };
+    return d.progress.layerStats;
+  }
+
+  function resetLayerStats() {
+    const d = get();
+    const st = v1Stats();
+    d.progress.layerStats = { t0: Date.now(), dmg: 0, styleMax: 0, maxHp: st.maxHp };
+    // recursos da camada só entram no fim: se desistir ou morrer, tudo se perde
+    d.progress.pending = { scrap: 0, xp: 0 };
+    persist();
+  }
+
+  function pending() {
+    const d = get();
+    if (!d.progress.pending) d.progress.pending = { scrap: 0, xp: 0 };
+    return d.progress.pending;
+  }
+
+  function addPending(kind, amount) {
+    const p = pending();
+    p[kind] = (p[kind] || 0) + amount;
+  }
+
+  function collectPending() {
+    const d = get();
+    const p = pending();
+    const scrap = p.scrap || 0;
+    const xp = p.xp || 0;
+    d.progress.pending = { scrap: 0, xp: 0 };
+    if (scrap) addScrap(scrap);
+    const levels = xp ? addXp(xp) : [];
+    persist();
+    return { scrap: scrap, xp: xp, levels: levels };
+  }
+
+  function discardPending() {
+    const d = get();
+    d.progress.pending = { scrap: 0, xp: 0 };
+    persist();
+  }
+
+  function addLayerDamage(n) {
+    const ls = layerStats();
+    ls.dmg += n;
+  }
+
+  function noteLayerStyle(points) {
+    const ls = layerStats();
+    if (points > ls.styleMax) ls.styleMax = points;
+  }
+
+  function pickMax(tiers, v) { for (let i = 0; i < tiers.length; i++) if (v <= tiers[i].max) return tiers[i].key; return 'D'; }
+  function pickMin(tiers, v) { for (let i = 0; i < tiers.length; i++) if (v >= tiers[i].min) return tiers[i].key; return 'D'; }
+
+  function layerRank(layerId) {
+    const cfg = D.LAYER_RANK;
+    const ls = layerStats();
+    const elapsed = ls.t0 ? (Date.now() - ls.t0) / 1000 : 0;
+    const alvo = cfg.tempoAlvo[layerId] || 300;
+    const lossPct = ls.maxHp ? ls.dmg / ls.maxHp : 0;
+    const tempo = pickMax(cfg.tempo, elapsed / alvo);
+    const vida = pickMax(cfg.vida, lossPct);
+    const estilo = pickMin(cfg.estilo, ls.styleMax);
+    const order = cfg.order;
+    let final = 'P';
+    [tempo, vida, estilo].forEach(function (r) { if (order.indexOf(r) < order.indexOf(final)) final = r; });
+    const perfeito = (tempo === 'S' && vida === 'S' && estilo === 'S');
+    return {
+      tempo: tempo, vida: vida, estilo: estilo,
+      final: perfeito ? 'P' : final, perfeito: perfeito,
+      elapsed: elapsed, lossPct: lossPct, styleMax: ls.styleMax, alvo: alvo
+    };
+  }
+
   /* ---------------- compras ---------------- */
   function unlockState(kind, id) {
     const d = get();
@@ -212,6 +296,7 @@ BM.save = (function () {
 
   /* ---------------- preferências ---------------- */
   function setSetting(key, value) { get().settings[key] = value; persist(); }
+  function setDificuldade(k) { if (BM.DATA.DIFFICULTIES[k]) { get().settings.dificuldade = k; persist(); } }
 
   function applySettings() {
     const s = get().settings;
@@ -226,6 +311,8 @@ BM.save = (function () {
     equippedArms, hasPassive, availableArms, loadoutMoves,
     v1Stats, xpNeeded, addXp, addScrap, addCores,
     unlockState, buy, equipLeg, equipChassis, setLoadout, toggleMove,
-    itemCount, useItem, setSetting, applySettings
+    layerStats, resetLayerStats, addLayerDamage, noteLayerStyle, layerRank,
+    pending, addPending, collectPending, discardPending,
+    itemCount, useItem, setSetting, setDificuldade, applySettings
   };
 })();
