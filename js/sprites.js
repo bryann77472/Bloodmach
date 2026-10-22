@@ -189,6 +189,46 @@ BM.sprites = (function () {
       <circle cx="60" cy="74" r="7" fill="url(#g-blood)"/>
       <circle cx="60" cy="74" r="3" fill="#ffe08a"/>
     `);
+    if (id === 'thunderfist') return base('#c9a520', '#6d5406', `
+      <circle cx="50" cy="52" r="12" fill="#12151c"/>
+      <circle cx="50" cy="52" r="8" fill="#ffd23f"/>
+      <g stroke="#fff3b0" stroke-width="3" fill="none" stroke-linecap="round">
+        <path d="M36 30 l-6 10 l8 2 l-8 10"/>
+        <path d="M64 30 l6 10 l-8 2 l8 10"/>
+      </g>
+    `);
+    if (id === 'venomclaw') return base('#4e8a1c', '#26460c', `
+      <g stroke="#b8f05a" stroke-width="4" fill="none" stroke-linecap="round">
+        <path d="M42 34 q-8 14 -2 26"/><path d="M52 32 q-2 16 2 28"/><path d="M62 34 q8 14 2 26"/>
+      </g>
+      <circle cx="50" cy="52" r="9" fill="#12151c"/>
+      <circle cx="50" cy="52" r="5" fill="#9ee02a"/>
+      <path d="M46 66 q4 8 8 0 z" fill="#9ee02a" opacity=".8"/>
+    `);
+    if (id === 'soulreaver') return base('#c8d2de', '#7b8794', `
+      <ellipse cx="50" cy="46" rx="15" ry="18" fill="#f2f7ff" opacity=".92"/>
+      <ellipse cx="45" cy="42" rx="4" ry="6" fill="#12151c"/>
+      <ellipse cx="55" cy="42" rx="4" ry="6" fill="#12151c"/>
+      <path d="M42 58 q8 6 16 0" stroke="#12151c" stroke-width="3" fill="none"/>
+      <path d="M50 64 q-6 10 0 16 q6 -6 0 -16 z" fill="#ffffff" opacity=".7"/>
+    `);
+    if (id === 'voidgrip') return base('#2b2b33', '#12121a', `
+      <circle cx="50" cy="50" r="16" fill="#05050a"/>
+      <circle cx="50" cy="50" r="16" fill="none" stroke="#6a4cff" stroke-width="2.5" opacity=".8"/>
+      <g stroke="#1a1a22" stroke-width="7" stroke-linecap="round">
+        <path d="M38 40 l-4 14"/><path d="M44 36 l-2 16"/><path d="M56 36 l2 16"/><path d="M62 40 l4 14"/>
+      </g>
+      <circle cx="50" cy="50" r="5" fill="#8a6cff" opacity=".85"/>
+    `);
+    if (id === 'gravityhook') return base('#6b34c4', '#33176b', `
+      <path d="M64 30 q16 12 4 30 q-10 14 -22 4" fill="none" stroke="#c9a0ff" stroke-width="6" stroke-linecap="round"/>
+      <path d="M46 64 q-8 8 0 14 q8 -6 0 -14 z" fill="#e8d4ff"/>
+      <g stroke="#a05cff" stroke-width="2.5" fill="none" opacity=".85">
+        <ellipse cx="50" cy="52" rx="24" ry="10"/>
+        <ellipse cx="50" cy="52" rx="16" ry="6"/>
+      </g>
+      <circle cx="50" cy="52" r="6" fill="#a05cff"/>
+    `);
     return base('#5a6470', '#2b3138', '');
   }
 
@@ -208,6 +248,25 @@ BM.sprites = (function () {
       <path d="M44 30 L56 30 L56 44 L44 44 Z" fill="#3fd8d8" opacity=".85"/>
       <path d="M42 70 L58 70 L60 86 L40 86 Z" fill="#9aa8b6"/>
       <path d="M40 86 L60 86 L64 92 L36 92 Z" fill="#e6eef5"/>
+    `);
+    if (id === 'shadow') return shopSvg(`
+      <ellipse cx="50" cy="94" rx="24" ry="5" fill="rgba(0,0,0,.5)"/>
+      <path d="M38 12 L62 12 L64 44 L58 74 L42 74 L36 44 Z" fill="#e8eef5" stroke="#12151c" stroke-width="3"/>
+      <path d="M42 28 L58 28 L58 44 L42 44 Z" fill="#3a4050"/>
+      <path d="M42 74 L58 74 L60 86 L40 86 Z" fill="#9aa6b6"/>
+      <path d="M40 86 L60 86 L66 92 L34 92 Z" fill="#12151c"/>
+      <path d="M32 60 q18 8 36 0" stroke="#12151c" stroke-width="3" fill="none" opacity=".7"/>
+    `);
+    if (id === 'berserk') return shopSvg(`
+      <ellipse cx="50" cy="94" rx="24" ry="4" fill="rgba(0,0,0,.45)"/>
+      <path d="M38 12 L62 12 L66 44 L58 76 L42 76 L34 44 Z" fill="#3f6a24" stroke="#12151a" stroke-width="3"/>
+      <g stroke="#7bd93a" stroke-width="4" fill="none">
+        <path d="M40 40 q10 -8 20 0 q-10 8 -20 0"/>
+        <path d="M40 52 q10 -8 20 0 q-10 8 -20 0"/>
+        <path d="M40 64 q10 -8 20 0 q-10 8 -20 0"/>
+      </g>
+      <rect x="40" y="22" width="20" height="7" rx="2" fill="#b8f05a" opacity=".85"/>
+      <path d="M38 86 L62 86 L66 92 L34 92 Z" fill="#2b3138"/>
     `);
     return shopSvg(`
       <ellipse cx="50" cy="94" rx="22" ry="4" fill="rgba(0,0,0,.45)"/>
@@ -232,6 +291,25 @@ BM.sprites = (function () {
       <path d="M34 40 L66 40 L66 56 L34 56 Z" fill="#12161a"/>
       <path d="M40 44 L60 44 L60 52 L40 52 Z" fill="#ff6b4a" opacity=".9"/>
       <path d="M16 60 L84 60 L84 74 L16 74 Z" fill="#2b3138"/>
+    `);
+    if (id === 'titan') return shopSvg(`
+      <path d="M14 20 L86 20 L94 48 L86 82 L14 82 L6 48 Z" fill="#5a6068" stroke="#12161a" stroke-width="3"/>
+      <circle cx="24" cy="32" r="4" fill="#8b8b96"/><circle cx="76" cy="32" r="4" fill="#8b8b96"/>
+      <circle cx="24" cy="70" r="4" fill="#8b8b96"/><circle cx="76" cy="70" r="4" fill="#8b8b96"/>
+      <path d="M30 36 L70 36 L70 58 L30 58 Z" fill="#2b3138"/>
+      <path d="M38 42 L62 42 L62 52 L38 52 Z" fill="#ffb01f" opacity=".85"/>
+      <path d="M14 62 L86 62 L84 76 L16 76 Z" fill="#3a4048"/>
+      <path d="M22 26 L34 26" stroke="#c8a15a" stroke-width="3" opacity=".7"/>
+    `);
+    if (id === 'bloodforge') return shopSvg(`
+      <path d="M18 22 L82 22 L90 46 L82 80 L18 80 L10 46 Z" fill="#7a1f1f" stroke="#12161c" stroke-width="3"/>
+      <path d="M32 34 L68 34 L68 52 L32 52 Z" fill="#2a0a0a"/>
+      <circle cx="50" cy="43" r="8" fill="url(#g-blood)"/>
+      <g stroke="#ff3b5c" stroke-width="2.5" fill="none" opacity=".85">
+        <path d="M26 58 q10 8 6 18"/><path d="M74 58 q-10 8 -6 18"/>
+        <path d="M50 58 q-6 8 0 16 q6 -8 0 -16"/>
+      </g>
+      <path d="M18 64 L82 64 L80 76 L20 76 Z" fill="#4a1010"/>
     `);
     return shopSvg(`
       <path d="M20 24 L80 24 L88 46 L80 78 L20 78 L12 46 Z" fill="#4a5a92" stroke="#12151c" stroke-width="3"/>

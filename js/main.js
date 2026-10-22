@@ -180,6 +180,13 @@ BM.main = (function () {
       const layerIndexF = pending && pending.type === 'layer' ? pending.layerIndex : d.progress.layer;
       if (pending && pending.bossFugiu) {
         d.flags['camada' + layerIndexF + 'Feita'] = true;
+        // o V2 foge em vez de morrer, mas o progresso conta: libera o Knuckleblaster
+        if (pending.bossId === 'v2' || D.LAYERS[layerIndexF].boss === 'v2') {
+          d.flags.v2Dead = true;
+          d.flags.nucleo_v2 = true;
+          d.progress.unlockedLayers = Math.max(d.progress.unlockedLayers, 2);
+          BM.save.persist();
+        }
         grantLayerCores();
         if (layerIndexF + 1 < D.LAYERS.length) d.progress.unlockedLayers = Math.max(d.progress.unlockedLayers, layerIndexF + 2);
         const pagoF = BM.save.collectPending();

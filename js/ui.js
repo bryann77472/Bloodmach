@@ -217,6 +217,7 @@ BM.ui = (function () {
           <div class="card-body">
             <div class="card-name">${c.name}${eq ? '<span class="badge hot">EQUIPADA</span>' : ''}</div>
             <div class="card-role">${c.desc}</div>
+            ${c.passive ? `<div class="card-passive"><b>${c.passive.name}:</b> ${c.passive.desc}</div>` : ''}
             <div class="card-stats">
               <span class="chip">Vida ${Math.round(c.hp * 100)}%</span>
               <span class="chip">Vel ${Math.round(c.vel * 100)}%</span>

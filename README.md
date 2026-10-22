@@ -174,12 +174,39 @@ liberado pelo progresso e depois **comprado na loja**:
 | **Whiplash** | Verde | 400 ◆ | **derrotar o Gabriel** (Gluttony) |
 | **Bloodreaver** | Carmim | 600 ◆ | camada 2 — *em desenvolvimento* |
 | **Hellwhip** | Laranja | 600 ◆ | camada 2 — *em desenvolvimento* |
+| **Thunderfist** | Amarelo | 450 ◆ | camada 2 — *em desenvolvimento* |
+| **Venomclaw** | Verde | 500 ◆ | camada 2 — *em desenvolvimento* |
+| **Soulreaver** | Branco | 550 ◆ | camada 2 — *em desenvolvimento* |
+| **Voidgrip** | Preto | 700 ◆ | camada 2 — *em desenvolvimento* |
+| **Gravityhook** | Roxo | 600 ◆ | camada 2 — *em desenvolvimento* |
 | **Pernas de Ignição** | — | 300 ◆ | **derrotar o V2** |
 | **Carcaça de Forja** | — | 350 ◆ | **derrotar o V2** |
 | **Pernas de Fibra** | — | 250 ◆ | **derrotar o Gabriel** |
 | **Carcaça de Fibra** | — | 250 ◆ | **derrotar o Gabriel** |
+| **Pernas Shadow Step** | Branca | 300 ◆ | camada 2 — *em desenvolvimento* |
+| **Pernas Berserk Springs** | Verde | 300 ◆ | camada 2 — *em desenvolvimento* |
+| **Carcaça Titan Husk** | Cinza | 400 ◆ | camada 2 — *em desenvolvimento* |
+| **Carcaça Bloodforge** | Vermelha | 400 ◆ | camada 2 — *em desenvolvimento* |
 
-Bloodreaver e Hellwhip ficam bloqueados para sempre enquanto a camada 2 não existir.
+Todas as peças listadas como *camada 2* (Bloodreaver, Hellwhip, Thunderfist, Venomclaw,
+Soulreaver, Voidgrip, Gravityhook, Shadow Step, Berserk Springs, Titan Husk e Bloodforge)
+ficam **bloqueadas e impossíveis de usar** enquanto a camada 2 não existir. O conteúdo
+delas já está pronto no jogo (movimentos, passivas e sprites) e entra assim que a camada
+for liberada.
+
+**As novas peças, quando liberadas:**
+
+| Peça | O que faz |
+|---|---|
+| **Thunderfist** | Golpes que **paralisam** o alvo (1 a 2 turnos); 20% de chance extra por golpe |
+| **Venomclaw** | Golpes que **envenenam** (4% do HP por turno); +1 turno extra de veneno |
+| **Soulreaver** | Cada golpe acumulado reduz em até **20%** o dano que o inimigo causa |
+| **Voidgrip** | **Não causa dano**: cancela o ataque do inimigo e cura (12% a 25% do HP) |
+| **Gravityhook** | **Puxa e paralisa** (2 turnos) — mas o inimigo volta batendo **30% mais forte** |
+| **Pernas Shadow Step** | Peso +1: depois de **esquivar**, o próximo golpe causa **50% menos dano** |
+| **Pernas Berserk Springs** | Quanto menos vida, mais velocidade e esquiva (até **+40%**) |
+| **Carcaça Titan Husk** | Vida 150%, vel 70%, peso +2: quanto menos vida, mais resistência (até **30%**) |
+| **Carcaça Bloodforge** | Vida 120%, vel 90%, peso +1: regenera **20% da vida** a cada 3 turnos |
 
 **Pernas** (1 slot): *de Serviço* (média, tem **Dash**) · *de Ignição* (pesada, tem
 **Arranque Explosivo**) · *de Fibra* (leve, veloz, +esquiva/fuga, sem habilidade).

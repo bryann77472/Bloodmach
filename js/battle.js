@@ -74,6 +74,8 @@ BM.battle = (function () {
       atordoado:  { label:'Atordoado',   cls:'atordoado' },
       exposto:    { label:'Exposto',     cls:'exposto' },
       postura:    { label:'Postura',     cls:'postura' },
+      paralisado: { label:'Paralisado',  cls:'atordoado' },
+      veneno:     { label:'Veneno',      cls:'sangramento' },
     };
     const out = {};
     Object.keys(entity.status).forEach(k => { if (defs[k]) out[k] = defs[k]; });
@@ -100,6 +102,12 @@ BM.battle = (function () {
       const dmg = Math.max(1, Math.round(e.maxHp * 0.05));
       e.hp = Math.max(0, e.hp - dmg);
       log((side === 'player' ? 'V1' : e.name) + ' derrete e perde ' + dmg + ' HP.', 'hl');
+      float('-' + dmg, side, 'enemy');
+    }
+    if (e.status.veneno) {
+      const dmg = Math.max(1, Math.round(e.maxHp * 0.04));
+      e.hp = Math.max(0, e.hp - dmg);
+      log((side === 'player' ? 'V1' : e.name) + ' envenena e perde ' + dmg + ' HP.', 'hl');
       float('-' + dmg, side, 'enemy');
     }
     Object.keys(e.status).forEach(k => {
@@ -176,7 +184,7 @@ BM.battle = (function () {
       // passiva do Knuckleblaster empurra; passiva Hellwhip ignora penalidade de distância
       if (isPlayer && attacker.velBoost > 0) d *= 1.2;
       if (isPlayer && S.enemy.canParry && Math.random() < 0.18) { d *= 0.45; parried = true; }
-      let final = Math.max(1, Math.round(d));
+      let final = move.power > 0 ? Math.max(1, Math.round(d)) : 0;   // golpes sem poder não causam dano
       if (total + final > capTotal) final = Math.max(0, capTotal - total);
       if (final <= 0) continue;
       total += final;
@@ -196,6 +204,21 @@ BM.battle = (function () {
 
     // efeitos
     applyEffects(move, attacker, target, isPlayer, total);
+
+    // passivas dos novos braços
+    if (isPlayer && total > 0) {
+      if (S.passives.shock && !hasStatus(target, 'paralisado') && chance(0.20)) {
+        addStatus(target, 'paralisado', 1);
+        log(target.name + ' fica paralisado pela estática!', 'warn');
+      }
+      if (S.passives.soulReduce) {
+        S.player.soulReduce = Math.min(0.20, (S.player.soulReduce || 0) + 0.025);
+      }
+      if (S.passives.voidGrip && chance(0.25)) {
+        S.enemy.cancelNext = true;
+        log('O vazio desfaz o golpe do inimigo.', 'ok');
+      }
+    }
 
     // sangramento gera cura
     if (isPlayer && move.blood) heal(S.player, move.blood / 100, 'sangue');
@@ -217,7 +240,10 @@ BM.battle = (function () {
   function applyEffects(move, attacker, target, isPlayer, dmgDealt) {
     const eff = move.effect;
     if (!eff) return;
-    switch (eff) {
+    const partes = String(eff).split(':');
+    const effKey = partes[0];
+    const effVal = parseFloat(partes[1]) || 0;
+    switch (effKey) {
       case 'contra':
         if (hasStatus(target, 'atordoado') || hasStatus(target, 'exposto')) {
           // dano já aplicado; bônus de 50% será somado aqui
@@ -247,7 +273,7 @@ BM.battle = (function () {
         log(target.name + ' fica preso à distância.', 'warn');
         break;
       case 'pull': case 'pullExpose': case 'pullMelt':
-        pullTarget(isPlayer, eff === 'pullExpose' || eff === 'pullMelt');
+        pullTarget(isPlayer, effKey === 'pullExpose' || effKey === 'pullMelt');
         break;
       case 'bleed':
         addStatus(target, 'sangramento', 3);
@@ -298,6 +324,62 @@ BM.battle = (function () {
         if (!isPlayer) setDist(2, 'enemy');
         break;
       case 'buffDef': case 'buffAtk':
+        break;
+      case 'paralyze': {
+        const turnos = effVal || 1;
+        addStatus(target, 'paralisado', turnos);
+        log(target.name + ' fica paralisado por ' + turnos + ' turno(s)!', 'warn');
+        // a gravidade cobra o preço: o inimigo volta batendo mais forte
+        if (isPlayer && S.passives.gravity) S.enemy.gravityCharge = 0.30;
+        break;
+      }
+      case 'venom': {
+        let turnos = effVal || 3;
+        if (isPlayer && S.passives.venom) turnos += 1;
+        addStatus(target, 'veneno', turnos);
+        log(target.name + ' está envenenado por ' + turnos + ' turnos.', 'hl');
+        break;
+      }
+      case 'gravPull':
+        pullTarget(isPlayer, false);
+        addStatus(target, 'paralisado', 2);
+        log(target.name + ' fica preso e paralisado por 2 turnos!', 'warn');
+        if (isPlayer && S.passives.gravity) S.enemy.gravityCharge = 0.30;
+        break;
+      case 'gravPull2':
+        pullTarget(isPlayer, false);
+        addStatus(target, 'paralisado', 1);
+        log(target.name + ' fica paralisado!', 'warn');
+        if (isPlayer && S.passives.gravity) S.enemy.gravityCharge = 0.30;
+        break;
+      case 'gravPush':
+        pushTarget(isPlayer);
+        addStatus(target, 'paralisado', 1);
+        log(target.name + ' é arremessado e fica paralisado!', 'warn');
+        if (isPlayer && S.passives.gravity) S.enemy.gravityCharge = 0.30;
+        break;
+      case 'cancelAttack':
+        S.enemy.cancelNext = true;
+        log('O ataque do inimigo é anulado pelo vazio.', 'ok');
+        break;
+      case 'healVoid': {
+        const pct = effVal || 0.12;
+        heal(S.player, pct, 'vazio');
+        break;
+      }
+      case 'sealEnemy':
+        addStatus(target, 'paralisado', 1);
+        heal(S.player, 0.08, 'vazio');
+        log(target.name + ' fica selado por 1 turno.', 'warn');
+        break;
+      case 'drainSoul':
+        heal(S.player, Math.min(0.8, (dmgDealt / S.player.maxHp) * 0.8), 'dreno');
+        S.player.soulReduce = Math.min(0.20, (S.player.soulReduce || 0) + 0.05);
+        log('A alma do alvo enfraquece: dano recebido -' + Math.round(S.player.soulReduce * 100) + '%.', 'ok');
+        break;
+      case 'soulMark':
+        S.player.soulReduce = Math.min(0.20, (S.player.soulReduce || 0) + 0.05);
+        log('A marca da alma: dano recebido -' + Math.round(S.player.soulReduce * 100) + '%.', 'ok');
         break;
     }
   }
@@ -406,6 +488,10 @@ BM.battle = (function () {
     if (!unavoidable && chance(p.esquiva)) {
       log('V1 esquiva do golpe.', 'ok');
       addStyle(15);
+      if (S.legPassive === 'shadowGuard') {
+        p.shadowGuard = true;
+        log('Passo Sombrio: o próximo golpe vai bater pela metade.', 'ok');
+      }
       return;
     }
     if (unparryable && !unavoidable && chance(p.reflexo)) {
@@ -422,6 +508,14 @@ BM.battle = (function () {
     if (move.kind === 'ranged') d *= (S.dist === 0 ? 1.2 : (S.dist === 2 ? 0.8 : 1));
     else if (MELEE_TYPES.indexOf(move.type) >= 0) d *= (S.dist === 2 ? 1.2 : (S.dist === 0 ? 0.8 : 1));
     let final = Math.max(1, Math.round(d));
+    // Soulreaver: o inimigo bate mais fraco a cada golpe acumulado
+    if (S.player.soulReduce) final = Math.round(final * (1 - S.player.soulReduce));
+    // Gravityhook: o inimigo paralisado volta 30% mais forte
+    if (S.enemy.gravityCharge > 0) {
+      final = Math.round(final * (1 + S.enemy.gravityCharge));
+      S.enemy.gravityCharge = 0;
+      log('A gravidade concentra o golpe: +30% de dano.', 'warn');
+    }
     if (S.layerMod && S.layerMod.atkMul) final = Math.round(final * S.layerMod.atkMul);
     if (S.layerMod && S.layerMod.dmgPlayer) final = Math.round(final * S.layerMod.dmgPlayer);
     if (S.parryBreak) { final = Math.round(final * 1.3); S.parryBreak = false; log('O Feedbackor quebrado deixa o golpe mais fundo.', 'bad'); }
@@ -432,10 +526,26 @@ BM.battle = (function () {
 
   function applyEnemyDamage(dmg, move) {
     const p = S.player;
-    damage(p, dmg, 'enemy');
-    try { BM.save.addLayerDamage(dmg); } catch (e) { /* ignora */ }
-    float('-' + dmg, 'player', '');
-    log(move.name + ' causa ' + dmg + ' de dano em V1.', 'hl');
+    let final = Math.max(1, Math.round(dmg));
+    // Shadow Step: depois de esquivar, o próximo golpe bate pela metade
+    if (p.shadowGuard) {
+      final = Math.round(final * 0.5);
+      p.shadowGuard = false;
+      log('O Passo Sombrio amortece o golpe: 50% menos dano.', 'ok');
+    }
+    // Titan Husk: quanto menos vida, mais resistência (até 30%)
+    if (S.chassisPassive === 'titan') {
+      const low = 1 - (p.hp / p.maxHp);
+      const resist = Math.min(0.30, low * 0.30);
+      if (resist > 0) {
+        final = Math.round(final * (1 - resist));
+        log('A casca de titã absorve o golpe: -' + Math.round(resist * 100) + '%.', 'ok');
+      }
+    }
+    damage(p, final, 'enemy');
+    try { BM.save.addLayerDamage(final); } catch (e) { /* ignora */ }
+    float('-' + final, 'player', '');
+    log(move.name + ' causa ' + final + ' de dano em V1.', 'hl');
     addStyle(-20);
     if (move.effect === 'bleed') { addStatus(p, 'sangramento', 3); log('V1 está sangrando!', 'hl'); }
     if (move.effect === 'ferrugem') { addStatus(p, 'ferrugem', 3); log('V1 está corroído!', 'hl'); }
@@ -559,6 +669,22 @@ BM.battle = (function () {
     const p = S.player;
     Object.keys(p.cooldowns).forEach(k => { if (p.cooldowns[k] > 0) p.cooldowns[k]--; if (p.cooldowns[k] <= 0) delete p.cooldowns[k]; });
     if (p.velBoost > 0) p.velBoost--;
+    // Berserk Springs: quanto menos vida, mais velocidade e esquiva (até 40%)
+    if (S.legPassive === 'berserk') {
+      const low = 1 - Math.max(0, p.hp) / p.maxHp;
+      const bonus = low * 0.40;
+      p.vel = Math.round((S.playerBaseVel || p.vel) * (1 + bonus));
+      p.esquiva = Math.min(0.90, (S.playerBaseEsquiva || p.esquiva) + bonus);
+    }
+    // Bloodforge: regenera 20% da vida total a cada 3 turnos
+    if (S.chassisPassive === 'bloodforge') {
+      S.bloodforgeTurns = (S.bloodforgeTurns || 0) + 1;
+      if (S.bloodforgeTurns >= 3) {
+        S.bloodforgeTurns = 0;
+        heal(p, 0.20, 'forja');
+        log('A Forja de Sangue recompõe a carcaça.', 'ok');
+      }
+    }
     if (p.atkBuffTurns > 0) { p.atkBuffTurns--; if (p.atkBuffTurns === 0) { p.atkBuffPct = 0; log('O combustível turbo acaba.', ''); } }
     if (p.hotTurns > 0) {
       heal(p, p.hotPct, 'sangue');
@@ -597,8 +723,21 @@ BM.battle = (function () {
       await sleep(300);
       return;
     }
+    if (e.status && e.status.paralisado) {
+      log(e.name + ' está paralisado e não ataca!', 'ok');
+      tickStatus(e, 'enemy');
+      await sleep(260);
+      return;
+    }
+    if (e.cancelNext) {
+      e.cancelNext = false;
+      log(e.name + ' tenta atacar, mas o golpe se desfaz no vazio.', 'ok');
+      tickStatus(e, 'enemy');
+      await sleep(260);
+      return;
+    }
     tickStatus(e, 'enemy');
-    if (e.hp <= 0) { S.over = 'win'; return; }
+    if (e.hp <= 0) { S.over = e.flee ? 'fugiu' : 'win'; return; }
 
     if (intent.kind === 'heal' || intent.effect === 'healSelf') {
       // inimigos nunca se curam: o golpe vira um ataque comum
@@ -709,7 +848,8 @@ BM.battle = (function () {
       hp: enemyHp, maxHp: enemyHp, atk: Math.round(enemyDef.atk * atkScale * diffAtk), def: Math.round(enemyDef.def * hpScale),
       vel: enemyDef.vel, level: enemyLevel, status: {}, cooldowns: {},
       moves: enemyDef.moves.slice(), intent: null, phase: 1, isBoss: isBoss,
-      bossName: enemyDef.name
+      bossName: enemyDef.name,
+      gravityCharge: 0, cancelNext: false
     };
 
     // V2 copia o build do jogador
@@ -767,7 +907,14 @@ BM.battle = (function () {
       },
       parryFalhas: 0,
       parryErros: 0,
-      parryBreak: false
+      parryBreak: false,
+      soulReduce: 0,
+      shadowGuard: false,
+      bloodforgeTurns: 0,
+      playerBaseVel: st.vel,
+      playerBaseEsquiva: st.esquiva,
+      legPassive: (D.LEGS.find(l => l.id === data.equip.legs) || {}).passive ? D.LEGS.find(l => l.id === data.equip.legs).passive.id : null,
+      chassisPassive: (D.CHASSIS.find(c => c.id === data.equip.chassis) || {}).passive ? D.CHASSIS.find(c => c.id === data.equip.chassis).passive.id : null
     };
 
     enemy.canParry = !!passives.parry && isBoss;

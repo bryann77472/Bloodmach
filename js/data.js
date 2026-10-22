@@ -100,6 +100,96 @@ BM.DATA = (function () {
       desc:'Cura 100% do dano se o alvo estiver sangrando.'
     },
 
+    /* Thunderfist (amarelo) — paralisa o inimigo */
+    trovao_soco: {
+      id:'trovao_soco', name:'Soco de Trovão', type:'impacto', power:28, acc:95, cd:0, blood:2,
+      effect:'paralyze:1', desc:'Impacto eletrificado que paralisa o alvo por 1 turno.'
+    },
+    trovao_corrente: {
+      id:'trovao_corrente', name:'Corrente Elétrica', type:'impacto', power:22, acc:92, cd:1, blood:2, range:'longe',
+      effect:'paralyze:1', desc:'Descarga à distância que paralisa o alvo por 1 turno.'
+    },
+    trovao_tempestade: {
+      id:'trovao_tempestade', name:'Tempestade', type:'explosao', power:42, acc:85, cd:2, blood:0, range:'any',
+      effect:'paralyze:2', desc:'Rajada que paralisa o alvo por 2 turnos.'
+    },
+    trovao_pulso: {
+      id:'trovao_pulso', name:'Pulso Elétrico', type:'impacto', power:14, acc:96, cd:2, blood:1,
+      effect:'paralyze:2', desc:'Pulso curto que trava o alvo por 2 turnos.'
+    },
+
+    /* Venomclaw (verde tóxico) — envenena */
+    veneno_corte: {
+      id:'veneno_corte', name:'Corte Venenoso', type:'corte', power:24, acc:95, cd:0, blood:2,
+      effect:'venom:3', desc:'Corte que envenena o alvo por 3 turnos.'
+    },
+    veneno_cuspe: {
+      id:'veneno_cuspe', name:'Cuspe Tóxico', type:'sangue', power:20, acc:91, cd:1, blood:2, range:'longe',
+      effect:'venom:3', desc:'Cuspe ácido que envenena por 3 turnos.'
+    },
+    veneno_mordida: {
+      id:'veneno_mordida', name:'Mordida Peçonhenta', type:'corte', power:28, acc:94, cd:1, blood:2.5,
+      effect:'venom:4', desc:'Mordida que envenena o alvo por 4 turnos.'
+    },
+    veneno_nuvem: {
+      id:'veneno_nuvem', name:'Nuvem Venenosa', type:'explosao', power:30, acc:88, cd:2, blood:0, range:'any',
+      effect:'venom:4', desc:'Explosão de gás que envenena por 4 turnos.'
+    },
+
+    /* Soulreaver (branco) — drena a força do inimigo */
+    alma_sifao: {
+      id:'alma_sifao', name:'Sifão de Almas', type:'sangue', power:26, acc:96, cd:0, blood:4,
+      effect:'drain', desc:'Rouba vida: cura 50% do dano causado.'
+    },
+    alma_foice: {
+      id:'alma_foice', name:'Foice de Alma', type:'corte', power:32, acc:93, cd:1, blood:3,
+      desc:'Corte fantasma que arranca pedaço da alma do alvo.'
+    },
+    alma_grito: {
+      id:'alma_grito', name:'Grito de Alma', type:'impacto', power:18, acc:92, cd:2, blood:2, range:'longe',
+      effect:'soulMark', desc:'Grito que drena 5% a mais da força do inimigo.'
+    },
+    alma_marca: {
+      id:'alma_marca', name:'Marca da Alma', type:'sangue', power:22, acc:94, cd:2, blood:3,
+      effect:'drainSoul', desc:'Marca a alma do alvo: rouba vida e reduz o dano que ele causa.'
+    },
+
+    /* Voidgrip (preto) — cancela ataques e cura, sem dano */
+    vazio_nulo: {
+      id:'vazio_nulo', name:'Nulo', type:null, power:0, acc:100, cd:1, blood:0,
+      effect:'cancelAttack', desc:'Anula o próximo ataque do inimigo. Não causa dano.'
+    },
+    vazio_drenar: {
+      id:'vazio_drenar', name:'Drenar Vazio', type:null, power:0, acc:100, cd:2, blood:0,
+      effect:'healVoid:0.12', desc:'Puxa energia do nada: cura 12% do HP. Não causa dano.'
+    },
+    vazio_selamento: {
+      id:'vazio_selamento', name:'Selo do Vazio', type:null, power:0, acc:100, cd:3, blood:0,
+      effect:'sealEnemy', desc:'Prende o inimigo por 1 turno e cura 8% do HP.'
+    },
+    vazio_cura: {
+      id:'vazio_cura', name:'Cura do Vazio', type:null, power:0, acc:100, cd:3, blood:0,
+      effect:'healVoid:0.25', desc:'Regenera 25% do HP a partir do vazio.'
+    },
+
+    /* Gravityhook (roxo) — puxa e paralisa, mas o inimigo volta mais forte */
+    gravidade_garrao: {
+      id:'gravidade_garrao', name:'Agarrão Gravitacional', type:'impacto', power:24, acc:94, cd:0, blood:2,
+      effect:'gravPull', desc:'Puxa o alvo para perto e paralisa por 2 turnos.'
+    },
+    gravidade_puxao: {
+      id:'gravidade_puxao', name:'Puxão Gravitacional', type:'impacto', power:20, acc:93, cd:1, blood:2, range:'longe',
+      effect:'gravPull2', desc:'Puxa o alvo e paralisa por 1 turno.'
+    },
+    gravidade_esmagamento: {
+      id:'gravidade_esmagamento', name:'Esmagamento Gravitacional', type:'impacto', power:34, acc:91, cd:2, blood:3,
+      effect:'paralyze:2', desc:'Peso esmagador: paralisa o alvo por 2 turnos.'
+    },
+    gravidade_estilingue: {
+      id:'gravidade_estilingue', name:'Estilingue Gravitacional', type:'impacto', power:22, acc:92, cd:1, blood:2, range:'any',
+      effect:'gravPush', desc:'Arremessa o alvo para longe e paralisa por 1 turno.'
+    },
+
     /* Hellwhip (laranja) */
     chicote_de_lava: {
       id:'chicote_de_lava', name:'Chicote de Lava', type:'fogo', power:30, acc:100, cd:0, blood:2, effect:'melt',
@@ -153,6 +243,40 @@ BM.DATA = (function () {
     },
   ];
 
+  /* Braços extras (conteúdo novo) */
+  ARMS.push(
+    {
+      id:'thunderfist', name:'Thunderfist', cor:'Amarelo', corHex:'#ffd23f', type:'impacto',
+      role:'Paralisa o inimigo com descargas', price:450, unlock:'layer2',
+      passive:{ id:'shock', name:'Estática', desc:'20% de chance de paralisar o alvo a cada golpe.' },
+      moves:['trovao_soco','trovao_corrente','trovao_tempestade','trovao_pulso']
+    },
+    {
+      id:'venomclaw', name:'Venomclaw', cor:'Verdo', corHex:'#7bd93a', type:'sangue',
+      role:'Envenena o alvo até derrubar', price:500, unlock:'layer2',
+      passive:{ id:'venom', name:'Toxina', desc:'Os golpes aplicam 1 turno extra de veneno.' },
+      moves:['veneno_corte','veneno_cuspe','veneno_mordida','veneno_nuvem']
+    },
+    {
+      id:'soulreaver', name:'Soulreaver', cor:'Branco', corHex:'#e8eef5', type:'sangue',
+      role:'Drena a força do inimigo', price:550, unlock:'layer2',
+      passive:{ id:'soulReduce', name:'Drenar Almas', desc:'Cada golpe acumulado reduz em até 20% o dano que o inimigo causa.' },
+      moves:['alma_sifao','alma_foice','alma_grito','alma_marca']
+    },
+    {
+      id:'voidgrip', name:'Voidgrip', cor:'Preto', corHex:'#2b2b33', type:'sangue',
+      role:'Cancela ataques e cura, sem dano', price:700, unlock:'layer2',
+      passive:{ id:'voidGrip', name:'Vazio', desc:'Golpes do V1 têm 25% de chance de cancelar o ataque do inimigo. Este braço não causa dano.' },
+      moves:['vazio_nulo','vazio_drenar','vazio_selamento','vazio_cura']
+    },
+    {
+      id:'gravityhook', name:'Gravityhook', cor:'Roxo', corHex:'#a05cff', type:'impacto',
+      role:'Puxa e paralisa — mas o inimigo volta mais forte', price:600, unlock:'layer2',
+      passive:{ id:'gravity', name:'Gravidade', desc:'O inimigo paralisado pelo V1 ataca 30% mais forte quando se recuperar.' },
+      moves:['gravidade_garrao','gravidade_puxao','gravidade_esmagamento','gravidade_estilingue']
+    }
+  );
+
   /* ---------------- PERNAS ---------------- */
   const LEGS = [
     {
@@ -173,6 +297,20 @@ BM.DATA = (function () {
       desc:'Estrutura ultraleve, sem sistema extra. Rápida e frágil.',
       abilityDesc:'Sem habilidade ativa.'
     },
+    {
+      id:'shadow', name:'Pernas Shadow Step', peso:1, vel:1.05, esquiva:0.15, fuga:0.60,
+      ability:null, price:300, unlock:'layer2',
+      passive:{ id:'shadowGuard', name:'Passo Sombrio', desc:'Depois de esquivar, o próximo golpe recebido causa 50% menos dano.' },
+      desc:'Passos que atravessam a sombra. Pesadas, mas flexíveis.',
+      abilityDesc:'Passo Sombrio: depois de esquivar, o próximo golpe recebido causa 50% menos dano.'
+    },
+    {
+      id:'berserk', name:'Pernas Berserk Springs', peso:0, vel:1.10, esquiva:0.12, fuga:0.55,
+      ability:null, price:300, unlock:'layer2',
+      passive:{ id:'berserk', name:'Fúria', desc:'Quanto menos vida, mais velocidade e esquiva: até 40% a mais com o V1 quase morto.' },
+      desc:'Molas de combustão que soltam o corpo quando o sangue escasseia.',
+      abilityDesc:'Fúria: quanto menos vida, mais velocidade e esquiva (até 40%).'
+    },
   ];
 
   /* ---------------- CARCAÇAS ---------------- */
@@ -188,6 +326,16 @@ BM.DATA = (function () {
     {
       id:'forja', name:'Carcaça de Forja', peso:1, hp:1.30, vel:0.80, price:350, unlock:'v2',
       desc:'Blindagem de forja. Aguenta muito, responde pouco.'
+    },
+    {
+      id:'titan', name:'Carcaça Titan Husk', peso:2, hp:1.50, vel:0.70, price:400, unlock:'layer2',
+      passive:{ id:'titan', name:'Casca de Titã', desc:'Quanto menos vida, mais resistência: até 30% de dano reduzido.' },
+      desc:'Casca colossal de husk endurecido. Lenta e pesada, quase indestrutível.'
+    },
+    {
+      id:'bloodforge', name:'Carcaça Bloodforge', peso:1, hp:1.20, vel:0.90, price:400, unlock:'layer2',
+      passive:{ id:'bloodforge', name:'Forja de Sangue', desc:'Regenera 20% da vida total a cada 3 turnos.' },
+      desc:'Placas forjadas com sangue. O corpo se refaz sozinho.'
     },
   ];
 
