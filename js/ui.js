@@ -62,13 +62,14 @@ BM.ui = (function () {
           </div>
           <div class="logo-sub">Gluttony&nbsp;&nbsp;//&nbsp;&nbsp;Heresy</div>
           <div class="title-menu">
-            <button class="btn primary" data-a="play">${has ? 'Continuar' : 'Jogar'}</button>
+            <button class="btn primary" data-a="play">Jogar</button>
             <button class="btn" data-a="shop">Loja ${has && d ? '<span class="badge hot">NOVO</span>' : ''}</button>
             <button class="btn" data-a="options">Opções</button>
             <button class="btn" data-a="credits">Créditos</button>
           </div>
           ${has ? `<div class="dim" style="margin-top:18px;font-size:.72rem">
             NÍVEL ${d.v1.level} · ${fmt(d.v1.scrap)} SUCATA · ${d.flags.v2Dead ? 'V2 MORTO' : 'V2 VIVO'}
+            · SAVE ${(D.DIFFICULTIES[d.settings.dificuldade] || D.DIFFICULTIES.standard).name.toUpperCase()}
           </div>` : ''}
         </div>
         <div class="title-foot">V1 — PROTÓTIPO DE SÉRIAÇÃO 01 · SEM ARMAS, SÓ SANGUE</div>
@@ -131,7 +132,9 @@ BM.ui = (function () {
     });
     on('[data-a="back"]', 'click', () => {
       BM.audio.play('cancel');
-      if (shopReturn === 'lobby') lobby(); else title();
+      if (shopReturn === 'lobby') lobby();
+      else if (shopReturn === 'loadout') loadout('shop');
+      else title();
     });
     renderShop('arms');
   }
@@ -241,7 +244,7 @@ BM.ui = (function () {
             <div class="card-role">${i.desc}</div>
             <div class="card-stats"><span class="chip">ESTOQUE ${count}</span></div>
             <div class="card-foot">
-              <span class="price ${st.ok ? '' : 'cant'}">${st.ok ? fmt(i.price) + ' ◆' : esc(st.reason)}</span>
+              <span class="price ${st.ok ? '' : 'cant'}">${st.ok ? (i.cores ? i.cores + ' ✷' : fmt(i.price) + ' ◆') : esc(st.reason)}</span>
               <div class="card-actions">${st.ok ? `<button class="btn small primary" data-buy-item="${i.id}">Comprar</button>` : ''}</div>
             </div>
           </div>
@@ -342,7 +345,8 @@ BM.ui = (function () {
      ========================================================= */
   function loadout(returnTo) {
     current = 'loadout';
-    BM.audio.playMusic('oficina');
+    // mesma trilha da loja: trocar entre os dois não reinicia a música
+    BM.audio.playMusic('loja');
     if (returnTo) loadoutReturn = returnTo;
     const d = BM.save.get();
     const arms = BM.save.availableArms();
@@ -354,6 +358,8 @@ BM.ui = (function () {
             <span class="badge">MOVIMENTOS <b id="lo-moves">0</b>/4</span>
             <span class="badge">BRAÇOS <b id="lo-arms">0</b>/4</span>
             <span class="badge" id="lo-parry">PARRY</span>
+            <button class="btn small" data-a="shop">Abrir Loja</button>
+            <button class="btn small" data-a="lobby">Voltar à Oficina</button>
             <button class="btn small" data-a="back">Voltar</button>
           </div>
         </div>
@@ -397,6 +403,14 @@ BM.ui = (function () {
     on('[data-a="back"]', 'click', () => {
       BM.audio.play('cancel');
       if (loadoutReturn === 'shop') shop('shop'); else lobby();
+    });
+    on('[data-a="lobby"]', 'click', () => {
+      BM.audio.play('cancel');
+      lobby();
+    });
+    on('[data-a="shop"]', 'click', () => {
+      BM.audio.play('select');
+      shop('loadout');
     });
     refreshLoadout();
   }
@@ -1212,22 +1226,26 @@ BM.ui = (function () {
   /* =========================================================
    * ESCOLHA DE DIFICULDADE — mostrada na primeira vez que o jogo abre
    * ========================================================= */
-  function difficultyPick(onPick) {
-    current = 'difficulty';
+  /* =========================================================
+   * ESCOLHA DE SAVE — cada dificuldade tem o seu próprio save
+   * ========================================================= */
+  function savePick(onPick) {
+    current = 'savePick';
     BM.audio.playMusic('titulo');
-    const chaves = ['lenient', 'standard', 'violent'];
+    const difs = BM.save.difficulties();
     mount(`
       <div class="screen diff-screen">
         <div class="panel diff-panel">
           <div class="title-sm">ESCOLHA A DIFICULDADE</div>
           <div class="dim" style="font-size:.82rem;margin:6px 0 16px">
-            A dificuldade define a vida e os ataques dos inimigos, a janela do parry e a recompensa.
-            Pode ser mudada depois nas Opções.
+            Cada dificuldade tem o seu próprio save. Escolha qual jogar — o progresso de uma
+            não afeta o da outra.
           </div>
           <div class="grid3">
-            ${chaves.map(k => {
+            ${difs.map(k => {
               const df = D.DIFFICULTIES[k];
-              return `<div class="diff-card ${k === 'standard' ? 'padrao' : ''}">
+              const info = BM.save.saveInfo(k);
+              return `<div class="diff-card ${info.existe ? 'tem-save' : ''}">
                 <h3>${df.name}</h3>
                 <div class="diff-label">${df.label}</div>
                 <div class="layer-info">${df.desc}</div>
@@ -1236,19 +1254,26 @@ BM.ui = (function () {
                   <li>Ataque dos inimigos <b>×${df.atkMul.toFixed(2)}</b></li>
                   <li>Janela do parry <b>${df.parryMs} ms</b></li>
                   <li>Dano no V1 <b>×${df.dmgEnemy.toFixed(2)}</b></li>
-                  <li>Sucata <b>×${df.scrap.toFixed(2)}</b></li>
+                  <li>Núcleos por camada <b>${k === 'lenient' ? 1 : 2}</b></li>
                 </ul>
-                <button class="btn primary wide" data-diff="${k}">${df.name.toUpperCase()}</button>
+                <div class="save-info ${info.existe ? '' : 'dim'}">
+                  ${info.existe
+                    ? ('SAVE · NÍVEL ' + info.nivel + ' · ' + fmt(info.scrap) + ' ◆ · CAMADA ' + (info.camada + 1) +
+                      (info.v2Dead ? ' · V2 MORTO' : '') + (info.gabrielDead ? ' · GABRIEL MORTO' : ''))
+                    : 'SEM SAVE — COMEÇA DO ZERO'}
+                </div>
+                <button class="btn primary wide" data-save="${k}">${info.existe ? 'CONTINUAR' : 'NOVO JOGO'}</button>
               </div>`;
             }).join('')}
           </div>
         </div>
       </div>`);
-    on('[data-diff]', 'click', ev => {
-      const k = ev.currentTarget.getAttribute('data-diff');
+    on('[data-save]', 'click', ev => {
+      const k = ev.currentTarget.getAttribute('data-save');
+      const info = BM.save.saveInfo(k);
       BM.audio.play('confirm');
-      BM.save.setDificuldade(k);
-      if (onPick) onPick(k);
+      BM.save.setDifficulty(k);
+      if (onPick) onPick(k, !info.existe);
     });
   }
 
@@ -1402,10 +1427,8 @@ BM.ui = (function () {
         <div class="panel options-card">
           <div class="panel-head"><span>Opções</span><span>BLOODMACH</span></div>
           <div class="opt-row">
-            <label>Dificuldade<span class="hint">Ajusta a velocidade da barra de parry e o dano recebido.</span></label>
-            <select id="opt-diff">
-              ${Object.keys(D.DIFFICULTIES).map(k => `<option value="${k}" ${s.dificuldade === k ? 'selected' : ''}>${D.DIFFICULTIES[k].label || D.DIFFICULTIES[k].name}</option>`).join('')}
-            </select>
+            <label>Dificuldade<span class="hint">Cada dificuldade tem o seu próprio save. Troque de save na tela de título.</span></label>
+            <span class="badge hot" id="opt-diff">${(D.DIFFICULTIES[s.dificuldade] || D.DIFFICULTIES.standard).label || (D.DIFFICULTIES[s.dificuldade] || D.DIFFICULTIES.standard).name}</span>
           </div>
           <div class="opt-row">
             <label>Efeitos sonoros<span class="hint">Impactos, parry, metal.</span></label>
@@ -1424,7 +1447,7 @@ BM.ui = (function () {
             <div class="switch ${s.tremor ? 'on' : ''}" id="opt-tremor"><i></i></div>
           </div>
           <div class="opt-row">
-            <label>Assistência de parry<span class="hint">Barra mais lenta e janela maior.</span></label>
+            <label>Assistência de parry<span class="hint">Círculo mais lento e janela maior.</span></label>
             <div class="switch ${s.parryAssist ? 'on' : ''}" id="opt-assist"><i></i></div>
           </div>
           <div class="opt-row">
@@ -1448,11 +1471,6 @@ BM.ui = (function () {
     bindSwitch('#opt-tremor', 'tremor');
     bindSwitch('#opt-assist', 'parryAssist');
     bindSwitch('#opt-texto', 'textoRápido');
-    el('#opt-diff').addEventListener('change', ev => {
-      BM.save.setSetting('dificuldade', ev.target.value);
-      BM.audio.play('select');
-      toast('Dificuldade: ' + (D.DIFFICULTIES[ev.target.value].label || D.DIFFICULTIES[ev.target.value].name), 'ok');
-    });
     el('#opt-vol').addEventListener('input', ev => {
       const v = ev.target.value / 100;
       BM.save.setSetting('volume', v); BM.save.applySettings();
@@ -1600,6 +1618,6 @@ BM.ui = (function () {
     title, shop, loadout, lobby, layerMap, dialogue, battle, battleUpdate,
     battleLog, floatText, shake, flashTurn, promptParry, result, layerResult, gabrielBleed,
     deathScene, gameOver, enemyIntro, bossIntro, modal, options, credits, ending, postCredits,
-    difficultyPick
+    savePick
   };
 })();

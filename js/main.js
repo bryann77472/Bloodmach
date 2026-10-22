@@ -28,24 +28,18 @@ BM.main = (function () {
   /* ---------------- título ---------------- */
   function playPressed() {
     BM.audio.ensure();
-    if (BM.save.hasSave()) {
-      BM.save.load();
-      BM.save.applySettings();
-      continueGame();
-    } else {
-      newGame();
-    }
+    // cada dificuldade tem seu próprio save: o jogador escolhe qual jogar
+    BM.ui.savePick(function (diff, isNew) {
+      if (isNew) newGame(diff); else continueGame();
+    });
   }
 
-  function newGame() {
-    BM.save.newGame();
+  function newGame(diff) {
+    BM.save.newGame(diff);
     BM.save.applySettings();
     BM.audio.ensure();
-    // primeira vez: escolhe a dificuldade antes de começar
-    BM.ui.difficultyPick(function () {
-      BM.audio.startAmbient();
-      BM.ui.dialogue(D.STORY.intro, function () { beginTutorial(); });
-    });
+    BM.audio.startAmbient();
+    BM.ui.dialogue(D.STORY.intro, function () { beginTutorial(); });
   }
 
   function continueGame() {
@@ -186,6 +180,7 @@ BM.main = (function () {
       const layerIndexF = pending && pending.type === 'layer' ? pending.layerIndex : d.progress.layer;
       if (pending && pending.bossFugiu) {
         d.flags['camada' + layerIndexF + 'Feita'] = true;
+        grantLayerCores();
         if (layerIndexF + 1 < D.LAYERS.length) d.progress.unlockedLayers = Math.max(d.progress.unlockedLayers, layerIndexF + 2);
         const pagoF = BM.save.collectPending();
         BM.ui.layerResult({ layerIndex: layerIndexF, layerName: D.LAYERS[layerIndexF].name, rank: BM.save.layerRank(D.LAYERS[layerIndexF].id), bossId: D.LAYERS[layerIndexF].boss, pago: pagoF, fugiu: true });
@@ -242,9 +237,10 @@ BM.main = (function () {
 
   function useRepairKit() {
     const d = BM.save.get();
+    const kit = D.ITEMS.find(i => i.id === 'kit_reparo');
     if (!BM.save.useItem('kit_reparo')) return;
     const st = BM.save.v1Stats();
-    currentHp = Math.round(st.maxHp * 0.3);
+    currentHp = Math.round(st.maxHp * (kit && kit.revivePct ? kit.revivePct : 0.3));
     BM.audio.play('heal');
     BM.ui.toast('Kit de Reparo usado. Integridade restaurada.', 'ok');
     const layerIndex = pending && pending.type === 'layer' ? pending.layerIndex : d.progress.layer;
@@ -258,12 +254,20 @@ BM.main = (function () {
     BM.ui.battle();
   }
 
+  /** Núcleos por camada concluída: 1 no Lenient, 2 no Standard/Violent. */
+  function grantLayerCores() {
+    const dif = BM.save.get().settings.dificuldade || 'standard';
+    const qtd = dif === 'lenient' ? 1 : 2;
+    BM.save.addCores(qtd);
+    BM.ui.toast('+' + qtd + ' ' + (qtd > 1 ? 'NÚCLEOS' : 'NÚCLEO'), 'ok');
+    return qtd;
+  }
+
   function onBossDefeated(layerIndex, bossId) {
     const d = BM.save.get();
     if (bossId === 'v2') {
       d.flags.v2Dead = true;
       d.flags.nucleo_v2 = true;
-      d.v1.cores = d.v1.cores + 1;
       d.progress.unlockedLayers = Math.max(d.progress.unlockedLayers, 2);
       d.progress.node = 0;
       BM.save.persist();
@@ -271,8 +275,9 @@ BM.main = (function () {
       d.flags.gabrielDead = true;
       BM.save.persist();
     }
-    // a camada foi concluída: libera a próxima
+    // a camada foi concluída: libera a próxima e paga os núcleos
     d.flags['camada' + layerIndex + 'Feita'] = true;
+    grantLayerCores();
     if (layerIndex + 1 < D.LAYERS.length) d.progress.unlockedLayers = Math.max(d.progress.unlockedLayers, layerIndex + 2);
     // recursos da camada entram na mochila agora (concluída)
     const pago = BM.save.collectPending();
@@ -283,9 +288,7 @@ BM.main = (function () {
       d.flags.rankP = d.flags.rankP || {};
       if (!d.flags.rankP[layerIndex]) {
         d.flags.rankP[layerIndex] = true;
-        BM.save.addScrap(250);
-        BM.save.addCores(1);
-        d.v1.cores = d.v1.cores + 1;
+        BM.save.addScrap(500);
       }
       BM.save.persist();
     }

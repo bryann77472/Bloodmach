@@ -275,6 +275,76 @@ BM.sprites = (function () {
       <rect x="34" y="52" width="32" height="10" rx="2" fill="#f0d9a0" opacity=".85"/>
       <rect x="10" y="52" width="8" height="14" rx="2" fill="#8b8b96"/>
     `);
+    /* --- itens novos --- */
+    if (id === 'sangue_frio') return shopSvg(`
+      <path d="M30 30 L70 30 L74 70 L26 70 Z" fill="#2a3a52" stroke="#12151c" stroke-width="3"/>
+      <path d="M32 44 L68 44 L71 68 L29 68 Z" fill="#7fd4e8" opacity=".85"/>
+      <rect x="42" y="20" width="16" height="12" rx="2" fill="#3a3f4a" stroke="#12151c" stroke-width="2"/>
+      <path d="M44 32 L56 32" stroke="#3a3f4a" stroke-width="4"/>
+      <path d="M36 52 l6 -6 l6 6 l-6 6 z" fill="#fff" opacity=".8"/>
+      <path d="M52 58 l5 -5 l5 5 l-5 5 z" fill="#fff" opacity=".6"/>
+    `);
+    if (id === 'adrenalina_forte') return shopSvg(`
+      <g transform="rotate(-35 50 50)">
+        <rect x="38" y="16" width="24" height="48" rx="3" fill="#dfe7ef" stroke="#12151c" stroke-width="3"/>
+        <rect x="41" y="28" width="18" height="26" rx="2" fill="#ff3b5c" opacity=".9"/>
+        <rect x="42" y="8" width="16" height="12" rx="2" fill="#6a7078"/>
+        <path d="M50 64 L50 88" stroke="#ffb0c0" stroke-width="3"/>
+      </g>
+      <path d="M76 30 l6 -10 l6 10 l-6 10 z" fill="#ff3b5c" opacity=".8"/>
+    `);
+    if (id === 'carvao_vivo') return shopSvg(`
+      <path d="M34 78 q-6 -30 16 -44 q-8 18 4 26 q-4 -22 16 -30 q-6 20 8 30 q10 8 4 18 z"
+            fill="#1c1a18" stroke="#0b0a09" stroke-width="3"/>
+      <path d="M46 74 q-4 -18 8 -26 q-4 12 2 16 q0 -12 10 -18 q-4 14 4 20 q6 6 2 10 z" fill="#ff7a1a"/>
+      <path d="M52 74 q-2 -10 6 -14 q-2 7 1 10 q2 -8 8 -11 q-3 9 3 13 z" fill="#ffd85a"/>
+    `);
+    if (id === 'estilhaco') return shopSvg(`
+      <path d="M50 12 L62 44 L88 52 L64 62 L54 92 L42 62 L16 54 L42 44 Z"
+            fill="#b9c0c8" stroke="#12151c" stroke-width="3"/>
+      <path d="M50 24 L56 48 L50 44 L44 48 Z" fill="#ff3b5c" opacity=".9"/>
+      <path d="M30 54 L44 48" stroke="#8b8b96" stroke-width="3"/>
+    `);
+    if (id === 'reator') return shopSvg(`
+      <circle cx="50" cy="50" r="26" fill="#2a2f38" stroke="#12151c" stroke-width="3"/>
+      <circle cx="50" cy="50" r="16" fill="url(#g-blood)"/>
+      <path d="M50 34 L50 26 M50 74 L50 66 M34 50 L26 50 M74 50 L66 50" stroke="#ff3b5c" stroke-width="4"/>
+      <circle cx="44" cy="44" r="4" fill="#fff" opacity=".6"/>
+    `);
+    if (id === 'bolsa_fria') return shopSvg(`
+      <path d="M30 30 L70 30 L74 70 L26 70 Z" fill="#2a4a52" stroke="#12151c" stroke-width="3"/>
+      <path d="M32 44 L68 44 L71 68 L29 68 Z" fill="#9fe8e4" opacity=".85"/>
+      <rect x="42" y="20" width="16" height="12" rx="2" fill="#3a3f4a" stroke="#12151c" stroke-width="2"/>
+      <path d="M36 40 q6 -8 12 0 q6 8 12 0" stroke="#cfe9f5" stroke-width="3" fill="none"/>
+      <path d="M38 58 q6 -6 12 0 q6 6 12 0" stroke="#cfe9f5" stroke-width="3" fill="none"/>
+    `);
+    if (id === 'moeda_gasta') return shopSvg(`
+      <circle cx="50" cy="50" r="26" fill="#8a6a2a" stroke="#4a3a10" stroke-width="3"/>
+      <circle cx="50" cy="50" r="17" fill="none" stroke="#4a3a10" stroke-width="3" opacity=".8"/>
+      <path d="M50 38 L50 62" stroke="#4a3a10" stroke-width="4"/>
+      <path d="M34 46 L66 54" stroke="#4a3a10" stroke-width="3" opacity=".8"/>
+      <path d="M40 26 l6 8 l8 -10" stroke="#ff9d2e" stroke-width="3" fill="none"/>
+    `);
+    if (id === 'bomba_fundida') return shopSvg(`
+      <circle cx="44" cy="58" r="23" fill="#4a2a18" stroke="#12161c" stroke-width="3"/>
+      <path d="M58 38 q10 -12 18 -8" stroke="#8b8b96" stroke-width="4" fill="none"/>
+      <path d="M76 30 q10 -8 4 -18 q12 8 6 20 z" fill="#ff6b4a" opacity=".95"/>
+      <rect x="32" y="50" width="24" height="10" rx="2" fill="#ffb01f" opacity=".9"/>
+      <path d="M24 44 l-8 -8 M70 46 l8 -8" stroke="#ff9d2e" stroke-width="3"/>
+    `);
+    if (id === 'tonico') return shopSvg(`
+      <path d="M36 34 L64 34 L60 78 q-2 6 -12 6 q-10 0 -12 -6 z" fill="#2a3038" stroke="#12151c" stroke-width="3"/>
+      <path d="M38 48 L62 48 L60 70 q-2 6 -11 6 q-9 0 -11 -6 z" fill="#ff9d2e" opacity=".9"/>
+      <rect x="42" y="24" width="16" height="12" rx="2" fill="#6a7078"/>
+      <path d="M50 16 q-6 -8 0 -14 q6 6 0 14 z" fill="#ffd85a"/>
+    `);
+    if (id === 'kit_avancado') return shopSvg(`
+      <rect x="14" y="36" width="72" height="44" rx="4" fill="#8a2a18" stroke="#12151c" stroke-width="3"/>
+      <path d="M34 36 L34 26 q0 -8 16 -8 q16 0 16 8 L66 36" fill="none" stroke="#8b8b96" stroke-width="4"/>
+      <rect x="32" y="50" width="36" height="12" rx="2" fill="#ffd85a" opacity=".9"/>
+      <rect x="8" y="52" width="8" height="16" rx="2" fill="#8b8b96"/>
+      <path d="M44 42 l6 -6 l6 6 l-6 6 z" fill="#fff" opacity=".8"/>
+    `);
     return shopSvg('<circle cx="50" cy="50" r="24" fill="#8a7f78"/>');
   }
 

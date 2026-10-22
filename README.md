@@ -66,9 +66,10 @@ finishar Limbo abre Lust, finishar Lust abre Gluttony.
   desistir, tudo se perde; se terminar a camada, o total é entregue com o rank.
 - **Final:** depois de Gabriel, V1 pode **se desligar**. Um final escolhido, não uma fuga.
 
-### Dificuldade
-Na **primeira vez que o jogo abre** aparece a escolha de dificuldade (depois dá para
-mudar nas **Opções**):
+### Dificuldade e saves
+Cada dificuldade tem o **seu próprio save** (Lenient, Standard e Violent são três
+progressos independentes). Ao clicar em **Jogar** na tela de título você escolhe em
+qual dos três quer jogar — o cartão mostra se já existe save e até onde você chegou.
 
 | Dificuldade | Vida dos inimigos | Ataque | Janela do parry | Dano no V1 | Sucata |
 |---|---|---|---|---|---|
@@ -77,7 +78,8 @@ mudar nas **Opções**):
 | **Violent** (difícil) | ×1,35 | ×1,28 | 820 ms | ×1,22 | ×1,4 |
 
 Além da vida e do dano, os inimigos ficam **mais imprecisos no Lenient** e mais
-certeiros no Violent.
+certeiros no Violent. O **Lenient dá 1 núcleo por camada concluída**; Standard e
+Violent dão **2 núcleos**.
 
 ### Rank da camada
 No fim de cada camada o jogo avalia três categorias:
@@ -142,15 +144,42 @@ São **duas trilhas de camada** que se revezam entre as camadas e duas de chefe:
 | **4. …** | music 2 | music 2 boss |
 
 A regra é a alternância por número da camada: ímpar → *music 1*, par → *music 2*.
+A **loja** e a tela de **ajustar movimentos** usam a mesma faixa (sem reiniciar a música
+ao trocar de uma para a outra).
 
-### Equipamento
-| Braço | Cor | Papel |
-|---|---|---|
-| **Feedbacker** | Azul | Rápido, fraco, libera o **parry** |
-| **Knuckleblaster** | Vermelho | Lento, explosivo, forte, empurra |
-| **Whiplash** | Verde | Puxa e controla a distância |
-| **Bloodreaver** | Carmim | Suga vida do inimigo, sustain |
-| **Hellwhip** | Laranja | Corrente de lava: puxa e **derrete** |
+| Arquivo | Uso |
+|---|---|
+| `assets/music/music-1.mp3` | camadas ímpares |
+| `assets/music/music-1-boss.mp3` | chefes das camadas ímpares |
+| `assets/music/music-2.mp3` | camadas pares |
+| `assets/music/music-2-boss.mp3` | chefes das camadas pares |
+| `assets/music/lobby-title.mp3` | título e oficina |
+| `assets/music/shop.mp3` | loja e ajuste de movimentos |
+| `assets/music/power-off-v1.mp3` | desligamento do V1 (final e toda morte) |
+
+O volume da música fica em *Opções*. Se um arquivo faltar, o jogo continua
+funcionando com o ambiente sintetizado. As faixas são **mono 48 kbps** para o
+repositório não pesar (8 MB no total).
+
+---
+
+### Equipamento e desbloqueios
+O V1 começa **só com o Feedbacker** e os 4 golpes dele. O resto do hardware é
+liberado pelo progresso e depois **comprado na loja**:
+
+| Peça | Cor | Preço | Liberada quando |
+|---|---|---|---|
+| **Feedbacker** | Azul | — | já vem com o V1 |
+| **Knuckleblaster** | Vermelho | 350 ◆ | **derrotar o V2** (Limbo) |
+| **Whiplash** | Verde | 400 ◆ | **derrotar o Gabriel** (Gluttony) |
+| **Bloodreaver** | Carmim | 600 ◆ | camada 2 — *em desenvolvimento* |
+| **Hellwhip** | Laranja | 600 ◆ | camada 2 — *em desenvolvimento* |
+| **Pernas de Ignição** | — | 300 ◆ | **derrotar o V2** |
+| **Carcaça de Forja** | — | 350 ◆ | **derrotar o V2** |
+| **Pernas de Fibra** | — | 250 ◆ | **derrotar o Gabriel** |
+| **Carcaça de Fibra** | — | 250 ◆ | **derrotar o Gabriel** |
+
+Bloodreaver e Hellwhip ficam bloqueados para sempre enquanto a camada 2 não existir.
 
 **Pernas** (1 slot): *de Serviço* (média, tem **Dash**) · *de Ignição* (pesada, tem
 **Arranque Explosivo**) · *de Fibra* (leve, veloz, +esquiva/fuga, sem habilidade).
@@ -158,29 +187,34 @@ A regra é a alternância por número da camada: ímpar → *music 1*, par → *
 **Carcaças** (1 slot): *V1* (equilibrada) · *de Fibra* (vida baixa, rápida) ·
 *de Forja* (vida alta, lenta).
 
-### Loja
-- No **título**, logo abaixo do botão **JOGAR**.
+### Loja e itens
+- No **título**, logo abaixo do botão **Jogar**.
 - No **lobby/Oficina**, num terminal, antes de entrar na camada.
 - Vende braços, pernas, carcaças e consumíveis, com **Sucata** e **Núcleos**.
   O saldo da carteira é atualizado a cada compra.
+- A tela de **ajustar movimentos** tem botão para **abrir a loja** e **voltar à
+  oficina** — e usa a mesma trilha da loja (trocar entre as duas não reinicia a música).
 
-### Música
-Trilha original em MP3, com crossfade entre telas:
+**Consumíveis iniciais** (disponíveis desde o começo): *Bolsa de Sangue* e
+*Adrenalina*. *Moeda*, *Bomba* e *Kit de Reparo* exigem **nível**.
 
-| Tela | Faixa |
-|---|---|
-| Título / Oficina | `assets/music/lobby-title.mp3` |
-| Loja | `assets/music/shop.mp3` |
-| Gluttony (combate) | `assets/music/gluttony.mp3` |
-| Gluttony (chefe V2) | `assets/music/gluttony-boss.mp3` |
-| Heresy (combate) | `assets/music/heresy.mp3` |
-| Heresy (chefe Gabriel) | `assets/music/heresy-boss.mp3` |
-| Desligamento do V1 (final e toda morte) | `assets/music/power-off-v1.mp3` |
+**10 itens novos**:
 
-O volume da música fica em *Opções*. Se um arquivo faltar, o jogo continua
-funcionando com o ambiente sintetizado.
+| Item | Preço | Efeito |
+|---|---|---|
+| **Sangue Frio** | 3 ✷ | Cura 55% do HP e o próximo golpe bate 50% mais forte |
+| **Adrenalina Forte** | 2 ✷ | Limpa os status e os próximos 2 golpes batem 50% mais forte |
+| **Carvão Vivo** | 2 ✷ | Aplica Derretido por 4 turnos |
+| **Estilhaço Sangrento** | 4 ✷ | 150 de dano ignorando DEF + Sangramento |
+| **Reator de Emergência** | 3 ✷ | Revive com 60% do HP e limpa os status |
+| **Bolsa Fria** | 150 ◆ | Cura 12% do HP por turno durante 3 turnos |
+| **Moeda Gasta** | 140 ◆ | Crítico garantido com +30% de dano |
+| **Bomba Fundida** | 220 ◆ | 120 de dano ignorando DEF + Sangramento |
+| **Tônico de Combustão** | 260 ◆ | +30% de ATQ por 3 turnos |
+| **Kit Avançado** | 300 ◆ | Revive com 50% do HP e foco no próximo golpe |
 
----
+Os itens de **núcleo** (✷) só podem ser comprados com os núcleos ganhos ao concluir
+uma camada — e ainda exigem nível mínimo.
 
 ## Estrutura
 
@@ -193,8 +227,8 @@ css/    base.css  title.css  battle.css  shop.css
 js/     data.js     braços, pernas, carcaças, itens, inimigos, camadas, história, rank
         sprites.js  V1/V2 (arte real) + inimigos e cenários vetoriais
         audio.js    efeitos WebAudio + música MP3 com crossfade
-        save.js     localStorage, progressão, inventário, preferências, rank
-        battle.js   motor de turnos: dano, status, distância, estilo, parry, IA
+        save.js     saves por dificuldade, inventário, progressão e preferências
+        battle.js   combate, parry, reflexo, esquiva, itens e IA inimiga
         ui.js       todas as telas
         main.js     fluxo do jogo
 ```

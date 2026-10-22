@@ -7,10 +7,16 @@ var BM = (window.BM = window.BM || {});
 BM.save = (function () {
   'use strict';
   const D = BM.DATA;
-  const KEY = 'bloodmach_save_v1';
+  const KEY_BASE = 'bloodmach_save_v1';
+  const KEY_LAST = 'bloodmach_last_diff';
+  const DIFFS = ['lenient', 'standard', 'violent'];
 
   let data = null;
+  let currentDiff = 'standard';   // difficulty do save ativo
   const listeners = [];
+
+  function keyFor(diff) { return KEY_BASE + '_' + (diff || currentDiff); }
+  function difficulties() { return DIFFS.slice(); }
 
   function defaults() {
     return {
@@ -18,13 +24,13 @@ BM.save = (function () {
       createdAt: Date.now(),
       v1: { level: 1, xp: 0, scrap: 150, cores: 0 },
       owned: {
-        arms: ['feedbacker', 'knuckleblaster', 'whiplash'],
+        arms: ['feedbacker'],
         legs: ['servico'],
         chassis: ['v1']
       },
       equip: { legs: 'servico', chassis: 'v1' },
-      loadout: ['jab_rapido', 'rajada_tres', 'puxao', 'soco_foguete'],
-      items: { bolsa_sangue: 3, adrenalina: 1, moeda: 1, kit_reparo: 1 },
+      loadout: ['jab_rapido', 'rajada_tres', 'contra_golpe', 'postura_defensiva'],
+      items: { bolsa_sangue: 2, adrenalina: 1 },
       progress: { layer: 0, node: 0, unlockedLayers: 1, checkpoint: null,
         layerStats: { t0: 0, dmg: 0, styleMax: 0, maxHp: 0 },
         pending: { scrap: 0, xp: 0 } },
@@ -38,9 +44,43 @@ BM.save = (function () {
   }
 
   /* ---------------- persistência ---------------- */
-  function load() {
+  /** Lê o save de uma dificuldade sem alterar o save ativo. */
+  function readSave(diff) {
     try {
-      const raw = localStorage.getItem(KEY);
+      const raw = localStorage.getItem(keyFor(diff));
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch (e) { return null; }
+  }
+
+  /** Resumo de um save (usado na tela de escolha). */
+  function saveInfo(diff) {
+    const raw = readSave(diff);
+    if (!raw) return { existe: false, diff: diff };
+    const d = raw;
+    return {
+      existe: true, diff: diff,
+      nivel: (d.v1 && d.v1.level) || 1,
+      scrap: (d.v1 && d.v1.scrap) || 0,
+      cores: (d.v1 && d.v1.cores) || 0,
+      v2Dead: !!(d.flags && d.flags.v2Dead),
+      gabrielDead: !!(d.flags && d.flags.gabrielDead),
+      camada: (d.progress && d.progress.layer) || 0,
+      tutorial: !!(d.flags && d.flags.tutorial),
+      updatedAt: d.updatedAt || 0
+    };
+  }
+
+  function load(diff) {
+    if (diff) currentDiff = diff;
+    else if (!readSave(currentDiff)) {
+      let last = null;
+      try { last = localStorage.getItem(KEY_LAST); } catch (e) { }
+      if (last && DIFFS.indexOf(last) >= 0 && readSave(last)) currentDiff = last;
+    }
+    try { localStorage.setItem(KEY_LAST, currentDiff); } catch (e) { }
+    try {
+      const raw = localStorage.getItem(keyFor(currentDiff));
       if (!raw) { data = null; return null; }
       const parsed = JSON.parse(raw);
       data = Object.assign(defaults(), parsed);
@@ -64,22 +104,37 @@ BM.save = (function () {
   }
 
   function persist() {
-    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) { /* ignora */ }
+    try { data.updatedAt = Date.now(); localStorage.setItem(keyFor(currentDiff), JSON.stringify(data)); } catch (e) { /* ignora */ }
     emit();
   }
 
   function emit() { listeners.forEach(fn => { try { fn(data); } catch (e) { /* ignora */ } }); }
   function onChange(fn) { listeners.push(fn); }
 
-  function newGame() {
+  function newGame(diff) {
+    if (diff) currentDiff = diff;
     data = defaults();
+    data.settings.dificuldade = currentDiff;
     persist();
     return data;
   }
 
-  function hasSave() { return !!load(); }
+  function hasSave(diff) { return !!readSave(diff || currentDiff); }
 
-  function wipe() { try { localStorage.removeItem(KEY); } catch (e) { /* ignora */ } data = null; }
+  function wipe(diff) {
+    const d = diff || currentDiff;
+    try { localStorage.removeItem(keyFor(d)); } catch (e) { /* ignora */ }
+    if (d === currentDiff) data = null;
+  }
+
+  function setDifficulty(diff) {
+    if (DIFFS.indexOf(diff) < 0) return false;
+    currentDiff = diff;
+    try { localStorage.setItem(KEY_LAST, diff); } catch (e) { }
+    load(diff);
+    return true;
+  }
+  function currentDifficulty() { return currentDiff; }
 
   /* ---------------- consultas ---------------- */
   function get() { if (!data) data = defaults(); return data; }
@@ -237,11 +292,14 @@ BM.save = (function () {
       : D.ITEMS.find(x => x.id === id);
     if (!item) return { ok: false, reason: 'ITEM INVÁLIDO' };
     const u = item.unlock;
-    if (u === 'initial') return { ok: true, reason: '' };
-    if (u === 'lvl3' && d.v1.level < 3) return { ok: false, reason: 'REQUER NÍVEL 3' };
-    if (u === 'lvl6' && d.v1.level < 6) return { ok: false, reason: 'REQUER NÍVEL 6' };
-    if (u === 'v2' && !d.flags.v2Dead) return { ok: false, reason: 'DERROTE V2' };
-    if (u === 'nucleo_v2' && !d.flags.nucleo_v2) return { ok: false, reason: 'REQUER NÚCLEO DE V2' };
+    if (!u || u === 'initial') return { ok: true, reason: '' };
+    if (u.indexOf('lvl') === 0) {
+      const lvl = parseInt(u.slice(3), 10) || 1;
+      if (d.v1.level < lvl) return { ok: false, reason: 'REQUER NÍVEL ' + lvl };
+    }
+    if (u === 'v2' && !d.flags.v2Dead) return { ok: false, reason: 'DERROTE O V2' };
+    if (u === 'gabriel' && !d.flags.gabrielDead) return { ok: false, reason: 'DERROTE GABRIEL' };
+    if (u === 'layer2') return { ok: false, reason: 'CAMADA 2 — EM DESENVOLVIMENTO' };
     return { ok: true, reason: '' };
   }
 
@@ -254,11 +312,16 @@ BM.save = (function () {
       : kind === 'chassis' ? D.CHASSIS.find(x => x.id === id)
       : D.ITEMS.find(x => x.id === id);
     const price = item.price || 0;
-    if (d.v1.scrap < price) return { ok: false, msg: 'SUCATA INSUFICIENTE' };
+    if (item.cores) {
+      if (d.v1.cores < item.cores) return { ok: false, msg: 'NÚCLEOS INSUFICIENTES' };
+      d.v1.cores -= item.cores;
+    } else {
+      if (d.v1.scrap < price) return { ok: false, msg: 'SUCATA INSUFICIENTE' };
+      d.v1.scrap -= price;
+    }
     if (kind === 'arm' && ownedArm(id)) return { ok: false, msg: 'JÁ ADQUIRIDO' };
     if (kind === 'leg' && ownedLeg(id)) return { ok: false, msg: 'JÁ ADQUIRIDO' };
     if (kind === 'chassis' && ownedChassis(id)) return { ok: false, msg: 'JÁ ADQUIRIDO' };
-    d.v1.scrap -= price;
     if (kind === 'arm') d.owned.arms.push(id);
     if (kind === 'leg') d.owned.legs.push(id);
     if (kind === 'chassis') d.owned.chassis.push(id);
@@ -307,6 +370,7 @@ BM.save = (function () {
 
   return {
     load, persist, newGame, hasSave, wipe, get, onChange,
+    readSave, saveInfo, setDifficulty, currentDifficulty, difficulties,
     ownedArm, ownedLeg, ownedChassis, armById, moveById, armOfMove,
     equippedArms, hasPassive, availableArms, loadoutMoves,
     v1Stats, xpNeeded, addXp, addScrap, addCores,

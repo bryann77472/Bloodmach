@@ -380,3 +380,5 @@ select{ background:#150d10; color:var(--bone); border:1px solid var(--line2); fo
   display:flex; flex-direction:column; gap:4px; }
 .diff-list b{ color:var(--bone); font-family:var(--font-mono); }
 .diff-card .btn.wide{ margin-top:auto; }
+.diff-card.tem-save{ border-color:#3a6b4a; }
+.save-info{ font-size:.68rem; letter-spacing:.1em; color:var(--green); text-transform:uppercase; }

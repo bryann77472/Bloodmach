@@ -167,6 +167,12 @@ BM.battle = (function () {
       const mult = Math.min(1.75, 0.6 + 0.4 * ratio);
       const base = move.power * mult * (1 + lvl / 25) * ESCALA_JOGADOR;
       let d = base * eff * (isCrit ? 1.5 : 1) * rand(0.9, 1.1);
+      // foco: os próximos golpes do V1 batem mais forte
+      if (isPlayer && S.player.focus > 0) { d *= 1.5; S.player.focus--; }
+      // bônus de ATQ por item (Tônico de Combustão)
+      if (isPlayer && S.player.atkBuffTurns > 0) d *= (1 + S.player.atkBuffPct);
+      // Moeda Gasta: crítico com dano extra
+      if (isPlayer && S.player.critPower > 0 && isCrit) { d *= (1 + S.player.critPower); S.player.critPower = 0; }
       // passiva do Knuckleblaster empurra; passiva Hellwhip ignora penalidade de distância
       if (isPlayer && attacker.velBoost > 0) d *= 1.2;
       if (isPlayer && S.enemy.canParry && Math.random() < 0.18) { d *= 0.45; parried = true; }
@@ -510,8 +516,22 @@ BM.battle = (function () {
     const item = D.ITEMS.find(i => i.id === id);
     if (!item) return;
     if (item.heal) { heal(S.player, item.heal, item.name); }
+    if (item.healOverTime) {
+      S.player.hotTurns = item.healOverTime.turns;
+      S.player.hotPct = item.healOverTime.pct;
+      log('O sangue circula: cura gradual por ' + item.healOverTime.turns + ' turnos.', 'ok');
+    }
     if (item.cureStatus) { S.player.status = {}; log('Todos os status foram removidos.', 'ok'); }
     if (item.crit) { S.player.critNext = true; log('O próximo golpe será crítico.', 'warn'); }
+    if (item.critPower) { S.player.critPower = item.critPower; log('A moeda está gasta: crítico com dano extra.', 'warn'); }
+    if (item.focus) { S.player.focus = (S.player.focus || 0) + item.focus; log('Foco: os próximos ' + item.focus + ' golpe(s) batem 50% mais forte.', 'ok'); }
+    if (item.atkBuff) {
+      S.player.atkBuffTurns = item.atkBuff.turns;
+      S.player.atkBuffPct = item.atkBuff.pct;
+      log('Combustão turbo: +' + Math.round(item.atkBuff.pct * 100) + '% de ATQ por ' + item.atkBuff.turns + ' turnos.', 'warn');
+    }
+    if (item.melt) { addStatus(S.enemy, 'derretido', item.melt); log(S.enemy.name + ' está Derretido!', 'hl'); }
+    if (item.bleed) { addStatus(S.enemy, 'sangramento', item.bleed); log(S.enemy.name + ' está sangrando!', 'hl'); }
     if (item.fixedDamage) {
       damage(S.enemy, item.fixedDamage, 'player');
       float('-' + item.fixedDamage, 'enemy', 'crit');
@@ -539,6 +559,12 @@ BM.battle = (function () {
     const p = S.player;
     Object.keys(p.cooldowns).forEach(k => { if (p.cooldowns[k] > 0) p.cooldowns[k]--; if (p.cooldowns[k] <= 0) delete p.cooldowns[k]; });
     if (p.velBoost > 0) p.velBoost--;
+    if (p.atkBuffTurns > 0) { p.atkBuffTurns--; if (p.atkBuffTurns === 0) { p.atkBuffPct = 0; log('O combustível turbo acaba.', ''); } }
+    if (p.hotTurns > 0) {
+      heal(p, p.hotPct, 'sangue');
+      p.hotTurns--;
+      log('A bolsa fria sangra no circuito.', 'ok');
+    }
     if (p.status && p.status.atordoado) {
       p.status.atordoado = 0;
       delete p.status.atordoado;
@@ -721,7 +747,8 @@ BM.battle = (function () {
         maxHp: st.maxHp, atk: st.atk, def: st.def, vel: st.vel, level: st.level,
         peso: st.peso, reflexo: st.reflexo, esquiva: st.esquiva, fuga: st.fuga,
         status: {}, cooldowns: {}, charge: null, dashArmed: false, dashUsed: false,
-        critNext: false, velBoost: 0, arranqueUsed: false, legs: st.legs, chassis: st.chassis
+        critNext: false, velBoost: 0, arranqueUsed: false, legs: st.legs, chassis: st.chassis,
+        focus: 0, critPower: 0, hotTurns: 0, hotPct: 0, atkBuffTurns: 0, atkBuffPct: 0
       },
       enemy: enemy,
       dist: 1,

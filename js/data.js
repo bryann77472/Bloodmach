@@ -124,30 +124,30 @@ BM.DATA = (function () {
     {
       id:'feedbacker', name:'Feedbacker', cor:'Azul', corHex:'#4aa8ff', type:'impacto',
       role:'Rápido, parry, fraco', price:0, unlock:'initial',
-      passive:{ id:'parry', name:'Parry', desc:'Libera o parry com barra de tempo.' },
+      passive:{ id:'parry', name:'Parry', desc:'Libera o parry: uma circunferência aparece e você clica nela.' },
       moves:['jab_rapido','rajada_tres','contra_golpe','postura_defensiva']
     },
     {
       id:'knuckleblaster', name:'Knuckleblaster', cor:'Vermelho', corHex:'#ff3b3b', type:'explosao',
-      role:'Lento, explosivo, forte', price:0, unlock:'initial',
+      role:'Lento, explosivo, forte', price:350, unlock:'v2',
       passive:{ id:'push', name:'Empurra', desc:'Ataques empurram o alvo para longe.' },
       moves:['soco_foguete','carga_sismica','onda_de_choque','detonacao']
     },
     {
       id:'whiplash', name:'Whiplash', cor:'Verde', corHex:'#3ddc84', type:'corte',
-      role:'Puxa e controla a distância', price:0, unlock:'initial',
+      role:'Puxa e controla a distância', price:400, unlock:'gabriel',
       passive:{ id:'pullAlways', name:'Puxão certeiro', desc:'O Puxão nunca erra.' },
       moves:['puxao','laco','gancho_vital','arremesso']
     },
     {
       id:'bloodreaver', name:'Bloodreaver', cor:'Carmim', corHex:'#e0417a', type:'sangue',
-      role:'Suga vida, sustain', price:300, unlock:'nucleo_v2',
+      role:'Suga vida, sustain', price:600, unlock:'layer2',
       passive:{ id:'healBonus', name:'Sede', desc:'+25% em toda cura.' },
       moves:['drenar','sangria','transfusao','banquete']
     },
     {
       id:'hellwhip', name:'Hellwhip', cor:'Laranja', corHex:'#ff9d2e', type:'fogo',
-      role:'Corrente que puxa e derrete', price:350, unlock:'v2',
+      role:'Corrente que puxa e derrete', price:600, unlock:'layer2',
       passive:{ id:'anyRange', name:'Alcance Ígneo', desc:'Acerte o alvo em qualquer distância.' },
       moves:['chicote_de_lava','laco_igneo','corrente_fundida','erupcao']
     },
@@ -169,7 +169,7 @@ BM.DATA = (function () {
     },
     {
       id:'fibra', name:'Pernas de Fibra', peso:-1, vel:1.20, esquiva:0.20, fuga:0.65,
-      ability:null, price:200, unlock:'lvl3',
+      ability:null, price:250, unlock:'gabriel',
       desc:'Estrutura ultraleve, sem sistema extra. Rápida e frágil.',
       abilityDesc:'Sem habilidade ativa.'
     },
@@ -182,7 +182,7 @@ BM.DATA = (function () {
       desc:'Carcaça original do V1. Equilibrada em tudo.'
     },
     {
-      id:'fibra', name:'Carcaça de Fibra', peso:-1, hp:0.80, vel:1.25, price:250, unlock:'lvl3',
+      id:'fibra', name:'Carcaça de Fibra', peso:-1, hp:0.80, vel:1.25, price:250, unlock:'gabriel',
       desc:'Placas ultraleves. Muito rápido, muito frágil.'
     },
     {
@@ -192,17 +192,43 @@ BM.DATA = (function () {
   ];
 
   /* ---------------- ITENS ---------------- */
+  /* Consumíveis comuns (sucata) e itens de núcleo (moeda: núcleos). */
   const ITEMS = [
+    /* --- consumíveis iniciais --- */
     { id:'bolsa_sangue', name:'Bolsa de Sangue', price:40, unlock:'initial', battle:true,
       desc:'Cura 40% do HP na hora.', heal:0.40 },
     { id:'adrenalina', name:'Adrenalina', price:50, unlock:'initial', battle:true,
-      desc:'Remove todos os status e concede +1 turno de foco.', cureStatus:true },
-    { id:'moeda', name:'Moeda', price:60, unlock:'initial', battle:true,
+      desc:'Remove todos os status e o próximo golpe causa 50% mais dano.', cureStatus:true, focus:1 },
+    { id:'moeda', name:'Moeda', price:60, unlock:'lvl4', battle:true,
       desc:'O próximo golpe é crítico garantido.', crit:true },
-    { id:'bomba', name:'Bomba', price:80, unlock:'initial', battle:true,
+    { id:'bomba', name:'Bomba', price:80, unlock:'lvl5', battle:true,
       desc:'60 de dano fixo, ignora DEF.', fixedDamage:60 },
     { id:'kit_reparo', name:'Kit de Reparo', price:120, unlock:'lvl6', battle:true,
-      desc:'Revive o V1 com 30% do HP.', revive:true },
+      desc:'Revive o V1 com 30% do HP.', revive:true, revivePct:0.30 },
+
+    /* --- itens de núcleo (moeda: núcleos) --- */
+    { id:'sangue_frio', name:'Sangue Frio', cores:3, unlock:'lvl6', battle:true,
+      desc:'Cura 55% do HP e o próximo golpe causa 50% mais dano.', heal:0.55, focus:1 },
+    { id:'adrenalina_forte', name:'Adrenalina Forte', cores:2, unlock:'lvl8', battle:true,
+      desc:'Remove todos os status e os próximos 2 golpes causam 50% mais dano.', cureStatus:true, focus:2 },
+    { id:'carvao_vivo', name:'Carvão Vivo', cores:2, unlock:'lvl7', battle:true,
+      desc:'Aplica Derretido por 4 turnos no alvo.', melt:4 },
+    { id:'estilhaco', name:'Estilhaço Sangrento', cores:4, unlock:'lvl10', battle:true,
+      desc:'150 de dano fixo, ignora DEF, e aplica Sangramento.', fixedDamage:150, bleed:3 },
+    { id:'reator', name:'Reator de Emergência', cores:3, unlock:'lvl9', battle:true,
+      desc:'Revive o V1 com 60% do HP e limpa todos os status.', revive:true, revivePct:0.60, cureStatus:true },
+
+    /* --- melhorias de outros itens (sucata) --- */
+    { id:'bolsa_fria', name:'Bolsa Fria', price:150, unlock:'lvl6', battle:true,
+      desc:'Cura 12% do HP a cada turno durante 3 turnos.', healOverTime:{ pct:0.12, turns:3 } },
+    { id:'moeda_gasta', name:'Moeda Gasta', price:140, unlock:'lvl5', battle:true,
+      desc:'O próximo golpe é crítico garantido e causa 30% mais dano.', crit:true, critPower:0.30 },
+    { id:'bomba_fundida', name:'Bomba Fundida', price:220, unlock:'lvl8', battle:true,
+      desc:'120 de dano fixo, ignora DEF, e aplica Sangramento por 3 turnos.', fixedDamage:120, bleed:3 },
+    { id:'tonico', name:'Tônico de Combustão', price:260, unlock:'lvl7', battle:true,
+      desc:'+30% de ATQ por 3 turnos.', atkBuff:{ pct:0.30, turns:3 } },
+    { id:'kit_avancado', name:'Kit Avançado', price:300, unlock:'lvl10', battle:true,
+      desc:'Revive o V1 com 50% do HP e o próximo golpe causa 50% mais dano.', revive:true, revivePct:0.50, focus:1 },
   ];
 
   /* ---------------- INIMIGOS ---------------- */
