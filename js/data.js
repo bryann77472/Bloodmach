@@ -219,19 +219,19 @@ BM.DATA = (function () {
     },
     {
       id:'knuckleblaster', name:'Knuckleblaster', cor:'Vermelho', corHex:'#ff3b3b', type:'explosao',
-      role:'Lento, explosivo, forte', price:350, unlock:'v2',
+      role:'Lento, explosivo, forte', price:0, unlock:'initial',
       passive:{ id:'push', name:'Empurra', desc:'Ataques empurram o alvo para longe.' },
       moves:['soco_foguete','carga_sismica','onda_de_choque','detonacao']
     },
     {
       id:'whiplash', name:'Whiplash', cor:'Verde', corHex:'#3ddc84', type:'corte',
-      role:'Puxa e controla a distância', price:400, unlock:'gabriel',
+      role:'Puxa e controla a distância', price:400, unlock:'v2',
       passive:{ id:'pullAlways', name:'Puxão certeiro', desc:'O Puxão nunca erra.' },
       moves:['puxao','laco','gancho_vital','arremesso']
     },
     {
       id:'bloodreaver', name:'Bloodreaver', cor:'Carmim', corHex:'#e0417a', type:'sangue',
-      role:'Suga vida, sustain', price:600, unlock:'layer2',
+      role:'Suga vida, sustain', price:600, unlock:'gabriel',
       passive:{ id:'healBonus', name:'Sede', desc:'+25% em toda cura.' },
       moves:['drenar','sangria','transfusao','banquete']
     },
@@ -384,7 +384,7 @@ BM.DATA = (function () {
      ELENCO — Atos, camadas e inimigos
      ============================================================ */
   const ACTS = [
-    { id: 'act1', num: 'I', name: 'Infinity Hyperdeath', desc: 'Três camadas: a cidade afogada, a catedral de carne e a fábrica de digestão.', wip: false, layers: ['limbo', 'lust', 'gluttony'] },
+    { id: 'act1', num: 'I', name: 'Infinity Hyperdeath', desc: 'Três camadas: os campos ensolarados, a metrópole neon e o estômago de carne.', wip: false, layers: ['limbo', 'lust', 'gluttony'] },
     { id: 'act2', num: 'II', name: 'Reversão', desc: 'O suborno da carne se inverte. Em desenvolvimento.', wip: true, layers: [] },
     { id: 'act3', num: 'III', name: 'Expiação', desc: 'O julgamento final. Em desenvolvimento.', wip: true, layers: [] }
   ];
@@ -392,33 +392,33 @@ BM.DATA = (function () {
   const LAYERS = [
     {
       id: 'limbo', act: 1, order: 1, baseLevel: 7,
-      name: 'Limbo', subtitle: 'A Cidade Submersa',
-      desc: 'Fábricas afogadas, cascas apodrecendo sob a água suja.',
+      name: 'Limbo', subtitle: 'O Vale Ensolarado',
+      desc: 'Céu azul, montanhas colossais, árvores e um vale de grama e água.',
       modifier: { id: 'mare', name: 'Maré Morta', desc: 'O V1 se debate: dano recebido +10%.', dmgPlayer: 1.10 },
       encounters: ['husk', 'stray', 'wretch', 'caged', 'drone', 'ceremoniar'],
       boss: 'v2',
       checkpoints: [3],
-      theme: { a: '#2b5a6b', b: '#0c1a20', c: '#7fd4e8' }
+      theme: { a: '#7ec8f0', b: '#3a8fc4', c: '#d9f2c4' }
     },
     {
       id: 'lust', act: 1, order: 2, baseLevel: 13,
-      name: 'Lust', subtitle: 'O Corpo do Rei Minos',
-      desc: 'Uma catedral de carne onde os corpos se arrastam e beijam.',
+      name: 'Lust', subtitle: 'A Metrópole Desejada',
+      desc: 'Metrópole neon de arranha-céus colossais, passarelas e andaimes no vazio.',
       modifier: { id: 'luxuria', name: 'Luxúria', desc: 'Os inimigos golpeiam 18% mais forte.', atkMul: 1.18 },
       encounters: ['enthusiast', 'journeyman', 'corporal', 'fanatic', 'lustful_husk', 'ceremoniar2'],
       boss: 'minos',
       checkpoints: [3],
-      theme: { a: '#7a2a5a', b: '#1c0a16', c: '#e0a0d0' }
+      theme: { a: '#a326c4', b: '#22053a', c: '#ff5ad0' }
     },
     {
       id: 'gluttony', act: 1, order: 3, baseLevel: 19,
-      name: 'Gluttony', subtitle: 'A Fábrica de Digestão',
-      desc: 'Fornos, ácido e um anjo esperando no fim da linha.',
+      name: 'Gluttony', subtitle: 'O Estômago do Mundo',
+      desc: 'Carne exposta, pequenas poças de ácido e o brilho amarelado da bile.',
       modifier: { id: 'acido', name: 'Digestão Ácida', desc: 'Toda cura é 30% menor.', healMul: 0.70 },
       encounters: ['soothsayer', 'filet', 'bigjohn', 'tallow', 'drone2', 'ceremoniar3'],
       boss: 'gabriel',
       checkpoints: [3],
-      theme: { a: '#7d1f16', b: '#2a0d0a', c: '#d8b25a' }
+      theme: { a: '#8a2214', b: '#1a0706', c: '#c9d24a' }
     }
   ];
 

@@ -52,7 +52,7 @@ BM.ui = (function () {
     const d = has ? BM.save.get() : null;
     mount(`
       <div class="screen title-screen">
-        <div class="title-bg">${BM.sprites.arena({ a:'#7d1f16', b:'#140a0c', c:'#d8b25a' })}</div>
+        <div class="title-bg">${BM.sprites.arena('gluttony')}</div>
         <div class="title-glow"></div>
         <div class="title-v1">${BM.sprites.v1('#4aa8ff')}</div>
         <div class="title-inner">
@@ -622,6 +622,10 @@ BM.ui = (function () {
           </div>
         </div>
         <div style="padding:16px;max-width:900px;margin:0 auto;width:100%">
+          <div class="map-scene">
+            ${BM.sprites.arena(L.id)}
+            <div class="map-scene-text"><b>${L.name.toUpperCase()}</b><span>${L.desc}</span></div>
+          </div>
           <div class="panel">
             <div class="panel-head"><span>Progresso</span><span>${node}/${L.encounters.length} + chefe</span></div>
             <div class="node-list">
@@ -750,12 +754,13 @@ BM.ui = (function () {
     BM.audio.playMusic(musicFor(BM.battle.state.layerIndex, BM.battle.state.isBoss));
     const S = BM.battle.state;
     const layer = S.layer;
+    const bossFx = { night: S.isBoss && S.enemy.id === 'v2', noAcid: S.isBoss && S.enemy.id === 'gabriel' };
     const arms = BM.save.equippedArms().map(id => D.ARMS.find(a => a.id === id)).filter(Boolean);
     const accent = arms.length ? arms[0].corHex : '#4aa8ff';
     mount(`
       <div class="screen battle" id="battle-root">
-        <div class="arena" id="arena">
-          <div class="arena-bg">${BM.sprites.arena(layer.theme)}</div>
+        <div class="arena" id="arena" data-layer="${layer.id}" data-variant="${bossFx.night ? 'night' : (bossFx.noAcid ? 'noacid' : '')}">
+          <div class="arena-bg">${BM.sprites.arena(layer.id, bossFx)}</div>
           <div class="arena-floor"></div>
           <div class="fighter player" id="f-player">
             <div class="f-sprite">${BM.sprites.v1(accent)}</div>

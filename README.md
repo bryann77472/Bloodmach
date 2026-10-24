@@ -35,16 +35,31 @@ camada. O **Ato I — Infinity Hyperdeath** está liberado; os Atos II e III mos
 
 | Camada | Ambiente | Modificador | Chefe |
 |---|---|---|---|
-| **1. Limbo** | A Cidade Submersa | *Maré Morta* — dano recebido +10% | **V2** (ele **foge**) |
-| **2. Lust** | O Corpo do Rei Minos | *Luxúria* — inimigos golpeiam 18% mais forte | **O Corpo do Rei Minos** (gigante) |
-| **3. Gluttony** | A Fábrica de Digestão | *Digestão Ácida* — toda cura 30% menor | **Gabriel** |
+| **1. Limbo** | Vale ensolarado: céu azul, montanhas, árvores, grama e água (anoitece contra o V2) | *Maré Morta* — dano recebido +10% | **V2** (ele **foge**) |
+| **2. Lust** | Metrópole neon de arranha-céus, com plataforma suspensa sobre o vazio | *Luxúria* — inimigos golpeiam 18% mais forte | **O Corpo do Rei Minos** (gigante) |
+| **3. Gluttony** | Estômago de carne exposta, pequenas poças de ácido e bile | *Digestão Ácida* — toda cura 30% menor | **Gabriel** |
 
 Cada camada é mais dura que a anterior: inimigos com **mais HP e mais ATQ** (a base de
 escala junto com o seu nível). **A camada só abre quando a anterior é concluída** —
 finishar Limbo abre Lust, finishar Lust abre Gluttony.
+
+**Cenários** — cada camada tem arte vetorial própria, usada na arena de batalha, no
+mapa da camada e no card da Oficina:
+- **Limbo — O Vale Ensolarado:** céu azul de verão com sol alto e nuvens, montanhas
+  colossais com neve no topo, árvores, grama verdejante e um lago cercado de grama —
+  os lutadores ficam sempre em terra firme. **Contra o V2 a camada anoitece**: lua,
+  estrelas, vaga-lumes e o reflexo da lua na água.
+- **Lust — A Metrópole Desejada:** céu roxo neon com uma paleta intensa de roxos e
+  magentas, arranha-céus colossais, complexos habitacionais modernos, passarelas
+  metálicas e andaimes suspensos no vazio — a camada mais tecnológica. A luta acontece
+  sobre uma **plataforma industrial suspensa**, com deck de metal, guarda-corpo,
+  cabos e faixas de perigo.
+- **Gluttony — O Estômago do Mundo:** paredes, teto e chão de músculo vermelho exposto,
+  apenas **algumas poças pequenas de ácido**, tudo iluminado fracamente pelo brilho
+  amarelado da bile. **Contra o Gabriel não há ácido algum** no cenário.
 - Modificadores de camada: *Maré Morta* (dano +10%), *Luxúria* (inimigos +18% ATQ) e *Digestão Ácida* (cura −30%).
 - **V2** é o chefe de Limbo: copia seus 2 braços e seus 4 movimentos, usa parry… e **foge**
-  quando é derrotado (sem recompensas, mas a camada continua).
+  quando é derrotado — a fuga conta como derrota, conclui a camada e libera o **Whiplash**.
 - **O Corpo do Rei Minos** é o chefe de Lust: um corpo gigante que ocupa a tela inteira,
   desenhado a partir da referência do jogo original (a cavidade do tórax vista do V1).
 - **Cutscene só dos chefes**: antes de encarar um chefe, ele aparece em tela cheia com
@@ -164,15 +179,16 @@ repositório não pesar (8 MB no total).
 ---
 
 ### Equipamento e desbloqueios
-O V1 começa **só com o Feedbacker** e os 4 golpes dele. O resto do hardware é
-liberado pelo progresso e depois **comprado na loja**:
+O V1 começa com o **Feedbacker** e o **Knuckleblaster** (grátis) e já entra em campo com
+**3 golpes do Feedbacker + 1 do Knuckleblaster**. O resto do hardware é liberado pelo
+progresso e depois **comprado na loja**:
 
 | Peça | Cor | Preço | Liberada quando |
 |---|---|---|---|
 | **Feedbacker** | Azul | — | já vem com o V1 |
-| **Knuckleblaster** | Vermelho | 350 ◆ | **derrotar o V2** (Limbo) |
-| **Whiplash** | Verde | 400 ◆ | **derrotar o Gabriel** (Gluttony) |
-| **Bloodreaver** | Carmim | 600 ◆ | camada 2 — *em desenvolvimento* |
+| **Knuckleblaster** | Vermelho | — | **livre**: já vem com o V1 |
+| **Whiplash** | Verde | 400 ◆ | **derrotar o V2** (Limbo) |
+| **Bloodreaver** | Carmim | 600 ◆ | **derrotar o Gabriel** (Gluttony) |
 | **Hellwhip** | Laranja | 600 ◆ | camada 2 — *em desenvolvimento* |
 | **Thunderfist** | Amarelo | 450 ◆ | camada 2 — *em desenvolvimento* |
 | **Venomclaw** | Verde | 500 ◆ | camada 2 — *em desenvolvimento* |
@@ -188,7 +204,7 @@ liberado pelo progresso e depois **comprado na loja**:
 | **Carcaça Titan Husk** | Cinza | 400 ◆ | camada 2 — *em desenvolvimento* |
 | **Carcaça Bloodforge** | Vermelha | 400 ◆ | camada 2 — *em desenvolvimento* |
 
-Todas as peças listadas como *camada 2* (Bloodreaver, Hellwhip, Thunderfist, Venomclaw,
+Todas as peças listadas como *camada 2* (Hellwhip, Thunderfist, Venomclaw,
 Soulreaver, Voidgrip, Gravityhook, Shadow Step, Berserk Springs, Titan Husk e Bloodforge)
 ficam **bloqueadas e impossíveis de usar** enquanto a camada 2 não existir. O conteúdo
 delas já está pronto no jogo (movimentos, passivas e sprites) e entra assim que a camada

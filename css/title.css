@@ -76,6 +76,7 @@
   padding:12px; display:flex; flex-direction:column; gap:8px; position:relative; overflow:hidden;
 }
 .layer-card.locked{ opacity:.45; }
+.layer-card .btn.wide{ margin-top:auto; }
 .layer-card h3{ font-family:var(--font-disp); font-size:1.5rem; letter-spacing:.06em; }
 .layer-card .layer-art{ height:96px; }
 .layer-card .layer-art svg{ height:100%; width:auto; }

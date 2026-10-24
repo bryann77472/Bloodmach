@@ -925,7 +925,469 @@ BM.sprites = (function () {
   }
 
   /* ---------------- CENÁRIOS ---------------- */
-  function arena(theme) {
+  /* ---- LIMBO: vale ensolarado; à noite contra o V2 ---- */
+  function sceneLimbo(night) {
+    const c = night ? {
+      sky1: '#060a20', sky2: '#16224a', sky3: '#2c3c66',
+      glow1: '#eaf2ff', glow2: '#9db8e8', glow3: '#5a78b8',
+      sun: '#eef4ff',
+      far1: '#2a3a60', far2: '#1a2645',
+      mid1: '#24424f', mid2: '#142b35',
+      grass1: '#3a7a5c', grass2: '#173a2b',
+      fg1: '#2f6b50', fg2: '#0f2a20',
+      water1: '#4a7fb0', water2: '#24507c', water3: '#0f2846',
+      shore: '#7f9f97', line: '#4d8f6a',
+      cloud: '#c8d4ee', cloudOp: '.30',
+      leaf: ['#1f4a44', '#2a5f54', '#163933'], trunk: '#2a2038',
+      snow: '#cfdcff'
+    } : {
+      sky1: '#3f9ee0', sky2: '#8fd2f2', sky3: '#eaf7e3',
+      glow1: '#fffbe2', glow2: '#ffe98a', glow3: '#ffd54a',
+      sun: '#fff9d6',
+      far1: '#b3d6e8', far2: '#7fa9c4',
+      mid1: '#5a9b84', mid2: '#2d6656',
+      grass1: '#7cc45c', grass2: '#2f6b2c',
+      fg1: '#6ab84f', fg2: '#245c25',
+      water1: '#9adcec', water2: '#4a9cba', water3: '#286a8c',
+      shore: '#d5eab0', line: '#a8dd86',
+      cloud: '#ffffff', cloudOp: '.92',
+      leaf: ['#2f7a34', '#3f8f3e', '#2a6630'], trunk: '#4a2f18',
+      snow: '#f4fbff'
+    };
+
+    function tree(x, y, s) {
+      return '<g transform="translate(' + x + ',' + y + ') scale(' + s + ')">' +
+        '<rect x="-4" y="-8" width="8" height="26" fill="' + c.trunk + '"/>' +
+        '<circle cx="0" cy="-22" r="18" fill="' + c.leaf[0] + '"/>' +
+        '<circle cx="-15" cy="-12" r="12" fill="' + c.leaf[1] + '"/>' +
+        '<circle cx="15" cy="-12" r="12" fill="' + c.leaf[2] + '"/>' +
+        '</g>';
+    }
+
+    const stars = night ? `
+      <g fill="#e6efff" opacity=".9">
+        <circle cx="64" cy="30" r="1.5"/><circle cx="130" cy="78" r="1.1"/><circle cx="206" cy="22" r="1.4"/>
+        <circle cx="286" cy="58" r="1.2"/><circle cx="352" cy="26" r="1.6"/><circle cx="420" cy="70" r="1.1"/>
+        <circle cx="494" cy="18" r="1.5"/><circle cx="560" cy="54" r="1.2"/><circle cx="736" cy="30" r="1.4"/>
+        <circle cx="778" cy="86" r="1.1"/><circle cx="36" cy="102" r="1.2"/><circle cx="610" cy="96" r="1"/>
+      </g>` : '';
+
+    const birds = night ? '' : `
+      <g stroke="#3d5a66" stroke-width="2" fill="none" opacity=".5" stroke-linecap="round">
+        <path d="M236 96 q7 -6 14 0 q7 -6 14 0"/>
+        <path d="M292 74 q5 -5 10 0 q5 -5 10 0"/>
+        <path d="M438 108 q6 -6 12 0 q6 -6 12 0"/>
+        <path d="M700 128 q6 -6 12 0 q6 -6 12 0"/>
+      </g>`;
+
+    const ring = night ? '<circle cx="652" cy="64" r="42" fill="none" stroke="#cfdcff" stroke-width="1.5" opacity=".22"/>' : '';
+    const fireflies = night ? `
+      <g fill="#d8e88a" opacity=".85">
+        <circle cx="176" cy="306" r="1.8"/><circle cx="248" cy="318" r="1.4"/>
+        <circle cx="472" cy="300" r="1.6"/><circle cx="642" cy="312" r="1.5"/><circle cx="742" cy="304" r="1.3"/>
+      </g>` : '';
+    const glimmer = night ? `
+      <g stroke="#dbe8ff" stroke-width="2" opacity=".4" fill="none" stroke-linecap="round">
+        <path d="M638 306 h28"/><path d="M630 312 h44"/><path d="M642 318 h24"/>
+      </g>` : '';
+
+    return `<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="lm-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${c.sky1}"/><stop offset=".5" stop-color="${c.sky2}"/><stop offset="1" stop-color="${c.sky3}"/>
+        </linearGradient>
+        <radialGradient id="lm-sun">
+          <stop offset="0" stop-color="${c.glow1}"/><stop offset=".38" stop-color="${c.glow2}" stop-opacity=".9"/><stop offset="1" stop-color="${c.glow3}" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="lm-far" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${c.far1}"/><stop offset="1" stop-color="${c.far2}"/>
+        </linearGradient>
+        <linearGradient id="lm-mid" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${c.mid1}"/><stop offset="1" stop-color="${c.mid2}"/>
+        </linearGradient>
+        <linearGradient id="lm-grass" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${c.grass1}"/><stop offset="1" stop-color="${c.grass2}"/>
+        </linearGradient>
+        <linearGradient id="lm-fg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${c.fg1}"/><stop offset="1" stop-color="${c.fg2}"/>
+        </linearGradient>
+        <linearGradient id="lm-water" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${c.water1}"/><stop offset=".45" stop-color="${c.water2}"/><stop offset="1" stop-color="${c.water3}"/>
+        </linearGradient>
+      </defs>
+
+      <rect width="800" height="360" fill="url(#lm-sky)"/>
+      ${stars}
+      <circle cx="652" cy="64" r="104" fill="url(#lm-sun)"/>
+      <circle cx="652" cy="64" r="27" fill="${c.sun}"/>
+      ${ring}
+
+      <g fill="${c.cloud}" opacity="${c.cloudOp}">
+        <g opacity=".92">
+          <ellipse cx="118" cy="62" rx="54" ry="15"/><ellipse cx="150" cy="52" rx="33" ry="17"/>
+          <ellipse cx="90" cy="56" rx="27" ry="12"/><ellipse cx="132" cy="44" rx="22" ry="14"/>
+        </g>
+        <g opacity=".72">
+          <ellipse cx="360" cy="40" rx="44" ry="11"/><ellipse cx="388" cy="33" rx="26" ry="13"/>
+          <ellipse cx="338" cy="35" rx="20" ry="9"/>
+        </g>
+        <g opacity=".8">
+          <ellipse cx="540" cy="122" rx="38" ry="10"/><ellipse cx="562" cy="116" rx="22" ry="11"/>
+        </g>
+        <g opacity=".55">
+          <ellipse cx="262" cy="140" rx="30" ry="8"/><ellipse cx="280" cy="136" rx="18" ry="9"/>
+        </g>
+      </g>
+      ${birds}
+
+      <rect x="0" y="196" width="800" height="64" fill="${night ? '#8fa8d8' : '#ffffff'}" opacity="${night ? '.10' : '.18'}"/>
+
+      <path d="M0 226 L58 156 L104 190 L168 112 L236 196 L300 150 L356 214 L430 128 L498 200 L556 158 L628 216 L700 140 L764 198 L800 168 L800 262 L0 262 Z" fill="url(#lm-far)"/>
+      <g fill="${c.snow}" opacity=".95">
+        <path d="M168 112 L192 140 L180 146 L168 136 L154 146 L146 140 Z"/>
+        <path d="M430 128 L452 154 L440 160 L428 150 L416 160 L410 154 Z"/>
+        <path d="M700 140 L722 166 L710 172 L698 162 L686 172 L680 166 Z"/>
+      </g>
+      <g fill="${c.snow}" opacity=".45">
+        <path d="M58 156 L72 174 L64 176 L58 170 L50 176 L44 174 Z"/>
+        <path d="M300 150 L314 168 L306 170 L300 164 L292 170 L286 168 Z"/>
+      </g>
+
+      <path d="M0 268 L72 208 L140 250 L216 196 L292 260 L370 210 L444 262 L520 206 L596 258 L672 214 L748 262 L800 232 L800 322 L0 322 Z" fill="url(#lm-mid)"/>
+      <g stroke="${c.line}" stroke-width="2" opacity=".35" fill="none">
+        <path d="M60 250 q40 -18 80 0"/><path d="M300 246 q46 -20 92 0"/><path d="M560 250 q44 -18 88 0"/>
+      </g>
+
+      <path d="M0 298 C110 268 190 296 290 288 C390 280 470 302 570 290 C660 279 740 294 800 284 L800 360 L0 360 Z" fill="url(#lm-grass)"/>
+      <g stroke="${c.line}" stroke-width="2" opacity=".4" fill="none">
+        <path d="M40 306 q30 -10 60 -2"/><path d="M340 300 q40 -10 80 -2"/><path d="M620 306 q36 -10 72 -2"/>
+      </g>
+
+      <path d="M0 302 C90 292 170 308 260 301 C370 293 460 311 570 304 C670 297 750 308 800 302 L800 328 C700 336 620 320 520 328 C420 336 320 322 220 330 C140 336 60 324 0 332 Z" fill="url(#lm-water)"/>
+      <path d="M0 302 C90 292 170 308 260 301 C370 293 460 311 570 304 C670 297 750 308 800 302" fill="none" stroke="${c.shore}" stroke-width="4" opacity=".7"/>
+      <g stroke="${night ? '#dbe8ff' : '#e6faff'}" stroke-width="2" opacity="${night ? '.3' : '.45'}" fill="none" stroke-linecap="round">
+        <path d="M60 310 h44"/><path d="M154 314 h30"/><path d="M250 308 h52"/>
+        <path d="M390 314 h38"/><path d="M500 306 h46"/><path d="M640 314 h36"/><path d="M722 308 h40"/>
+      </g>
+      ${glimmer}
+
+      <path d="M0 312 C90 302 180 320 280 312 C390 304 500 322 610 314 C700 308 760 316 800 310 L800 360 L0 360 Z" fill="url(#lm-fg)"/>
+      <path d="M0 312 C90 302 180 320 280 312 C390 304 500 322 610 314 C700 308 760 316 800 310" fill="none" stroke="${c.shore}" stroke-width="2" opacity=".35"/>
+      <g stroke="${c.line}" stroke-width="2" opacity=".5" fill="none" stroke-linecap="round">
+        <path d="M70 324 q7 -9 14 0"/><path d="M150 332 q6 -8 12 0"/><path d="M236 320 q7 -9 14 0"/>
+        <path d="M330 336 q6 -8 12 0"/><path d="M430 328 q7 -9 14 0"/><path d="M540 338 q6 -8 12 0"/>
+        <path d="M636 326 q7 -9 14 0"/><path d="M720 336 q6 -8 12 0"/>
+      </g>
+      <g fill="${night ? '#c9d8ff' : '#fff7c4'}" opacity=".8">
+        <circle cx="110" cy="332" r="1.6"/><circle cx="196" cy="342" r="1.4"/>
+        <circle cx="356" cy="330" r="1.5"/><circle cx="500" cy="344" r="1.4"/>
+        <circle cx="610" cy="334" r="1.5"/><circle cx="700" cy="346" r="1.4"/>
+      </g>
+      ${fireflies}
+
+      ${tree(120, 276, .75)}
+      ${tree(212, 280, .9)}
+      ${tree(486, 278, .7)}
+      ${tree(566, 282, .85)}
+      ${tree(430, 348, 1.1)}
+      ${tree(28, 344, 1.35)}
+      ${tree(772, 340, 1.5)}
+    </svg>`;
+  }
+
+  /* ---- LUST: metrópole neon roxa/magenta ---- */
+  function sceneLust() {
+    return `<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="lu-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1e0433"/><stop offset=".38" stop-color="#5a0d80"/>
+          <stop offset=".72" stop-color="#b31fb8"/><stop offset="1" stop-color="#ff4fc4"/>
+        </linearGradient>
+        <radialGradient id="lu-glow">
+          <stop offset="0" stop-color="#ff7ae0" stop-opacity=".85"/><stop offset="1" stop-color="#ff2fb0" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="lu-haze" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ff4fc4" stop-opacity="0"/><stop offset=".55" stop-color="#ff4fc4" stop-opacity=".38"/>
+          <stop offset="1" stop-color="#ff8ae8" stop-opacity=".12"/>
+        </linearGradient>
+        <linearGradient id="lu-tower" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5e1a86"/><stop offset="1" stop-color="#170229"/>
+        </linearGradient>
+        <linearGradient id="lu-tower2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3f1058"/><stop offset="1" stop-color="#1d0430"/>
+        </linearGradient>
+        <pattern id="lu-win" width="12" height="16" patternUnits="userSpaceOnUse">
+          <rect x="2" y="3" width="5" height="7" fill="#ff8ae8" opacity=".75"/>
+          <rect x="9" y="4" width="2" height="2" fill="#7de8ff" opacity=".55"/>
+        </pattern>
+        <pattern id="lu-win2" width="10" height="12" patternUnits="userSpaceOnUse">
+          <rect x="1" y="2" width="4" height="5" fill="#7de8ff" opacity=".6"/>
+        </pattern>
+        <linearGradient id="lu-fog" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ff5ad0" stop-opacity="0"/><stop offset="1" stop-color="#ff5ad0" stop-opacity=".38"/>
+        </linearGradient>
+        <pattern id="lu-hazard" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="6" height="12" fill="#d8b25a" opacity=".5"/>
+        </pattern>
+      </defs>
+
+      <rect width="800" height="360" fill="url(#lu-sky)"/>
+      <circle cx="400" cy="262" r="196" fill="url(#lu-glow)" opacity=".7"/>
+      <rect x="0" y="118" width="800" height="152" fill="url(#lu-haze)" opacity=".8"/>
+
+      <g fill="#ffd6f6" opacity=".75">
+        <circle cx="70" cy="34" r="1.6"/><circle cx="150" cy="58" r="1.2"/><circle cx="238" cy="26" r="1.5"/>
+        <circle cx="330" cy="52" r="1.1"/><circle cx="470" cy="30" r="1.5"/><circle cx="562" cy="62" r="1.2"/>
+        <circle cx="654" cy="24" r="1.6"/><circle cx="736" cy="48" r="1.2"/><circle cx="398" cy="88" r="1"/>
+      </g>
+
+      <g fill="#2a0a3f" opacity=".9">
+        <rect x="0" y="188" width="34" height="172"/><rect x="40" y="206" width="26" height="154"/>
+        <rect x="250" y="196" width="30" height="164"/><rect x="286" y="214" width="20" height="146"/>
+        <rect x="430" y="192" width="34" height="168"/><rect x="470" y="212" width="22" height="148"/>
+        <rect x="600" y="200" width="28" height="160"/><rect x="636" y="186" width="34" height="174"/>
+        <rect x="760" y="206" width="40" height="154"/>
+      </g>
+
+      <g>
+        <rect x="20" y="42" width="82" height="318" fill="url(#lu-tower)" stroke="#ff5ad0" stroke-opacity=".45"/>
+        <rect x="23" y="45" width="76" height="312" fill="url(#lu-win)" opacity=".5"/>
+        <rect x="20" y="42" width="82" height="5" fill="#ff5ad0" opacity=".6"/>
+
+        <rect x="112" y="116" width="58" height="244" fill="url(#lu-tower2)" stroke="#ff5ad0" stroke-opacity=".3"/>
+        <rect x="115" y="119" width="52" height="238" fill="url(#lu-win2)" opacity=".45"/>
+        <rect x="112" y="116" width="58" height="4" fill="#7de8ff" opacity=".5"/>
+
+        <rect x="196" y="74" width="72" height="286" fill="url(#lu-tower)" stroke="#ff5ad0" stroke-opacity=".4"/>
+        <rect x="199" y="77" width="66" height="280" fill="url(#lu-win)" opacity=".42"/>
+        <rect x="196" y="74" width="72" height="5" fill="#ff5ad0" opacity=".55"/>
+
+        <rect x="300" y="132" width="62" height="228" fill="url(#lu-tower2)" stroke="#c46bff" stroke-opacity=".35"/>
+        <rect x="303" y="135" width="56" height="222" fill="url(#lu-win2)" opacity=".4"/>
+
+        <rect x="396" y="58" width="90" height="302" fill="url(#lu-tower)" stroke="#ff5ad0" stroke-opacity=".45"/>
+        <rect x="399" y="61" width="84" height="296" fill="url(#lu-win)" opacity=".5"/>
+        <rect x="396" y="58" width="90" height="6" fill="#ff5ad0" opacity=".6"/>
+        <rect x="432" y="40" width="18" height="18" fill="#2a0a3f" stroke="#ff5ad0" stroke-opacity=".5"/>
+
+        <rect x="498" y="108" width="66" height="252" fill="url(#lu-tower2)" stroke="#c46bff" stroke-opacity=".35"/>
+        <rect x="501" y="111" width="60" height="246" fill="url(#lu-win2)" opacity=".42"/>
+
+        <rect x="580" y="66" width="80" height="294" fill="url(#lu-tower)" stroke="#ff5ad0" stroke-opacity=".4"/>
+        <rect x="583" y="69" width="74" height="288" fill="url(#lu-win)" opacity=".48"/>
+
+        <rect x="676" y="126" width="54" height="234" fill="url(#lu-tower2)" stroke="#c46bff" stroke-opacity=".3"/>
+        <rect x="679" y="129" width="48" height="228" fill="url(#lu-win2)" opacity=".45"/>
+
+        <rect x="742" y="88" width="58" height="272" fill="url(#lu-tower)" stroke="#ff5ad0" stroke-opacity=".4"/>
+        <rect x="745" y="91" width="52" height="266" fill="url(#lu-win)" opacity=".45"/>
+      </g>
+
+      <g fill="#1a0428" stroke="#ff8ae8" stroke-width="1" opacity=".85">
+        <rect x="130" y="222" width="210" height="60"/>
+        <rect x="470" y="236" width="180" height="52"/>
+      </g>
+      <g stroke="#ff5ad0" stroke-width="1.4" opacity=".55">
+        <path d="M130 238 h210"/><path d="M130 254 h210"/><path d="M130 270 h210"/>
+        <path d="M470 250 h180"/><path d="M470 264 h180"/>
+      </g>
+      <g fill="#7de8ff" opacity=".5">
+        <rect x="140" y="228" width="7" height="5"/><rect x="160" y="228" width="7" height="5"/><rect x="180" y="228" width="7" height="5"/>
+        <rect x="200" y="228" width="7" height="5"/><rect x="220" y="228" width="7" height="5"/><rect x="240" y="228" width="7" height="5"/>
+        <rect x="260" y="228" width="7" height="5"/><rect x="280" y="228" width="7" height="5"/><rect x="300" y="228" width="7" height="5"/>
+        <rect x="480" y="242" width="7" height="5"/><rect x="502" y="242" width="7" height="5"/><rect x="524" y="242" width="7" height="5"/>
+        <rect x="546" y="242" width="7" height="5"/><rect x="568" y="242" width="7" height="5"/><rect x="590" y="242" width="7" height="5"/>
+      </g>
+
+      <g stroke="#9a86c0" stroke-width="4" opacity=".95">
+        <path d="M102 158 H268"/><path d="M330 190 H396"/><path d="M486 148 H640"/>
+      </g>
+      <g stroke="#6d5a8f" stroke-width="2" opacity=".75">
+        <path d="M112 158 V170 M132 158 V170 M152 158 V170 M172 158 V170 M192 158 V170 M212 158 V170 M232 158 V170 M252 158 V170"/>
+        <path d="M340 190 V202 M358 190 V202 M376 190 V202"/>
+        <path d="M496 148 V160 M520 148 V160 M544 148 V160 M568 148 V160 M592 148 V160 M616 148 V160"/>
+      </g>
+
+      <g stroke="#c7b3e8" stroke-width="1.4" opacity=".65">
+        <path d="M330 56 V258"/><path d="M392 56 V258"/>
+        <path d="M540 92 V292"/><path d="M596 92 V292"/>
+        <path d="M674 140 V276"/>
+      </g>
+      <g fill="#4a3559" stroke="#a48ac4" stroke-width="1.5">
+        <rect x="312" y="258" width="108" height="8"/>
+        <rect x="522" y="292" width="92" height="8"/>
+        <rect x="652" y="276" width="44" height="7"/>
+      </g>
+      <g stroke="#7f68a4" stroke-width="2" opacity=".85">
+        <path d="M320 266 V282 M336 266 V282 M352 266 V282 M368 266 V282 M384 266 V282 M400 266 V282"/>
+        <path d="M530 300 V314 M548 300 V314 M566 300 V314 M584 300 V314 M602 300 V314"/>
+      </g>
+
+      <g stroke="#8a76b0" stroke-width="3" fill="none" opacity=".8">
+        <path d="M706 300 V152"/><path d="M706 152 H786"/><path d="M706 152 L750 300"/>
+        <path d="M742 152 V196"/>
+      </g>
+      <rect x="734" y="196" width="16" height="11" fill="#5a4570" stroke="#a48ac4"/>
+
+      <g fill="#ff5ad0" opacity=".85">
+        <circle cx="134" cy="234" r="2.5"/><circle cx="474" cy="248" r="2.5"/><circle cx="238" cy="80" r="2.2"/>
+      </g>
+      <g fill="#7de8ff" opacity=".8"><circle cx="308" cy="138" r="2.2"/><circle cx="680" cy="132" r="2"/></g>
+
+      <g fill="#ff4fd8" opacity=".85">
+        <rect x="18" y="58" width="3" height="302"/>
+        <rect x="392" y="72" width="3" height="288"/>
+        <rect x="576" y="80" width="3" height="280"/>
+        <rect x="738" y="102" width="3" height="258"/>
+      </g>
+      <g fill="#7de8ff" opacity=".7">
+        <rect x="108" y="130" width="2" height="230"/>
+        <rect x="494" y="122" width="2" height="238"/>
+      </g>
+      <g fill="#ff8ae8" opacity=".9">
+        <rect x="212" y="152" width="6" height="24" rx="2"/>
+        <rect x="512" y="176" width="6" height="20" rx="2"/>
+        <rect x="600" y="96" width="5" height="30" rx="2"/>
+      </g>
+
+      <rect x="0" y="286" width="800" height="74" fill="url(#lu-fog)" opacity=".8"/>
+
+      <!-- plataforma suspensa: cabos e guarda-corpo -->
+      <g stroke="#c7b3e8" stroke-width="1.4" opacity=".45">
+        <path d="M118 0 V296"/><path d="M282 0 V296"/><path d="M518 0 V296"/><path d="M682 0 V296"/>
+        <path d="M40 96 L118 300"/><path d="M760 96 L682 300"/>
+      </g>
+      <g stroke="#9a86c0" stroke-width="2.5" opacity=".9">
+        <path d="M32 296 V312 M92 296 V312 M152 296 V312 M212 296 V312 M272 296 V312 M332 296 V312 M392 296 V312 M452 296 V312 M512 296 V312 M572 296 V312 M632 296 V312 M692 296 V312 M752 296 V312"/>
+        <path d="M32 298 H332 M32 306 H332 M452 298 H768 M452 306 H768"/>
+      </g>
+
+      <!-- deck industrial -->
+      <path d="M-20 310 L820 310 L806 332 L14 332 Z" fill="#2b1b3d" stroke="#a48ac4" stroke-width="2"/>
+      <path d="M14 332 L806 332 L800 350 L20 350 Z" fill="#1a1026" stroke="#7f68a4" stroke-width="1.5"/>
+      <path d="M-20 310 L820 310" stroke="#ff8ae8" stroke-width="2" opacity=".45"/>
+      <g stroke="#4a3559" stroke-width="1.4" opacity=".9">
+        <path d="M30 317 H780"/><path d="M24 324 H786"/>
+        <path d="M70 310 V331 M150 310 V331 M230 310 V331 M310 310 V331 M390 310 V331 M470 310 V331 M550 310 V331 M630 310 V331 M710 310 V331"/>
+      </g>
+      <rect x="18" y="332" width="46" height="17" fill="url(#lu-hazard)"/>
+      <rect x="736" y="332" width="46" height="17" fill="url(#lu-hazard)"/>
+      <g fill="#8f76ab" opacity=".9">
+        <circle cx="90" cy="341" r="2"/><circle cx="160" cy="341" r="2"/><circle cx="230" cy="341" r="2"/>
+        <circle cx="300" cy="341" r="2"/><circle cx="370" cy="341" r="2"/><circle cx="440" cy="341" r="2"/>
+        <circle cx="510" cy="341" r="2"/><circle cx="580" cy="341" r="2"/><circle cx="650" cy="341" r="2"/><circle cx="720" cy="341" r="2"/>
+      </g>
+      <g fill="#ff5ad0" opacity=".85">
+        <circle cx="108" cy="306" r="2.4"/><circle cx="300" cy="306" r="2.2"/><circle cx="500" cy="306" r="2.2"/><circle cx="688" cy="306" r="2.4"/>
+      </g>
+      <g stroke="#6d5a8f" stroke-width="4" fill="none" opacity=".9">
+        <path d="M150 350 V360 M150 354 L196 360 M196 350 V360"/>
+        <path d="M604 350 V360 M604 354 L650 360 M650 350 V360"/>
+      </g>
+    </svg>`;
+  }
+
+  /* ---- GLUTTONY: carne exposta, ácido e bile ---- */
+  function sceneGluttony(noAcid) {
+    const puddles = noAcid ? '' : `
+      <g>
+        <ellipse cx="220" cy="322" rx="46" ry="11" fill="#5e8018" opacity=".5"/>
+        <ellipse cx="220" cy="320" rx="44" ry="10" fill="url(#gl-acid)"/>
+        <circle cx="220" cy="320" r="46" fill="url(#gl-bile)" opacity=".45"/>
+        <ellipse cx="402" cy="332" rx="30" ry="8" fill="#5e8018" opacity=".45"/>
+        <ellipse cx="402" cy="330" rx="28" ry="7" fill="url(#gl-acid)"/>
+        <ellipse cx="566" cy="320" rx="38" ry="9" fill="#5e8018" opacity=".45"/>
+        <ellipse cx="566" cy="318" rx="36" ry="8" fill="url(#gl-acid)"/>
+        <circle cx="566" cy="318" r="38" fill="url(#gl-bile)" opacity=".35"/>
+        <g fill="#eaf77e" opacity=".65">
+          <circle cx="206" cy="319" r="2.2"/><circle cx="234" cy="323" r="1.5"/>
+          <circle cx="398" cy="329" r="1.7"/><circle cx="560" cy="317" r="2"/><circle cx="578" cy="321" r="1.4"/>
+        </g>
+        <g stroke="#f2ffb0" stroke-width="1.5" opacity=".5" fill="none" stroke-linecap="round">
+          <path d="M198 318 q10 -4 20 0"/><path d="M548 316 q12 -4 24 0"/>
+        </g>
+      </g>`;
+    return `<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <radialGradient id="gl-bg" cx=".5" cy=".45" r=".72">
+          <stop offset="0" stop-color="#4e1612"/><stop offset=".62" stop-color="#240706"/><stop offset="1" stop-color="#0d0303"/>
+        </radialGradient>
+        <linearGradient id="gl-muscle" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#a83a30"/><stop offset=".55" stop-color="#7a2019"/><stop offset="1" stop-color="#4a0e0b"/>
+        </linearGradient>
+        <linearGradient id="gl-floor" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#7d211a"/><stop offset="1" stop-color="#3a0a08"/>
+        </linearGradient>
+        <linearGradient id="gl-acid" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#e2ef72"/><stop offset=".55" stop-color="#b3d13c"/><stop offset="1" stop-color="#5e8018"/>
+        </linearGradient>
+        <radialGradient id="gl-bile">
+          <stop offset="0" stop-color="#f4ffa6" stop-opacity=".5"/><stop offset="1" stop-color="#e8f57a" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <rect width="800" height="360" fill="url(#gl-bg)"/>
+
+      <ellipse cx="400" cy="158" rx="128" ry="80" fill="#2e0907" opacity=".8"/>
+      <ellipse cx="400" cy="158" rx="92" ry="58" fill="#3f0d0a" stroke="#8a2a22" stroke-width="10"/>
+      <ellipse cx="400" cy="158" rx="56" ry="34" fill="#0e0202" stroke="#b03a30" stroke-width="6"/>
+      <ellipse cx="400" cy="158" rx="38" ry="22" fill="url(#gl-bile)"/>
+
+      <path d="M0 0 H800 V34 C716 68 648 20 560 46 C470 74 400 16 306 48 C216 78 130 26 44 58 C26 64 12 52 0 62 Z" fill="url(#gl-muscle)" stroke="#2c0806" stroke-width="3"/>
+      <g stroke="#c25a48" stroke-width="2" fill="none" opacity=".4">
+        <path d="M18 20 C120 46 186 12 286 32"/>
+        <path d="M300 34 C392 56 456 18 548 34"/>
+        <path d="M556 34 C650 52 712 18 792 38"/>
+        <path d="M76 46 C150 62 196 36 256 50"/>
+        <path d="M330 52 C410 68 470 40 530 52"/>
+      </g>
+
+      <path d="M0 40 C38 122 22 212 48 302 C22 322 8 342 0 358 Z" fill="url(#gl-muscle)" opacity=".95"/>
+      <path d="M800 40 C762 122 778 212 752 302 C778 322 792 342 800 358 Z" fill="url(#gl-muscle)" opacity=".95"/>
+
+      <g stroke="#d9b39a" stroke-width="7" fill="none" opacity=".2">
+        <path d="M96 0 C120 74 112 140 96 206"/>
+        <path d="M704 0 C680 74 688 140 704 206"/>
+        <path d="M180 12 C220 60 220 118 196 168"/>
+        <path d="M620 12 C580 60 580 118 604 168"/>
+      </g>
+
+      <g stroke="#5e120e" stroke-width="3" fill="none" opacity=".55">
+        <path d="M28 90 C46 150 30 220 52 292"/>
+        <path d="M60 74 C78 140 62 212 84 286"/>
+        <path d="M772 90 C754 150 770 220 748 292"/>
+        <path d="M740 74 C722 140 738 212 716 286"/>
+      </g>
+      <g stroke="#c03028" stroke-width="2" fill="none" opacity=".35">
+        <path d="M44 96 C58 156 44 222 62 288"/>
+        <path d="M756 96 C742 156 756 222 738 288"/>
+      </g>
+
+      <path d="M0 300 C120 284 220 306 330 296 C460 284 560 308 680 296 C740 290 776 296 800 292 L800 360 L0 360 Z" fill="url(#gl-floor)"/>
+      <g stroke="#3d0a08" stroke-width="2" opacity=".55" fill="none">
+        <path d="M40 316 q80 -12 160 0"/><path d="M280 324 q90 -12 180 0"/><path d="M540 312 q80 -10 160 0"/>
+      </g>
+      <g stroke="#a83a30" stroke-width="2" opacity=".3" fill="none">
+        <path d="M120 306 q60 10 120 0"/><path d="M420 310 q60 10 120 0"/>
+      </g>
+
+      <ellipse cx="400" cy="334" rx="320" ry="42" fill="url(#gl-bile)" opacity="${noAcid ? '.20' : '.14'}"/>
+      ${puddles}
+
+      <g stroke="#c03028" stroke-width="3" fill="none" opacity=".5">
+        <path d="M96 206 q18 40 4 84"/><path d="M704 206 q-18 40 -4 84"/>
+      </g>
+      <g fill="#f2ffa0" opacity=".18">
+        <circle cx="240" cy="120" r="2"/><circle cx="560" cy="104" r="2"/><circle cx="640" cy="150" r="1.6"/>
+      </g>
+    </svg>`;
+  }
+
+  function arena(theme, opts) {
+    opts = opts || {};
+    if (theme === 'limbo') return sceneLimbo(!!opts.night);
+    if (theme === 'lust') return sceneLust();
+    if (theme === 'gluttony') return sceneGluttony(!!opts.noAcid);
     const a = theme.a, b = theme.b, c = theme.c;
     return '<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
       `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
@@ -980,35 +1442,135 @@ BM.sprites = (function () {
   /* ---------------- ARTES DAS CAMADAS ---------------- */
   function layerArt(id) {
     if (id === 'limbo') {
-      return '<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">' +
-        '<rect width="240" height="120" fill="#0c1a20"/>' +
-        '<g stroke="#2b5a6b" stroke-width="6" fill="none" opacity=".9">' +
-        '<path d="M0 20 h60 v26 h44 v-26 h60 v22 h76"/></g>' +
-        '<g fill="#16404e">' +
-        '<rect x="18" y="52" width="34" height="68"/><rect x="96" y="46" width="30" height="74"/>' +
-        '<rect x="168" y="58" width="40" height="62"/></g>' +
-        '<g fill="#7fd4e8" opacity=".45"><circle cx="40" cy="34" r="5"/><circle cx="150" cy="30" r="4"/><circle cx="210" cy="44" r="5"/></g>' +
-        '<g stroke="#3f7f92" stroke-width="2" opacity=".6"><path d="M0 92 q60 -14 120 0 t120 -4"/></g>' +
-        '</svg>';
+      return `<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lma-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3f9ee0"/><stop offset=".6" stop-color="#9ad8f5"/><stop offset="1" stop-color="#eaf7e3"/>
+          </linearGradient>
+          <linearGradient id="lma-water" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#8fd4e4"/><stop offset="1" stop-color="#286a8c"/>
+          </linearGradient>
+        </defs>
+        <rect width="240" height="120" fill="url(#lma-sky)"/>
+        <circle cx="196" cy="22" r="30" fill="#fff6c0" opacity=".45"/>
+        <circle cx="196" cy="22" r="12" fill="#fff9d6"/>
+        <g fill="#fff" opacity=".85">
+          <ellipse cx="42" cy="20" rx="20" ry="6"/><ellipse cx="52" cy="16" rx="12" ry="7"/>
+          <ellipse cx="120" cy="14" rx="16" ry="5"/>
+        </g>
+        <path d="M0 78 L30 46 L54 66 L86 34 L120 72 L152 44 L186 74 L212 52 L240 70 L240 92 L0 92 Z" fill="#a9cfe2"/>
+        <path d="M86 34 L98 50 L92 53 L86 47 L79 53 L74 50 Z" fill="#f4fbff"/>
+        <path d="M152 44 L162 58 L157 60 L152 55 L146 60 L142 58 Z" fill="#f4fbff" opacity=".85"/>
+        <path d="M0 84 C40 74 70 88 110 82 C150 76 186 88 240 80 L240 120 L0 120 Z" fill="#4d9c44"/>
+        <path d="M0 92 C60 88 120 98 180 92 C206 89 226 93 240 90 L240 106 C216 109 198 104 174 107 C118 113 56 104 0 106 Z" fill="url(#lma-water)"/>
+        <path d="M0 92 C60 88 120 98 180 92 C206 89 226 93 240 90" fill="none" stroke="#d5eab0" stroke-width="2" opacity=".8"/>
+        <g stroke="#e6faff" stroke-width="1.2" opacity=".5">
+          <path d="M30 98 h18"/><path d="M100 102 h22"/><path d="M170 96 h18"/>
+        </g>
+        <path d="M0 104 C50 98 100 110 150 104 C190 99 220 106 240 102 L240 120 L0 120 Z" fill="#3f8a3a"/>
+        <g stroke="#79c45e" stroke-width="1.2" opacity=".6">
+          <path d="M24 112 q4 -5 8 0"/><path d="M120 116 q4 -5 8 0"/><path d="M206 110 q4 -5 8 0"/>
+        </g>
+        <g transform="translate(60,108)">
+          <rect x="-2" y="-6" width="4" height="14" fill="#4a2f18"/>
+          <circle cx="0" cy="-12" r="10" fill="#2f7a34"/><circle cx="-8" cy="-7" r="6" fill="#3f8f3e"/><circle cx="8" cy="-7" r="6" fill="#2a6630"/>
+        </g>
+        <g transform="translate(212,110) scale(1.2)">
+          <rect x="-2" y="-6" width="4" height="14" fill="#4a2f18"/>
+          <circle cx="0" cy="-12" r="10" fill="#2b6f30"/><circle cx="-8" cy="-7" r="6" fill="#3a8a3a"/><circle cx="8" cy="-7" r="6" fill="#245e2b"/>
+        </g>
+      </svg>`;
     }
     if (id === 'lust') {
-      return '<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">' +
-        '<rect width="240" height="120" fill="#1c0a16"/>' +
-        '<g fill="#7a2a5a">' +
-        '<path d="M0 120 q18 -50 40 -20 q14 22 30 4 q20 -26 34 6 q16 34 40 2 q22 -30 38 4 q18 30 58 -2 v102 z"/></g>' +
-        '<g fill="none" stroke="#e0a0d0" stroke-width="3" opacity=".55">' +
-        '<path d="M40 120 q10 -44 30 -12"/><path d="M120 120 q12 -40 30 -10"/><path d="M186 120 q10 -38 28 -10"/></g>' +
-        '<g fill="#e0a0d0" opacity=".5"><circle cx="60" cy="24" r="6"/><circle cx="150" cy="18" r="5"/><circle cx="210" cy="34" r="4"/></g>' +
-        '</svg>';
+      return `<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lua-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#14021f"/><stop offset=".5" stop-color="#3d0a5c"/><stop offset="1" stop-color="#c02a92"/>
+          </linearGradient>
+          <linearGradient id="lua-tower" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3f1258"/><stop offset="1" stop-color="#11011b"/>
+          </linearGradient>
+          <pattern id="lua-win" width="8" height="10" patternUnits="userSpaceOnUse">
+            <rect x="1" y="2" width="3" height="4" fill="#ff8ae8" opacity=".8"/>
+          </pattern>
+          <linearGradient id="lua-fog" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ff5ad0" stop-opacity="0"/><stop offset="1" stop-color="#ff5ad0" stop-opacity=".45"/>
+          </linearGradient>
+        </defs>
+        <rect width="240" height="120" fill="url(#lua-sky)"/>
+        <ellipse cx="120" cy="92" rx="80" ry="40" fill="#ff7ae0" opacity=".28"/>
+        <g fill="#2a0a3f">
+          <rect x="0" y="62" width="14" height="58"/><rect x="18" y="70" width="10" height="50"/>
+          <rect x="78" y="66" width="12" height="54"/><rect x="150" y="68" width="12" height="52"/>
+          <rect x="206" y="60" width="14" height="60"/><rect x="224" y="72" width="16" height="48"/>
+        </g>
+        <rect x="30" y="30" width="30" height="90" fill="url(#lua-tower)" stroke="#ff5ad0" stroke-opacity=".5"/>
+        <rect x="32" y="32" width="26" height="88" fill="url(#lua-win)" opacity=".55"/>
+        <rect x="92" y="14" width="36" height="106" fill="url(#lua-tower)" stroke="#ff5ad0" stroke-opacity=".5"/>
+        <rect x="94" y="16" width="32" height="104" fill="url(#lua-win)" opacity=".6"/>
+        <rect x="92" y="14" width="36" height="3" fill="#ff5ad0" opacity=".7"/>
+        <rect x="160" y="40" width="28" height="80" fill="url(#lua-tower)" stroke="#ff5ad0" stroke-opacity=".45"/>
+        <rect x="162" y="42" width="24" height="78" fill="url(#lua-win)" opacity=".5"/>
+        <g stroke="#9a86c0" stroke-width="2">
+          <path d="M60 66 H92"/><path d="M128 52 H160"/>
+        </g>
+        <g stroke="#c7b3e8" stroke-width=".9" opacity=".6">
+          <path d="M66 34 V92"/><path d="M148 58 V104"/>
+        </g>
+        <g fill="#4a3559" stroke="#a48ac4" stroke-width="1">
+          <rect x="62" y="92" width="20" height="3"/>
+          <rect x="144" y="104" width="18" height="3"/>
+        </g>
+        <rect x="0" y="98" width="240" height="22" fill="url(#lua-fog)"/>
+        <g stroke="#c7b3e8" stroke-width=".7" opacity=".45">
+          <path d="M60 0 V106"/><path d="M180 0 V106"/>
+          <path d="M24 40 L60 106"/><path d="M216 40 L180 106"/>
+        </g>
+        <path d="M-4 108 L244 108 L240 114 L0 114 Z" fill="#2b1b3d" stroke="#a48ac4" stroke-width=".8"/>
+        <path d="M0 114 L240 114 L238 118 L2 118 Z" fill="#1a1026"/>
+        <g fill="#8f76ab" opacity=".9">
+          <circle cx="30" cy="116" r="1"/><circle cx="90" cy="116" r="1"/><circle cx="150" cy="116" r="1"/><circle cx="210" cy="116" r="1"/>
+        </g>
+      </svg>`;
     }
     if (id === 'gluttony') {
-      return '<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">' +
-        '<rect width="240" height="120" fill="#2a0d0a"/>' +
-        '<g fill="#7d1f16" opacity=".9">' +
-        '<path d="M0 120 q30 -60 60 -20 q20 26 44 6 q26 -22 46 10 q24 38 46 4 q22 -34 44 0 v20 z"/></g>' +
-        '<g fill="#c8a15a" opacity=".6"><circle cx="60" cy="30" r="5"/><circle cx="140" cy="22" r="4"/><circle cx="200" cy="36" r="6"/></g>' +
-        '<g stroke="#4a1008" stroke-width="5" fill="none"><path d="M18 120 v-40"/><path d="M222 120 v-52"/><path d="M200 68 h40"/></g>' +
-        '</svg>';
+      return `<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="gla-muscle" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#a83a30"/><stop offset=".6" stop-color="#7a2019"/><stop offset="1" stop-color="#4a0e0b"/>
+          </linearGradient>
+          <linearGradient id="gla-acid" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#e2ef72"/><stop offset="1" stop-color="#5e8018"/>
+          </linearGradient>
+          <radialGradient id="gla-bile">
+            <stop offset="0" stop-color="#f4ffa6" stop-opacity=".55"/><stop offset="1" stop-color="#e8f57a" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect width="240" height="120" fill="#1d0605"/>
+        <ellipse cx="120" cy="52" rx="42" ry="26" fill="#2e0907"/>
+        <ellipse cx="120" cy="52" rx="30" ry="19" fill="#3f0d0a" stroke="#8a2a22" stroke-width="4"/>
+        <ellipse cx="120" cy="52" rx="18" ry="11" fill="#0e0202" stroke="#b03a30" stroke-width="2.5"/>
+        <path d="M0 0 H240 V12 C214 26 194 6 168 16 C140 28 120 4 92 18 C64 30 40 8 14 22 C8 24 4 20 0 24 Z" fill="url(#gla-muscle)" stroke="#2c0806" stroke-width="2"/>
+        <path d="M0 14 C10 44 6 74 14 104 C6 110 3 114 0 118 Z" fill="url(#gla-muscle)"/>
+        <path d="M240 14 C230 44 234 74 226 104 C234 110 237 114 240 118 Z" fill="url(#gla-muscle)"/>
+        <g stroke="#d9b39a" stroke-width="3" fill="none" opacity=".22">
+          <path d="M34 2 C44 26 40 48 34 70"/><path d="M206 2 C196 26 200 48 206 70"/>
+        </g>
+        <g stroke="#c25a48" stroke-width="1.4" fill="none" opacity=".45">
+          <path d="M8 10 C40 20 60 6 92 14"/><path d="M140 16 C170 24 196 10 228 18"/>
+        </g>
+        <path d="M0 100 C40 94 74 104 112 98 C152 92 190 104 240 96 L240 120 L0 120 Z" fill="#6f1a15"/>
+        <ellipse cx="78" cy="110" rx="30" ry="7" fill="url(#gla-acid)"/>
+        <ellipse cx="170" cy="114" rx="24" ry="6" fill="url(#gla-acid)"/>
+        <circle cx="78" cy="110" r="30" fill="url(#gla-bile)" opacity=".5"/>
+        <circle cx="170" cy="114" r="24" fill="url(#gla-bile)" opacity=".4"/>
+        <g fill="#eaf77e" opacity=".6">
+          <circle cx="70" cy="110" r="1.6"/><circle cx="88" cy="112" r="1.2"/><circle cx="164" cy="114" r="1.4"/>
+        </g>
+        <g stroke="#c03028" stroke-width="1.6" fill="none" opacity=".5">
+          <path d="M34 70 q6 14 2 28"/><path d="M206 70 q-6 14 -2 28"/>
+        </g>
+      </svg>`;
     }
     return '<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="120" fill="#1a1013"/></svg>';
   }

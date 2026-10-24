@@ -20,16 +20,16 @@ BM.save = (function () {
 
   function defaults() {
     return {
-      version: 1,
+      version: 2,
       createdAt: Date.now(),
       v1: { level: 1, xp: 0, scrap: 150, cores: 0 },
       owned: {
-        arms: ['feedbacker'],
+        arms: ['feedbacker', 'knuckleblaster'],
         legs: ['servico'],
         chassis: ['v1']
       },
       equip: { legs: 'servico', chassis: 'v1' },
-      loadout: ['jab_rapido', 'rajada_tres', 'contra_golpe', 'postura_defensiva'],
+      loadout: ['jab_rapido', 'rajada_tres', 'contra_golpe', 'soco_foguete'],
       items: { bolsa_sangue: 2, adrenalina: 1 },
       progress: { layer: 0, node: 0, unlockedLayers: 1, checkpoint: null,
         layerStats: { t0: 0, dmg: 0, styleMax: 0, maxHp: 0 },
@@ -95,6 +95,14 @@ BM.save = (function () {
       data.stats = Object.assign(d.stats, parsed.stats || {});
       data.items = parsed.items || d.items;
       if (!Array.isArray(data.loadout) || !data.loadout.length) data.loadout = d.loadout;
+      // migração: o Knuckleblaster agora é livre e já vem com o V1
+      if (data.owned.arms.indexOf('knuckleblaster') < 0) data.owned.arms.push('knuckleblaster');
+      // migração: o loadout padrão antigo (4 golpes do Feedbacker) vira 3 + 1 do Knuckleblaster
+      const padraoAntigo = ['jab_rapido', 'rajada_tres', 'contra_golpe', 'postura_defensiva'];
+      const padraoNovo = ['jab_rapido', 'rajada_tres', 'contra_golpe', 'soco_foguete'];
+      if (data.loadout.length === 4 && padraoAntigo.every(function (m, i) { return data.loadout[i] === m; })) {
+        data.loadout = padraoNovo.slice();
+      }
       // migração das dificuldades antigas
       const difAntigo = { facil: 'lenient', normal: 'standard', dificil: 'violent' };
       if (difAntigo[data.settings.dificuldade]) data.settings.dificuldade = difAntigo[data.settings.dificuldade];
