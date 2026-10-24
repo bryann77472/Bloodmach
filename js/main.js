@@ -281,6 +281,16 @@ BM.main = (function () {
     } else if (bossId === 'gabriel') {
       d.flags.gabrielDead = true;
       BM.save.persist();
+    } else if (bossId === 'v2_greed') {
+      // o segundo corpo de V2 cai de verdade: sem fuga, com núcleo e Hellwhip.
+      // não mexe em v2Dead: as peças de Ignição/Forja continuam exigindo o V2 do Ato I.
+      d.flags.nucleo_v2 = true;
+      d.flags.greedV2Dead = true;
+      d.flags.hellwhipUnlocked = true;
+      d.progress.unlockedLayers = Math.max(d.progress.unlockedLayers, 4);
+      d.progress.node = 0;
+      BM.save.persist();
+      BM.ui.toast('HELLWHIP E PEÇAS DE FIBRA LIBERADOS NA LOJA', 'ok');
     }
     // a camada foi concluída: libera a próxima e paga os núcleos
     d.flags['camada' + layerIndex + 'Feita'] = true;
@@ -313,6 +323,14 @@ BM.main = (function () {
     if (info.bossId === 'minos') {
       BM.ui.dialogue(D.STORY.afterMinos, function () {
         BM.ui.lobby();
+      });
+      return;
+    }
+    if (info.bossId === 'v2_greed') {
+      BM.ui.v2Death(function () {
+        BM.ui.dialogue(D.STORY.afterGreedV2, function () {
+          BM.ui.lobby();
+        });
       });
       return;
     }

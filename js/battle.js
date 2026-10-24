@@ -22,8 +22,8 @@ BM.battle = (function () {
   const ESCALA_JOGADOR = 0.40;
   const ESCALA_INIMIGO = 1.00;
   // ATQ/DEF de referência do V1 no nível base de cada camada (para escalar os inimigos)
-  const BASE_ATK = { limbo: 38, lust: 56, gluttony: 74 };
-  const BASE_DEF = { limbo: 28, lust: 40, gluttony: 52 };
+  const BASE_ATK = { limbo: 38, lust: 56, gluttony: 74, greed: 77 };
+  const BASE_DEF = { limbo: 28, lust: 40, gluttony: 52, greed: 54 };
 
   function log(msg, cls) {
     if (!S) return;

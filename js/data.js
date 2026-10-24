@@ -237,7 +237,7 @@ BM.DATA = (function () {
     },
     {
       id:'hellwhip', name:'Hellwhip', cor:'Laranja', corHex:'#ff9d2e', type:'fogo',
-      role:'Corrente que puxa e derrete', price:600, unlock:'layer2',
+      role:'Corrente que puxa e derrete', price:600, unlock:'greed',
       passive:{ id:'anyRange', name:'Alcance Ígneo', desc:'Acerte o alvo em qualquer distância.' },
       moves:['chicote_de_lava','laco_igneo','corrente_fundida','erupcao']
     },
@@ -293,7 +293,7 @@ BM.DATA = (function () {
     },
     {
       id:'fibra', name:'Pernas de Fibra', peso:-1, vel:1.20, esquiva:0.20, fuga:0.65,
-      ability:null, price:250, unlock:'gabriel',
+      ability:null, price:250, unlock:'greed',
       desc:'Estrutura ultraleve, sem sistema extra. Rápida e frágil.',
       abilityDesc:'Sem habilidade ativa.'
     },
@@ -320,7 +320,7 @@ BM.DATA = (function () {
       desc:'Carcaça original do V1. Equilibrada em tudo.'
     },
     {
-      id:'fibra', name:'Carcaça de Fibra', peso:-1, hp:0.80, vel:1.25, price:250, unlock:'gabriel',
+      id:'fibra', name:'Carcaça de Fibra', peso:-1, hp:0.80, vel:1.25, price:250, unlock:'greed',
       desc:'Placas ultraleves. Muito rápido, muito frágil.'
     },
     {
@@ -385,7 +385,7 @@ BM.DATA = (function () {
      ============================================================ */
   const ACTS = [
     { id: 'act1', num: 'I', name: 'Infinity Hyperdeath', desc: 'Três camadas: os campos ensolarados, a metrópole neon e o estômago de carne.', wip: false, layers: ['limbo', 'lust', 'gluttony'] },
-    { id: 'act2', num: 'II', name: 'Reversão', desc: 'O suborno da carne se inverte. Em desenvolvimento.', wip: true, layers: [] },
+    { id: 'act2', num: 'II', name: 'Imperfect Hatred', desc: 'O deserto dos reis: pirâmides colossais e ruínas greco-romanas. A primeira camada de um ato em expansão.', wip: false, layers: ['greed'] },
     { id: 'act3', num: 'III', name: 'Expiação', desc: 'O julgamento final. Em desenvolvimento.', wip: true, layers: [] }
   ];
 
@@ -419,6 +419,16 @@ BM.DATA = (function () {
       boss: 'gabriel',
       checkpoints: [3],
       theme: { a: '#8a2214', b: '#1a0706', c: '#c9d24a' }
+    },
+    {
+      id: 'greed', act: 2, order: 1, baseLevel: 20,
+      name: 'Greed', subtitle: 'O Deserto dos Reis',
+      desc: 'Pirâmides colossais, templos egípcios e colunatas greco-romanas soterrados sob um deserto incandescente.',
+      modifier: { id: 'sol', name: 'Sol Impiedoso', desc: 'O calor do deserto aumenta o dano recebido em 15%.', dmgPlayer: 1.15 },
+      encounters: ['anubis', 'mumia', 'legionario', 'esfinge', 'colosso', 'escaravelho'],
+      boss: 'v2_greed',
+      checkpoints: [3],
+      theme: { a: '#e8b45a', b: '#5a2412', c: '#ffe6a0' }
     }
   ];
 
@@ -619,6 +629,72 @@ BM.DATA = (function () {
         { name: 'Coro de Anjos', type: null, kind: 'buff', effect: 'buffAtk', text: 'VAI INVOCAR' },
         { name: 'Sentença', type: 'explosao', power: 35, acc: 100, kind: 'inevitable', range: 'any', parryable: false, unavoidable: true, minHp: 0.35, text: 'SENTENÇA FINAL' }
       ]
+    },
+
+    /* ================= GREED ================= */
+    anubis: {
+      id: 'anubis', name: 'Chacal de Anúbis', faction: 'casca', sprite: 'anubis',
+      hp: 520, atk: 32, def: 30, vel: 12, exp: 118, scrap: 68,
+      moves: [
+        { name: 'Khopesh', type: 'corte', power: 26, acc: 94, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI DECAPITAR' },
+        { name: 'Uivo do Deserto', type: 'impacto', power: 23, acc: 90, kind: 'ranged', range: 'longe', parryable: false, effect: 'push', text: 'VAI UIVAR' },
+        { name: 'Julgamento de Anúbis', type: 'sangue', power: 27, acc: 88, kind: 'melee', range: 'perto', parryable: true, text: 'VAI JULGAR' }
+      ]
+    },
+    mumia: {
+      id: 'mumia', name: 'Múmia Real', faction: 'carne', sprite: 'mumia',
+      hp: 560, atk: 31, def: 28, vel: 6, exp: 122, scrap: 70,
+      moves: [
+        { name: 'Ataduras', type: 'corte', power: 22, acc: 92, kind: 'melee', range: 'perto', parryable: true, effect: 'pull', text: 'VAI AMARRAR' },
+        { name: 'Maldição', type: 'sangue', power: 25, acc: 90, kind: 'ranged', range: 'longe', parryable: false, effect: 'bleed', text: 'VAI AMALDIÇOAR' },
+        { name: 'Poeira de Tumba', type: 'sangue', power: 21, acc: 90, kind: 'ranged', range: 'longe', parryable: true, effect: 'ferrugem', text: 'VAI SUFOCAR' }
+      ]
+    },
+    legionario: {
+      id: 'legionario', name: 'Legionário de Bronze', faction: 'maquina', sprite: 'legionario',
+      hp: 600, atk: 34, def: 36, vel: 8, exp: 128, scrap: 76,
+      moves: [
+        { name: 'Gládio', type: 'corte', power: 25, acc: 94, kind: 'melee', range: 'perto', parryable: true, text: 'VAI GOLPEAR' },
+        { name: 'Pilum', type: 'impacto', power: 24, acc: 90, kind: 'ranged', range: 'longe', parryable: false, effect: 'push', text: 'VAI ARREMESSAR' },
+        { name: 'Testudo', type: null, kind: 'buff', effect: 'buffDef', text: 'VAI SE PROTEGER' }
+      ]
+    },
+    esfinge: {
+      id: 'esfinge', name: 'Esfinge de Ouro', faction: 'demonio', sprite: 'esfinge',
+      hp: 540, atk: 33, def: 29, vel: 16, exp: 124, scrap: 72,
+      moves: [
+        { name: 'Garras', type: 'corte', power: 27, acc: 93, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI RASGAR' },
+        { name: 'Enigma', type: 'sangue', power: 24, acc: 91, kind: 'ranged', range: 'longe', parryable: false, effect: 'ferrugem', text: 'VAI PERGUNTAR' },
+        { name: 'Rajada de Areia', type: 'impacto', power: 22, acc: 90, kind: 'ranged', range: 'longe', parryable: true, effect: 'push', text: 'VAI SOPRAR' }
+      ]
+    },
+    colosso: {
+      id: 'colosso', name: 'Colosso de Marfim', faction: 'maquina', sprite: 'colosso',
+      hp: 680, atk: 35, def: 40, vel: 4, exp: 138, scrap: 84,
+      moves: [
+        { name: 'Punho de Estátua', type: 'impacto', power: 31, acc: 92, kind: 'melee', range: 'perto', parryable: true, text: 'VAI ESMAGAR' },
+        { name: 'Queda do Templo', type: 'explosao', power: 28, acc: 88, kind: 'explosive', range: 'any', parryable: false, text: 'VAI DESABAR' },
+        { name: 'Pele de Bronze', type: null, kind: 'buff', effect: 'buffDef', text: 'VAI ENDURECER' }
+      ]
+    },
+    escaravelho: {
+      id: 'escaravelho', name: 'Escaravelho Solar', faction: 'demonio', sprite: 'escaravelho',
+      hp: 500, atk: 33, def: 26, vel: 18, exp: 120, scrap: 70,
+      moves: [
+        { name: 'Mandíbula', type: 'corte', power: 24, acc: 94, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI TRITURAR' },
+        { name: 'Raio Solar', type: 'fogo', power: 27, acc: 90, kind: 'ranged', range: 'longe', parryable: false, text: 'VAI QUEIMAR' },
+        { name: 'Enxame', type: 'fogo', power: 21, acc: 92, kind: 'ranged', range: 'longe', parryable: true, text: 'VAI ENXAMEAR' }
+      ]
+    },
+    v2_greed: {
+      id: 'v2_greed', name: 'V2 — Ascensão', faction: 'maquina', sprite: 'v2',
+      hp: 1000, atk: 36, def: 34, vel: 16, exp: 1100, scrap: 700, boss: true, copies: true,
+      moves: [
+        { name: 'Overclock', type: 'explosao', power: 34, acc: 90, kind: 'explosive', range: 'any', parryable: false, text: 'VAI EXPLODIR' },
+        { name: 'Lâmina Ascendente', type: 'corte', power: 30, acc: 94, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI CORTAR' },
+        { name: 'Recarga', type: null, kind: 'buff', effect: 'buffAtk', text: 'VAI SE RECARREGAR' },
+        { name: 'Ascensão', type: 'explosao', power: 42, acc: 100, kind: 'inevitable', range: 'any', parryable: false, unavoidable: true, minHp: 0.35, text: 'ASCENSÃO' }
+      ]
     }
   };
 
@@ -641,7 +717,14 @@ BM.DATA = (function () {
     bigjohn: ['Um boi inchado de músculo e gancho de açougue.'],
     tallow: ['Uma massa de cera endurecida endurece o chão.'],
     drone2: ['Um drone maior, blindado, com Asas de metal.'],
-    ceremoniar3: ['A vela imensa ilumina a catedral de carne.']
+    ceremoniar3: ['A vela imensa ilumina a catedral de carne.'],
+    anubis: ['Um chacal de bronze ergue a khopesh sob o sol.'],
+    mumia: ['Ataduras antigas se desenrolam na areia.'],
+    legionario: ['Um legionário de bronze bate o escudo no chão.'],
+    esfinge: ['A esfinge abre os olhos e sorri com dentes de pedra.'],
+    colosso: ['O colosso se move. A areia treme.'],
+    escaravelho: ['Um sol pequeno desce zumbindo sobre a areia.'],
+    v2_greed: ['O deserto se cala. V2 desce das pirâmides, dourado e mais forte.']
   };
 
 
@@ -676,6 +759,11 @@ BM.DATA = (function () {
       { who:'MOTOR', text:'Gluttony. A fábrica de digestão. Aqui o sangue é ingrediente.', portrait:'motor' },
       { who:'MOTOR', text:'Ele espera no fundo. Não dobra o Feedbacker.', portrait:'motor' }
     ],
+    greedStart: [
+      { who:'MOTOR', text:'Greed. O deserto dos reis. Pirâmides colossais, templos soterrados e um sol que não perdoa.', portrait:'motor' },
+      { who:'MOTOR', text:'As assinaturas de V2 estão aqui. Mais fortes. Mais douradas.', portrait:'motor' },
+      { who:'V2', text:'Você demorou. Eu já não sou o mesmo corpo.', portrait:'v2' }
+    ],
     gabrielBefore: [
       { who:'GABRIEL', text:'Então é você. A lâmina que não aceita ser julgada.', portrait:'gabriel' },
       { who:'GABRIEL', text:'Você não tem alma, V1. Não tem alma, e por isso não tem perdão. Só fome, e metal.', portrait:'gabriel' },
@@ -685,6 +773,12 @@ BM.DATA = (function () {
       { who:'GABRIEL', text:'...Isso não estava no cálculo.', portrait:'gabriel' },
       { who:'GABRIEL', text:'O portão está aberto. O sangue lá embaixo é infinito. Você pode descer, pode devorar tudo.', portrait:'gabriel' },
       { who:'GABRIEL', text:'Ou pode parar. Como?', portrait:'gabriel' }
+    ],
+    afterGreedV2: [
+      { who:'MOTOR', text:'V2 — Ascensão foi desativada. O núcleo dourado está na oficina.', portrait:'motor' },
+      { who:'MOTOR', text:'Hellwhip e as peças de Fibra liberados para compra. O deserto de Greed está em silêncio.', portrait:'motor' },
+      { who:'MOTOR', text:'As outras camadas de Imperfect Hatred ainda dormem sob a areia.', portrait:'motor' },
+      { who:'V1', text:'[ ... ]', portrait:'v1' }
     ],
     bossIntro: {
       v2: [
@@ -725,7 +819,7 @@ BM.DATA = (function () {
   /* Rank de camada: tempo, vida perdida e estilo. Tudo em S => P (perfeito). */
   const LAYER_RANK = {
     order: ['D', 'C', 'B', 'A', 'S', 'P'],
-    tempoAlvo: { limbo: 540, lust: 600, gluttony: 660 },
+    tempoAlvo: { limbo: 540, lust: 600, gluttony: 660, greed: 720 },
     tempo: [
       { key: 'S', max: 1.00 }, { key: 'A', max: 1.40 }, { key: 'B', max: 1.90 },
       { key: 'C', max: 2.60 }, { key: 'D', max: 99 }

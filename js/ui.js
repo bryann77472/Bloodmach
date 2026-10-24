@@ -11,8 +11,7 @@ BM.ui = (function () {
   const app = () => document.getElementById('app');
 
   let current = 'title';
-  let shopReturn = 'title';
-  let loadoutReturn = 'lobby';
+  let navStack = [];   // pilha de telas para o botão Voltar
   let atoSel = null;   // ato escolhido no lobby
   let dialogueQueue = null;
 
@@ -35,6 +34,14 @@ BM.ui = (function () {
     setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(() => t.remove(), 320); }, 2200);
   }
 
+  function goBack() {
+    const prev = navStack.pop();
+    if (prev === 'shop') shop(null, true);
+    else if (prev === 'loadout') loadout(null, true);
+    else if (prev === 'title') title();
+    else lobby();
+  }
+
   /* =========================================================
      TÍTULO
      ========================================================= */
@@ -47,6 +54,7 @@ BM.ui = (function () {
 
   function title() {
     current = 'title';
+    navStack = [];
     BM.audio.playMusic('titulo');
     const has = BM.save.hasSave();
     const d = has ? BM.save.get() : null;
@@ -78,7 +86,7 @@ BM.ui = (function () {
       const a = ev.currentTarget.getAttribute('data-a');
       BM.audio.play('select');
       if (a === 'play') BM.main.playPressed();
-      if (a === 'shop') { shopReturn = 'title'; shop(); }
+      if (a === 'shop') shop('title');
       if (a === 'options') options();
       if (a === 'credits') credits();
     });
@@ -87,10 +95,13 @@ BM.ui = (function () {
   /* =========================================================
      LOJA
      ========================================================= */
-  function shop(returnTo) {
+  function shop(returnTo, fromBack) {
     current = 'shop';
     BM.audio.playMusic('loja');
-    if (returnTo) shopReturn = returnTo;
+    if (!fromBack) {
+      if (returnTo === 'loadout') navStack.push('loadout');
+      else if (returnTo === 'lobby' || returnTo === 'title') navStack = [returnTo];
+    }
     const d = BM.save.get();
     mount(`
       <div class="screen shop">
@@ -132,9 +143,7 @@ BM.ui = (function () {
     });
     on('[data-a="back"]', 'click', () => {
       BM.audio.play('cancel');
-      if (shopReturn === 'lobby') lobby();
-      else if (shopReturn === 'loadout') loadout('shop');
-      else title();
+      goBack();
     });
     renderShop('arms');
   }
@@ -151,9 +160,9 @@ BM.ui = (function () {
         const st = BM.save.unlockState('arm', a.id);
         const equipped = BM.save.equippedArms().indexOf(a.id) >= 0;
         return `
-        <div class="card ${equipped ? 'equipped' : ''} ${owned ? '' : 'locked'}">
+        <div class="card ${equipped ? 'equipped' : ''} ${owned || st.ok ? '' : 'locked'}">
           <div class="card-art">${BM.sprites.armSprite(a.id)}
-            ${owned ? '' : `<div class="lockveil">${esc(st.reason || 'BLOQUEADO')}</div>`}
+            ${owned || st.ok ? '' : `<div class="lockveil">${esc(st.reason || 'BLOQUEADO')}</div>`}
           </div>
           <div class="card-body">
             <div class="card-name">${a.name}<span class="badge">${a.cor}</span></div>
@@ -184,7 +193,7 @@ BM.ui = (function () {
         const st = BM.save.unlockState('leg', l.id);
         const eq = d.equip.legs === l.id;
         return `
-        <div class="card ${eq ? 'equipped' : ''} ${owned ? '' : 'locked'}">
+        <div class="card ${eq ? 'equipped' : ''} ${owned || st.ok ? '' : 'locked'}">
           <div class="card-art">${BM.sprites.legSprite(l.id)}</div>
           <div class="card-body">
             <div class="card-name">${l.name}${eq ? '<span class="badge hot">EQUIPADA</span>' : ''}</div>
@@ -212,7 +221,7 @@ BM.ui = (function () {
         const st = BM.save.unlockState('chassis', c.id);
         const eq = d.equip.chassis === c.id;
         return `
-        <div class="card ${eq ? 'equipped' : ''} ${owned ? '' : 'locked'}">
+        <div class="card ${eq ? 'equipped' : ''} ${owned || st.ok ? '' : 'locked'}">
           <div class="card-art">${BM.sprites.chassisSprite(c.id)}</div>
           <div class="card-body">
             <div class="card-name">${c.name}${eq ? '<span class="badge hot">EQUIPADA</span>' : ''}</div>
@@ -344,11 +353,14 @@ BM.ui = (function () {
   /* =========================================================
      LOADOUT
      ========================================================= */
-  function loadout(returnTo) {
+  function loadout(returnTo, fromBack) {
     current = 'loadout';
     // mesma trilha da loja: trocar entre os dois não reinicia a música
     BM.audio.playMusic('loja');
-    if (returnTo) loadoutReturn = returnTo;
+    if (!fromBack) {
+      if (returnTo === 'shop') navStack.push('shop');
+      else if (returnTo === 'lobby' || returnTo === 'title') navStack = [returnTo];
+    }
     const d = BM.save.get();
     const arms = BM.save.availableArms();
     mount(`
@@ -403,7 +415,7 @@ BM.ui = (function () {
     });
     on('[data-a="back"]', 'click', () => {
       BM.audio.play('cancel');
-      if (loadoutReturn === 'shop') shop('shop'); else lobby();
+      goBack();
     });
     on('[data-a="lobby"]', 'click', () => {
       BM.audio.play('cancel');
@@ -446,6 +458,7 @@ BM.ui = (function () {
      ========================================================= */
   function lobby() {
     current = 'lobby';
+    navStack = [];
     BM.audio.playMusic('oficina');
     const d = BM.save.get();
     const st = BM.save.v1Stats();
@@ -489,7 +502,7 @@ BM.ui = (function () {
                     return !!L && !!d.flags['camada' + D.LAYERS.indexOf(L) + 'Feita'];
                   });
                   const bloqueado = a.wip || !prevDone;
-                  const status = a.wip ? 'EM DESENVOLVIMENTO' : (prevDone ? 'ABERTA' : 'BLOQUEADA');
+                  const status = a.wip ? 'EM DESENVOLVIMENTO' : (bloqueado ? 'BLOQUEADA' : 'ABERTA');
                   return `<div class="act-card ${bloqueado ? 'locked' : ''} ${atoSel === a.id ? 'sel' : ''}">
                     <div class="row" style="justify-content:space-between">
                       <div class="title-sm">Ato ${a.num}</div>
@@ -498,10 +511,10 @@ BM.ui = (function () {
                     <h3>${a.name}</h3>
                     <div class="act-art">${BM.sprites.actArt(a.id)}</div>
                     <div class="layer-info">${a.desc}</div>
-                    <div class="layer-info dim">${camadas.length} camadas · ${feitas}/${camadas.length} concluídas</div>
+                    <div class="layer-info dim">${camadas.length} ${camadas.length === 1 ? 'camada' : 'camadas'} · ${feitas}/${camadas.length} concluídas</div>
                     ${a.wip
                       ? `<button class="btn small wide" data-act-wip="${a.id}">WIP</button>`
-                      : (prevDone
+                      : (!bloqueado
                         ? `<button class="btn small wide ${atoSel === a.id ? '' : 'primary'}" data-act="${a.id}">${atoSel === a.id ? 'ABERTO' : 'ENTRAR NO ATO'}</button>`
                         : `<button class="btn small wide" disabled>Conclua o ato anterior</button>`)}
                   </div>`;
@@ -614,7 +627,7 @@ BM.ui = (function () {
     mount(`
       <div class="screen" style="overflow:auto">
         <div class="hub-top">
-          <div class="hub-brand">CAMADA ${L.order} — ${L.name.toUpperCase()}</div>
+          <div class="hub-brand layer-brand">CAMADA ${L.order} — ${L.name}</div>
           <div class="hub-stats">
             <span class="badge">${L.subtitle}</span>
             <span class="badge warn">◈ ${L.modifier.name}</span>
@@ -624,7 +637,7 @@ BM.ui = (function () {
         <div style="padding:16px;max-width:900px;margin:0 auto;width:100%">
           <div class="map-scene">
             ${BM.sprites.arena(L.id)}
-            <div class="map-scene-text"><b>${L.name.toUpperCase()}</b><span>${L.desc}</span></div>
+            <div class="map-scene-text"><b>${L.name}</b><span>${L.desc}</span></div>
           </div>
           <div class="panel">
             <div class="panel-head"><span>Progresso</span><span>${node}/${L.encounters.length} + chefe</span></div>
@@ -1171,6 +1184,43 @@ BM.ui = (function () {
     }, 4600);
   }
 
+  /* ============================================================
+     CUTSCENE DE MORTE — V2 Ascensão desligando no deserto
+     ============================================================ */
+  function v2Death(onDone) {
+    current = 'v2Death';
+    const s = BM.sprites.v2();
+    BM.audio.playMusic('desligamento');
+    mount(
+      '<div class="screen scene-death v2death" id="v2-death">' +
+      '<div class="death-stage">' +
+      '<div class="death-spark sp1"></div><div class="death-spark sp2"></div><div class="death-spark sp3"></div>' +
+      '<div class="death-v1" id="v2-body">' + s + '</div>' +
+      '</div>' +
+      '<div class="death-caption" id="v2-cap"></div>' +
+      '</div>');
+    const body = el('#v2-body');
+    const cap = el('#v2-cap');
+    BM.audio.play('ko');
+    setTimeout(function () {
+      body.classList.add('apagando');
+      cap.innerHTML = '<div class="dc-title">V2 — ASCENSÃO DESATIVADA</div>' +
+        '<div class="dc-text">O corpo dourado cede. As cópias param de se mover.</div>';
+      cap.classList.add('on');
+    }, 700);
+    setTimeout(function () {
+      body.classList.add('desligando');
+      BM.audio.play('shutdown');
+    }, 1500);
+    setTimeout(function () {
+      body.classList.add('nochao');
+      cap.innerHTML = '<div class="dc-title">SISTEMA OFFLINE</div>' +
+        '<div class="dc-text">Núcleo recuperado. Hellwhip e peças de Fibra liberados na oficina.</div>';
+      BM.audio.play('rank');
+    }, 2900);
+    setTimeout(function () { if (onDone) onDone(); }, 4400);
+  }
+
 /* ============================================================
      SPRITES/UI SNIPPETS — introduções de chefe e modal
      ============================================================ */
@@ -1265,7 +1315,8 @@ BM.ui = (function () {
                 <div class="save-info ${info.existe ? '' : 'dim'}">
                   ${info.existe
                     ? ('SAVE · NÍVEL ' + info.nivel + ' · ' + fmt(info.scrap) + ' ◆ · CAMADA ' + (info.camada + 1) +
-                      (info.v2Dead ? ' · V2 MORTO' : '') + (info.gabrielDead ? ' · GABRIEL MORTO' : ''))
+                      (info.v2Dead ? ' · V2 MORTO' : '') + (info.gabrielDead ? ' · GABRIEL MORTO' : '') +
+                      (info.greedV2Dead ? ' · GREED V2 MORTO' : ''))
                     : 'SEM SAVE — COMEÇA DO ZERO'}
                 </div>
                 <button class="btn primary wide" data-save="${k}">${info.existe ? 'CONTINUAR' : 'NOVO JOGO'}</button>
@@ -1622,7 +1673,7 @@ BM.ui = (function () {
     mount, el, els, toast,
     get current() { return current; },
     title, shop, loadout, lobby, layerMap, dialogue, battle, battleUpdate,
-    battleLog, floatText, shake, flashTurn, promptParry, result, layerResult, gabrielBleed,
+    battleLog, floatText, shake, flashTurn, promptParry, result, layerResult, gabrielBleed, v2Death,
     deathScene, gameOver, enemyIntro, bossIntro, modal, options, credits, ending, postCredits,
     savePick
   };

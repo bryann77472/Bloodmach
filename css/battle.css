@@ -50,6 +50,12 @@
 .arena[data-layer="gluttony"] .arena-bg{ opacity:.8; }
 .arena[data-layer="gluttony"] .arena-floor{ background:linear-gradient(180deg, transparent, rgba(20,3,3,.52)); }
 
+.arena[data-layer="greed"]{
+  background:linear-gradient(180deg,#3b1520 0%,#c25a2c 52%,#e8b766 100%);
+}
+.arena[data-layer="greed"] .arena-bg{ opacity:.95; }
+.arena[data-layer="greed"] .arena-floor{ background:linear-gradient(180deg, transparent, rgba(70,34,12,.34)); }
+
 /* o Limbo anoitece contra o V2 */
 .arena[data-variant="night"]{
   background:linear-gradient(180deg,#060a20 0%,#16224a 58%,#0a1220 100%);
@@ -73,7 +79,10 @@
   background:linear-gradient(90deg, rgba(8,5,7,.86), rgba(8,5,7,.42) 68%, transparent);
   border-left:2px solid var(--crimson2);
 }
-.map-scene-text b{ display:block; font-size:.86rem; letter-spacing:.22em; }
+.map-scene-text b{
+  display:block; font-family:var(--font-soft); font-weight:400;
+  font-size:1.15rem; letter-spacing:.04em; color:#f0e7d8;
+}
 .map-scene-text span{ display:block; margin-top:3px; font-size:.74rem; color:#cbbfc6; max-width:64ch; }
 
 .fighter{ position:absolute; bottom:6%; width:38%; height:76%; display:flex; align-items:flex-end; gap:8px; z-index:3; }

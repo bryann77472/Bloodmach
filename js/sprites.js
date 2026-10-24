@@ -453,11 +453,12 @@ BM.sprites = (function () {
   const gHusk = { pele: '#8d7f74', pele2: '#5f544c', osso: '#efe7d6', mascara: '#f2ead9', sombra: '#3a312c', sangue: '#a01530' };
   const gLust = { pele: '#b08a7c', pele2: '#6d4a44', osso: '#f0e0c8', mascara: '#e8d8b8', sombra: '#3a2622', sangue: '#c02040' };
   const gGlut = { pele: '#9aa06a', pele2: '#5c5f38', osso: '#e8e2c0', mascara: '#dfe0b0', sombra: '#2e3018', sangue: '#8f7a20' };
+  const gGreed = { pele: '#b9814f', pele2: '#7a4a2a', osso: '#f2dfb2', mascara: '#f6e6b8', sombra: '#3a2412', sangue: '#b8862a' };
   const gMinos = { carn: '#3a1442', carn2: '#1a0722', osso: '#c9b8d8', olho: '#ffe9ff', brilho: '#d24cff', sombra: '#12040f' };
 
   /* casca genérica: máscara branca, corpo magro */
   function casca(c, opt) {
-    const o = Object.assign({ h: 1, mask: true, arma: '', cor: c.pele }, opt || {});
+    const o = Object.assign({ h: 1, mask: true, arma: '', head: '', cor: c.pele }, opt || {});
     const s = o.h;
     return svg(defs + `
       <ellipse cx="100" cy="250" rx="${40 * s}" ry="8" fill="rgba(0,0,0,.45)"/>
@@ -472,12 +473,12 @@ BM.sprites = (function () {
       <rect x="${100 - 30 * s}" y="118" width="${13 * s}" height="48" rx="4" fill="${c.pele2}" stroke="#191410" stroke-width="2"/>
       <rect x="${100 + 17 * s}" y="118" width="${13 * s}" height="48" rx="4" fill="${c.pele2}" stroke="#191410" stroke-width="2"/>
       <g>
-        <ellipse cx="100" cy="92" rx="${24 * s}" ry="${26 * s}" fill="${c.pele}"/>
+        ${o.head || `<ellipse cx="100" cy="92" rx="${24 * s}" ry="${26 * s}" fill="${c.pele}"/>
         ${o.mask ? `<ellipse cx="100" cy="94" rx="${17 * s}" ry="${20 * s}" fill="${c.mascara}"/>
         <rect x="${100 - 11 * s}" y="89" width="${8 * s}" height="4" fill="#140d10"/>
         <rect x="${100 + 3 * s}" y="89" width="${8 * s}" height="4" fill="#140d10"/>
         <rect x="${100 - 6 * s}" y="102" width="${12 * s}" height="3" fill="#6b3a38"/>` : ''}
-        <path d="M${100 - 14 * s} 70 q${14 * s} ${-12 * s} ${28 * s} 0" stroke="${c.sombra}" stroke-width="4" fill="none"/>
+        <path d="M${100 - 14 * s} 70 q${14 * s} ${-12 * s} ${28 * s} 0" stroke="${c.sombra}" stroke-width="4" fill="none"/>`}
       </g>
       ${o.arma}
     `);
@@ -517,6 +518,152 @@ BM.sprites = (function () {
       Enthusiast, Corporal, Journeyman, Husk Fanatic, Lustful Husk,
       Soothsayer, Filet Machine, Big John, Tallow Golem)
      ============================================================ */
+
+  /* ---- GREED: cabeças e corpos temáticos ---- */
+  const headAnubis = `
+    <g>
+      <path d="M78 102 C72 90 74 74 82 64 L100 58 L118 64 C126 74 128 90 122 102 L100 110 Z"
+            fill="#2a2118" stroke="#0e0b08" stroke-width="2"/>
+      <path d="M80 68 L66 22 L90 42 Z" fill="#1c1712" stroke="#0e0b08" stroke-width="2"/>
+      <path d="M120 68 L134 22 L110 42 Z" fill="#1c1712" stroke="#0e0b08" stroke-width="2"/>
+      <path d="M84 80 L116 80 L108 104 L92 104 Z" fill="#4a3824"/>
+      <rect x="87" y="82" width="10" height="5" fill="#ffcf5a"/>
+      <rect x="103" y="82" width="10" height="5" fill="#ffcf5a"/>
+      <path d="M94 100 L106 100" stroke="#0e0b08" stroke-width="2"/>
+      <path d="M82 106 q18 12 36 0" stroke="#c8a15a" stroke-width="4" fill="none"/>
+      <circle cx="100" cy="108" r="4" fill="#7fe8ff" opacity=".8"/>
+    </g>`;
+
+  const headMumia = `
+    <g>
+      <ellipse cx="100" cy="88" rx="25" ry="30" fill="#d6c39a" stroke="#8a744a" stroke-width="2"/>
+      <path d="M77 72 q23 -15 46 0" stroke="#b6a274" stroke-width="5" fill="none"/>
+      <path d="M76 84 q24 9 48 0" stroke="#b6a274" stroke-width="5" fill="none"/>
+      <path d="M78 96 q22 8 44 0" stroke="#b6a274" stroke-width="5" fill="none"/>
+      <path d="M84 64 q16 -8 32 0" stroke="#b6a274" stroke-width="4" fill="none"/>
+      <rect x="86" y="82" width="11" height="5" fill="#241c10"/>
+      <rect x="103" y="82" width="11" height="5" fill="#241c10"/>
+      <circle cx="91" cy="84" r="2" fill="#7fe8ff"/>
+      <circle cx="108" cy="84" r="2" fill="#7fe8ff"/>
+      <path d="M89 105 q11 4 22 0" stroke="#6b5a3a" stroke-width="3" fill="none"/>
+      <path d="M74 66 L64 106 L82 112 L84 78 Z" fill="#2a4a6a" stroke="#c8a15a" stroke-width="2"/>
+      <path d="M126 66 L136 106 L118 112 L116 78 Z" fill="#2a4a6a" stroke="#c8a15a" stroke-width="2"/>
+      <g stroke="#c8a15a" stroke-width="1.5" opacity=".8">
+        <path d="M70 76 L81 74 M68 88 L81 86 M67 100 L82 98"/>
+        <path d="M130 76 L119 74 M132 88 L119 86 M133 100 L118 98"/>
+      </g>
+    </g>`;
+
+  const headLegion = `
+    <g>
+      <path d="M78 70 C78 48 122 48 122 70 L122 94 L112 104 L108 80 L92 80 L88 104 L78 94 Z"
+            fill="#b08a4a" stroke="#4a3210" stroke-width="2"/>
+      <rect x="90" y="80" width="20" height="9" fill="#241c10"/>
+      <rect x="91" y="82" width="8" height="5" fill="#ffcf5a"/>
+      <rect x="101" y="82" width="8" height="5" fill="#ffcf5a"/>
+      <path d="M100 48 C94 34 96 22 100 10 C104 22 106 34 100 48" fill="#a01a24" stroke="#4a0a0e" stroke-width="2"/>
+      <path d="M86 98 q14 8 28 0" stroke="#7a5a2a" stroke-width="3" fill="none"/>
+      <path d="M78 66 q-8 4 -10 14 M122 66 q8 4 10 14" stroke="#7a5a2a" stroke-width="3" fill="none"/>
+    </g>`;
+
+  function sphinx() {
+    return svg(defs + `
+      <ellipse cx="100" cy="246" rx="66" ry="8" fill="rgba(0,0,0,.5)"/>
+      <path d="M154 210 q30 -4 22 -34 q-8 -20 -26 -12" stroke="#8a5a28" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M48 202 q-16 28 8 42 h30 q-18 -20 -8 -42" fill="#b9854a" stroke="#5a3a18" stroke-width="3"/>
+      <path d="M152 202 q16 28 -8 42 h-30 q18 -20 8 -42" fill="#b9854a" stroke="#5a3a18" stroke-width="3"/>
+      <path d="M42 202 q-4 -36 30 -48 h56 q34 12 30 48 q-4 28 -28 32 h-60 q-24 -4 -28 -32z"
+            fill="#c99a58" stroke="#6e4a28" stroke-width="3"/>
+      <path d="M52 218 q-18 16 -6 26 h32 q6 -10 -4 -24" fill="#d8ad68" stroke="#6e4a28" stroke-width="2"/>
+      <path d="M148 218 q18 16 6 26 h-32 q-6 -10 4 -24" fill="#d8ad68" stroke="#6e4a28" stroke-width="2"/>
+      <path d="M56 160 C24 124 26 80 64 62 C58 94 74 106 90 116 Z" fill="#e0b96a" stroke="#7a5620" stroke-width="2"/>
+      <path d="M144 160 C176 124 174 80 136 62 C142 94 126 106 110 116 Z" fill="#e0b96a" stroke="#7a5620" stroke-width="2"/>
+      <g stroke="#7a5620" stroke-width="1.6" opacity=".75">
+        <path d="M54 146 L38 98 M64 140 L50 86 M74 134 L64 76"/>
+        <path d="M146 146 L162 98 M136 140 L150 86 M126 134 L136 76"/>
+      </g>
+      <path d="M70 112 C70 72 130 72 130 112 L138 150 L124 158 L120 120 L80 120 L76 158 L62 150 Z"
+            fill="#2a4a6a" stroke="#c8a15a" stroke-width="2"/>
+      <g stroke="#c8a15a" stroke-width="2" opacity=".9">
+        <path d="M72 90 L128 90 M68 102 L132 102 M66 116 L80 116 M120 116 L134 116"/>
+      </g>
+      <ellipse cx="100" cy="98" rx="22" ry="26" fill="#d8b07a"/>
+      <rect x="86" y="92" width="11" height="5" fill="#241c10"/>
+      <rect x="103" y="92" width="11" height="5" fill="#241c10"/>
+      <circle cx="91" cy="94" r="2" fill="#7fe8ff"/>
+      <circle cx="108" cy="94" r="2" fill="#7fe8ff"/>
+      <path d="M94 106 L106 106 L100 112 Z" fill="#8a5a38"/>
+      <path d="M90 116 q10 5 20 0" stroke="#6e4a28" stroke-width="2" fill="none"/>
+      <path d="M70 126 q30 18 60 0" stroke="#c8a15a" stroke-width="4" fill="none"/>
+      <g fill="#c8a15a" opacity=".7">
+        <circle cx="76" cy="148" r="2"/><circle cx="124" cy="148" r="2"/>
+      </g>
+    `);
+  }
+
+  function colossus() {
+    return svg(defs + `
+      <ellipse cx="100" cy="250" rx="60" ry="9" fill="rgba(0,0,0,.55)"/>
+      <path d="M66 226 h22 v20 h-22z M112 226 h22 v20 h-22z" fill="#9a7a4a" stroke="#4a3218" stroke-width="2"/>
+      <rect x="72" y="178" width="22" height="58" fill="#b89a6a" stroke="#4a3218" stroke-width="2"/>
+      <rect x="106" y="178" width="22" height="58" fill="#b89a6a" stroke="#4a3218" stroke-width="2"/>
+      <path d="M62 108 L138 108 L146 160 L128 198 L72 198 L54 160 Z" fill="#c8a86a" stroke="#5a3a1a" stroke-width="3"/>
+      <path d="M70 120 L130 120 L134 152 L118 166 L82 166 L66 152 Z" fill="#d8bc80" opacity=".45"/>
+      <path d="M64 158 L136 158" stroke="#8a6a3a" stroke-width="5"/>
+      <rect x="38" y="116" width="22" height="74" rx="4" fill="#b89a6a" stroke="#4a3218" stroke-width="2"/>
+      <rect x="140" y="116" width="22" height="74" rx="4" fill="#b89a6a" stroke="#4a3218" stroke-width="2"/>
+      <path d="M78 60 C78 34 122 34 122 60 L120 82 L112 92 L108 70 L92 70 L88 92 L80 82 Z"
+            fill="#c8a86a" stroke="#4a3218" stroke-width="2"/>
+      <rect x="88" y="68" width="24" height="7" fill="#1a1208"/>
+      <rect x="90" y="70" width="9" height="3" fill="#ffcf5a"/>
+      <rect x="101" y="70" width="9" height="3" fill="#ffcf5a"/>
+      <path d="M100 36 C92 22 94 10 100 0 C106 10 108 22 100 36" fill="#7a1a1a" stroke="#3a0808" stroke-width="2"/>
+      <path d="M164 58 V244" stroke="#7a5a2a" stroke-width="5"/>
+      <path d="M164 46 l-8 20 h16 z" fill="#d8d0b8" stroke="#6a6252" stroke-width="1.5"/>
+      <circle cx="48" cy="154" r="27" fill="#8a5a2a" stroke="#c8a15a" stroke-width="3"/>
+      <path d="M48 136 L56 152 L48 168 L40 152 Z" fill="#c8a15a" opacity=".8"/>
+      <g stroke="#5a3a1a" stroke-width="1.6" opacity=".7" fill="none">
+        <path d="M84 126 l10 18 l-6 14"/><path d="M116 132 l-8 16"/><path d="M96 176 l4 16"/>
+        <path d="M58 138 l-6 12"/><path d="M142 130 l6 10"/>
+      </g>
+      <g fill="#e8cf8a" opacity=".45">
+        <circle cx="72" cy="190" r="2"/><circle cx="128" cy="188" r="1.6"/><circle cx="100" cy="148" r="2"/>
+      </g>
+    `);
+  }
+
+  function scarab() {
+    return svg(defs + `
+      <ellipse cx="100" cy="244" rx="54" ry="8" fill="rgba(0,0,0,.5)"/>
+      <circle cx="100" cy="70" r="38" fill="#ffcf5a" opacity=".12"/>
+      <circle cx="100" cy="70" r="24" fill="#e8a13a" opacity=".22"/>
+      <g stroke="#b08a4a" stroke-width="6" fill="none" stroke-linecap="round">
+        <path d="M62 148 q-30 -10 -40 8"/><path d="M62 172 q-32 4 -38 26"/>
+        <path d="M66 196 q-26 16 -24 38"/>
+        <path d="M138 148 q30 -10 40 8"/><path d="M138 172 q32 4 38 26"/>
+        <path d="M134 196 q26 16 24 38"/>
+      </g>
+      <ellipse cx="100" cy="168" rx="46" ry="56" fill="#1f3a3a" stroke="#c8a15a" stroke-width="3"/>
+      <path d="M100 118 q-32 20 -30 52 q0 34 30 50 q30 -16 30 -50 q2 -32 -30 -52z"
+            fill="#2f5a52" stroke="#8fd8c0" stroke-width="1.5"/>
+      <path d="M100 128 q-22 18 -21 42 q0 28 21 40 q21 -12 21 -40 q1 -24 -21 -42z"
+            fill="#3f7a6a" opacity=".55"/>
+      <path d="M100 138 L108 154 L100 170 L92 154 Z" fill="#e8c46a" opacity=".9"/>
+      <circle cx="100" cy="154" r="7" fill="#ffcf5a"/>
+      <g stroke="#c8a15a" stroke-width="2" opacity=".8" fill="none">
+        <path d="M62 168 q38 -12 76 0"/><path d="M60 188 q40 -10 80 0"/><path d="M64 208 q36 -8 72 0"/>
+      </g>
+      <ellipse cx="100" cy="112" rx="21" ry="16" fill="#1f3a3a" stroke="#c8a15a" stroke-width="2"/>
+      <circle cx="91" cy="110" r="4" fill="#ffcf5a"/>
+      <circle cx="109" cy="110" r="4" fill="#ffcf5a"/>
+      <path d="M88 124 q-8 12 -18 12 M112 124 q8 12 18 12" stroke="#b08a4a" stroke-width="4" fill="none"/>
+      <path d="M84 122 q-10 8 -20 4 M116 122 q10 8 20 4" stroke="#c8a15a" stroke-width="3" fill="none"/>
+      <g fill="#ffcf5a" opacity=".5">
+        <circle cx="58" cy="132" r="2"/><circle cx="142" cy="136" r="1.8"/><circle cx="100" cy="96" r="1.6"/>
+      </g>
+    `);
+  }
+
   const INIMIGOS = {
     /* ---- LIMBO ---- */
     husk: () => casca(gHusk, {}),
@@ -641,7 +788,39 @@ BM.sprites = (function () {
         '<ellipse cx="100" cy="2" rx="11" ry="16" fill="#ffd97a"/>' +
         '<ellipse cx="100" cy="0" rx="24" ry="26" fill="#ffb01f" opacity=".2"/></g>' +
         '<g stroke="#8f7a20" stroke-width="4" fill="none"><path d="M58 146 q42 26 84 0"/></g>'
-    })
+    }),
+
+    /* ---- GREED ---- */
+    anubis: () => casca(gGreed, {
+      h: 1.12, mask: false, head: headAnubis,
+      arma: '<g>' +
+        '<path d="M146 156 q34 -26 30 -62" stroke="#c8a15a" stroke-width="6" fill="none"/>' +
+        '<path d="M176 92 q10 -8 14 0 q-6 10 -14 4z" fill="#d8c08a" stroke="#5a3a12" stroke-width="2"/>' +
+        '<path d="M142 152 l8 10" stroke="#5a3a12" stroke-width="5"/>' +
+        '<path d="M58 160 q-14 20 0 38" stroke="#c8a15a" stroke-width="4" fill="none"/>' +
+        '</g>'
+    }),
+    mumia: () => casca(gGreed, {
+      h: 1.04, mask: false, head: headMumia,
+      arma: '<g stroke="#e2d2a8" stroke-width="5" fill="none" opacity=".9">' +
+        '<path d="M70 132 q30 8 60 0"/><path d="M70 150 q30 8 60 0"/><path d="M68 168 q32 8 64 0"/>' +
+        '<path d="M64 128 q-12 22 4 42"/><path d="M136 128 q12 22 -4 42"/></g>' +
+        '<g fill="#2a4a6a" stroke="#c8a15a" stroke-width="2">' +
+        '<path d="M94 148 l6 -10 l6 10 l-6 12 z"/><circle cx="100" cy="172" r="5"/></g>'
+    }),
+    legionario: () => casca(gGreed, {
+      h: 1.16, mask: false, head: headLegion,
+      arma: '<g>' +
+        '<path d="M142 124 Q190 132 188 178 Q180 210 158 220 Q136 206 132 172 Q130 142 142 124Z" fill="#7a1a24" stroke="#c8a15a" stroke-width="3"/>' +
+        '<path d="M146 156 h32 M162 140 v60" stroke="#c8a15a" stroke-width="3" opacity=".85"/>' +
+        '<path d="M150 172 l12 -10 l12 10 l-12 14 z" fill="#c8a15a" opacity=".9"/>' +
+        '<path d="M40 112 L40 228" stroke="#7a5a2a" stroke-width="4"/>' +
+        '<path d="M40 100 l-5 16 h10 z" fill="#c8c0b0" stroke="#6a6252" stroke-width="1.5"/>' +
+        '</g>'
+    }),
+    esfinge: () => sphinx(),
+    colosso: () => colossus(),
+    escaravelho: () => scarab()
   };
 
   /* ---------------- CORPO DE MINOS (gigante) ----------------
@@ -1383,11 +1562,189 @@ BM.sprites = (function () {
     </svg>`;
   }
 
+  /* ---- GREED: pirâmides colossais, templos e colunatas no deserto ---- */
+  function sceneGreed() {
+    return `<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="gr-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3d1720"/><stop offset=".42" stop-color="#c25a2c"/>
+          <stop offset=".74" stop-color="#f2a14e"/><stop offset="1" stop-color="#ffe0a0"/>
+        </linearGradient>
+        <radialGradient id="gr-sun">
+          <stop offset="0" stop-color="#fff8d6"/><stop offset=".35" stop-color="#ffdf8a" stop-opacity=".9"/>
+          <stop offset="1" stop-color="#ff9d2e" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="gr-far" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#c9834a"/><stop offset="1" stop-color="#7a3e1c"/>
+        </linearGradient>
+        <linearGradient id="gr-sand" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#e8b766"/><stop offset="1" stop-color="#9a5a28"/>
+        </linearGradient>
+        <linearGradient id="gr-stone" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#d8b07a"/><stop offset="1" stop-color="#8a5a32"/>
+        </linearGradient>
+        <linearGradient id="gr-column" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#e8c48a"/><stop offset=".5" stop-color="#c8a15a"/><stop offset="1" stop-color="#7a4a26"/>
+        </linearGradient>
+        <linearGradient id="gr-haze" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffe0a0" stop-opacity="0"/><stop offset=".55" stop-color="#ffd27a" stop-opacity=".34"/>
+          <stop offset="1" stop-color="#ffb45a" stop-opacity=".08"/>
+        </linearGradient>
+        <pattern id="gr-meander" width="18" height="18" patternUnits="userSpaceOnUse">
+          <path d="M2 14 V4 H14 V10 H8 V8" fill="none" stroke="#c8a15a" stroke-width="1.5" opacity=".65"/>
+        </pattern>
+      </defs>
+
+      <rect width="800" height="360" fill="url(#gr-sky)"/>
+      <circle cx="640" cy="70" r="112" fill="url(#gr-sun)"/>
+      <circle cx="640" cy="70" r="30" fill="#fff3c4"/>
+      <g fill="#ffdca0" opacity=".45">
+        <ellipse cx="180" cy="64" rx="90" ry="10"/><ellipse cx="250" cy="52" rx="54" ry="7"/>
+        <ellipse cx="460" cy="90" rx="74" ry="8"/>
+      </g>
+      <g stroke="#3a2418" stroke-width="2" fill="none" opacity=".5" stroke-linecap="round">
+        <path d="M208 118 q8 -7 16 0 q8 -7 16 0"/>
+        <path d="M302 88 q6 -6 12 0 q6 -6 12 0"/>
+        <path d="M484 128 q6 -6 12 0 q6 -6 12 0"/>
+      </g>
+
+      <!-- pirâmides colossais -->
+      <g>
+        <path d="M-20 254 L150 58 L330 254 Z" fill="url(#gr-far)"/>
+        <path d="M150 58 L330 254 L238 254 Z" fill="#7a3e1c" opacity=".55"/>
+        <path d="M150 58 L150 254" stroke="#e8b766" stroke-width="2" opacity=".45"/>
+        <path d="M286 254 L420 120 L560 254 Z" fill="url(#gr-far)" opacity=".82"/>
+        <path d="M420 120 L560 254 L492 254 Z" fill="#6e3518" opacity=".45"/>
+        <path d="M520 254 L650 148 L790 254 Z" fill="url(#gr-far)" opacity=".68"/>
+        <path d="M650 148 L790 254 L718 254 Z" fill="#5e2e14" opacity=".4"/>
+        <g fill="#ffe0a0" opacity=".3">
+          <path d="M150 58 L170 88 L150 92 Z"/><path d="M420 120 L436 142 L420 146 Z"/>
+        </g>
+      </g>
+
+      <rect x="0" y="170" width="800" height="112" fill="url(#gr-haze)"/>
+
+      <!-- templo egípcio colossal, à esquerda -->
+      <g>
+        <path d="M-30 302 V146 L40 126 L96 140 L96 302 Z" fill="url(#gr-stone)" stroke="#5a3a1a" stroke-width="2"/>
+        <path d="M96 140 L180 160 L180 302 L96 302 Z" fill="#8a4e28" stroke="#4a2a12" stroke-width="2"/>
+        <path d="M-30 146 L40 126 L96 140 L180 160 L180 174 L96 154 L-30 160 Z" fill="#d8b07a" stroke="#5a3a1a" stroke-width="2"/>
+        <g stroke="#c8a15a" opacity=".6" stroke-width="2">
+          <path d="M-20 184 H86 M-20 200 H86 M-20 216 H86 M-20 232 H86 M-20 248 H86"/>
+          <path d="M108 190 H168 M108 206 H168 M108 222 H168 M108 238 H168"/>
+        </g>
+        <g fill="#4a2a12" opacity=".82">
+          <rect x="4" y="238" width="40" height="64"/>
+          <path d="M24 238 L24 220 L32 220 L32 238 Z"/>
+        </g>
+        <g fill="#c8a15a" opacity=".55">
+          <circle cx="34" cy="172" r="4"/><path d="M28 196 l6 -12 l6 12 z"/><path d="M48 194 h12 M54 188 v12"/>
+          <circle cx="132" cy="178" r="4"/><path d="M122 198 h20 M132 188 v20"/>
+        </g>
+        <path d="M-30 302 H190 L190 318 H-30 Z" fill="#b9854a" stroke="#5a3a1a" stroke-width="2"/>
+      </g>
+
+      <!-- obelisco -->
+      <g>
+        <path d="M218 302 L234 126 L250 302 Z" fill="url(#gr-column)" stroke="#4a2a12" stroke-width="2"/>
+        <path d="M234 126 L250 302 L242 302 Z" fill="#7a4a26" opacity=".6"/>
+        <path d="M234 126 L241 104 L248 126 Z" fill="#e8c46a" stroke="#7a5620" stroke-width="2"/>
+        <g stroke="#c8a15a" stroke-width="1.5" opacity=".65">
+          <path d="M228 160 h12 M226 190 h16 M225 220 h18 M223 250 h20 M221 280 h22"/>
+        </g>
+      </g>
+
+      <!-- colunata greco-romana colossal, à direita -->
+      <g>
+        <path d="M530 302 V74 H800 V302 Z" fill="#3a2418" opacity=".32"/>
+        <path d="M520 84 H800 V104 H520 Z" fill="url(#gr-stone)" stroke="#4a2a12" stroke-width="2"/>
+        <path d="M520 104 H800 V116 H520 Z" fill="url(#gr-meander)"/>
+        <path d="M520 116 H800 V126 H520 Z" fill="#a87642" stroke="#4a2a12" stroke-width="1.5"/>
+        <g fill="url(#gr-column)" stroke="#4a2a12" stroke-width="2">
+          <path d="M542 126 H574 L580 274 H536 Z"/>
+          <path d="M614 126 H646 L652 274 H608 Z"/>
+          <path d="M686 126 H718 L724 274 H680 Z"/>
+          <path d="M758 126 H790 L796 274 H752 Z"/>
+        </g>
+        <g fill="#d8b07a" stroke="#4a2a12" stroke-width="2">
+          <path d="M536 126 H580 L574 138 H542 Z"/>
+          <path d="M608 126 H652 L646 138 H614 Z"/>
+          <path d="M680 126 H724 L718 138 H686 Z"/>
+          <path d="M752 126 H796 L790 138 H758 Z"/>
+        </g>
+        <g stroke="#5a3a1a" stroke-width="2" opacity=".7">
+          <path d="M548 142 V268 M558 142 V268 M568 142 V268"/>
+          <path d="M620 142 V268 M630 142 V268 M640 142 V268"/>
+          <path d="M692 142 V268 M702 142 V268 M712 142 V268"/>
+          <path d="M764 142 V268 M774 142 V268 M784 142 V268"/>
+        </g>
+        <g fill="#c8a15a" opacity=".5">
+          <rect x="552" y="172" width="12" height="2"/><rect x="624" y="196" width="12" height="2"/>
+          <rect x="696" y="158" width="12" height="2"/>
+        </g>
+        <path d="M520 274 H800 V302 H520 Z" fill="#8a5a32" stroke="#4a2a12" stroke-width="2"/>
+      </g>
+
+      <!-- estátua colossal quebrada no centro -->
+      <g opacity=".92">
+        <path d="M360 302 L360 238 Q360 218 380 218 L430 218 Q450 218 450 238 L450 302 Z"
+              fill="#9a6a3a" stroke="#4a2a12" stroke-width="2"/>
+        <path d="M374 222 Q374 190 400 184 Q426 190 426 222 L418 230 H382 Z"
+              fill="#b9854a" stroke="#4a2a12" stroke-width="2"/>
+        <path d="M382 190 L370 160 L390 172 L400 152 L410 172 L430 160 L418 190 Z"
+              fill="#8a5a32" stroke="#4a2a12" stroke-width="2"/>
+        <g fill="#ffcf5a" opacity=".75"><circle cx="391" cy="202" r="2.5"/><circle cx="409" cy="202" r="2.5"/></g>
+        <path d="M352 244 q-22 18 -8 34 M458 244 q22 18 8 34" stroke="#8a5a32" stroke-width="5" fill="none"/>
+        <g stroke="#5a3a1a" stroke-width="1.5" opacity=".6" fill="none">
+          <path d="M372 252 l12 16 l-8 12"/><path d="M428 246 l-10 14"/>
+        </g>
+      </g>
+
+      <!-- dunas -->
+      <path d="M0 276 C120 254 210 286 320 272 C440 256 540 284 650 268 C720 258 770 270 800 262 L800 360 L0 360 Z"
+            fill="url(#gr-sand)"/>
+      <path d="M0 292 C110 276 190 300 300 288 C430 274 540 302 660 290 C730 283 776 290 800 286"
+            fill="none" stroke="#f2cd8a" stroke-width="2" opacity=".5"/>
+      <g stroke="#b97a42" stroke-width="1.6" opacity=".5" fill="none">
+        <path d="M40 312 q60 -12 120 0"/><path d="M260 320 q70 -12 140 0"/>
+        <path d="M520 308 q70 -10 140 0"/><path d="M660 332 q50 -8 100 0"/>
+      </g>
+
+      <!-- terraço de arenito em primeiro plano -->
+      <path d="M0 316 H800 V360 H0 Z" fill="url(#gr-stone)"/>
+      <path d="M0 316 H800" stroke="#e0b878" stroke-width="2" opacity=".7"/>
+      <g stroke="#6e4424" stroke-width="1.5" opacity=".55">
+        <path d="M0 330 H800 M0 346 H800"/>
+        <path d="M70 316 V360 M210 316 V360 M350 316 V360 M490 316 V360 M630 316 V360 M770 316 V360"/>
+      </g>
+      <g stroke="#5a3a1a" stroke-width="2" opacity=".7" fill="none">
+        <path d="M116 320 l18 12 l-10 16"/><path d="M438 322 l-14 12 l16 10"/><path d="M690 320 l12 14 l-8 12"/>
+      </g>
+
+      <!-- tambor de coluna caído -->
+      <g>
+        <ellipse cx="90" cy="326" rx="34" ry="11" fill="#8a5a32" stroke="#4a2a12" stroke-width="2"/>
+        <ellipse cx="90" cy="322" rx="34" ry="11" fill="#c8a15a" stroke="#4a2a12" stroke-width="2"/>
+        <ellipse cx="90" cy="320" rx="18" ry="6" fill="#9a6a3a"/>
+        <path d="M56 322 H124" stroke="#7a4a26" stroke-width="2" opacity=".7"/>
+      </g>
+
+      <g fill="#ffe6a0" opacity=".5">
+        <circle cx="180" cy="286" r="1.6"/><circle cx="320" cy="276" r="1.2"/><circle cx="540" cy="284" r="1.4"/>
+        <circle cx="700" cy="272" r="1.2"/><circle cx="260" cy="300" r="1"/><circle cx="620" cy="306" r="1.3"/>
+      </g>
+      <g stroke="#ffe6a0" stroke-width="1.4" opacity=".28" fill="none" stroke-linecap="round">
+        <path d="M96 280 q22 -8 44 0"/><path d="M456 270 q24 -8 48 0"/><path d="M656 296 q22 -6 44 0"/>
+      </g>
+    </svg>`;
+  }
+
   function arena(theme, opts) {
     opts = opts || {};
     if (theme === 'limbo') return sceneLimbo(!!opts.night);
     if (theme === 'lust') return sceneLust();
     if (theme === 'gluttony') return sceneGluttony(!!opts.noAcid);
+    if (theme === 'greed') return sceneGreed();
     const a = theme.a, b = theme.b, c = theme.c;
     return '<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
       `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
@@ -1569,6 +1926,59 @@ BM.sprites = (function () {
         </g>
         <g stroke="#c03028" stroke-width="1.6" fill="none" opacity=".5">
           <path d="M34 70 q6 14 2 28"/><path d="M206 70 q-6 14 -2 28"/>
+        </g>
+      </svg>`;
+    }
+    if (id === 'greed') {
+      return `<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lga-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#421722"/><stop offset=".44" stop-color="#c25a2c"/>
+            <stop offset=".76" stop-color="#f2a14e"/><stop offset="1" stop-color="#ffe0a0"/>
+          </linearGradient>
+          <linearGradient id="lga-sand" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#e8b766"/><stop offset="1" stop-color="#9a5a28"/>
+          </linearGradient>
+          <linearGradient id="lga-stone" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#e8c48a"/><stop offset=".55" stop-color="#c8a15a"/><stop offset="1" stop-color="#7a4a26"/>
+          </linearGradient>
+        </defs>
+        <rect width="240" height="120" fill="url(#lga-sky)"/>
+        <circle cx="192" cy="26" r="32" fill="#ffe6a0" opacity=".25"/>
+        <circle cx="192" cy="26" r="12" fill="#fff3c4"/>
+        <path d="M-8 94 L62 22 L142 94 Z" fill="#b97842"/>
+        <path d="M62 22 L142 94 L102 94 Z" fill="#7a3e1c" opacity=".55"/>
+        <path d="M116 94 L170 50 L228 94 Z" fill="#a86434" opacity=".88"/>
+        <path d="M170 50 L228 94 L198 94 Z" fill="#6e3518" opacity=".48"/>
+        <path d="M0 94 C34 86 64 100 100 92 C142 84 186 100 240 90 L240 120 L0 120 Z" fill="url(#lga-sand)"/>
+        <g>
+          <rect x="150" y="58" width="88" height="8" fill="url(#lga-stone)"/>
+          <path d="M146 58 L160 50 L232 50 L242 58 Z" fill="#d8b07a"/>
+          <g fill="url(#lga-stone)">
+            <rect x="156" y="66" width="9" height="38"/>
+            <rect x="176" y="66" width="9" height="38"/>
+            <rect x="196" y="66" width="9" height="38"/>
+            <rect x="216" y="66" width="9" height="38"/>
+          </g>
+          <g fill="#d8b07a">
+            <rect x="152" y="66" width="17" height="5"/><rect x="172" y="66" width="17" height="5"/>
+            <rect x="192" y="66" width="17" height="5"/><rect x="212" y="66" width="17" height="5"/>
+          </g>
+          <rect x="150" y="102" width="88" height="5" fill="#8a5a32"/>
+        </g>
+        <g>
+          <path d="M-8 100 V62 L10 54 L38 62 V100 Z" fill="#a86a3a"/>
+          <path d="M-8 62 L10 54 L38 62 L38 68 L10 60 L-8 68 Z" fill="#d8b07a"/>
+          <g fill="#4a2a12" opacity=".75"><rect x="2" y="82" width="15" height="18"/></g>
+          <g stroke="#c8a15a" stroke-width="1" opacity=".6"><path d="M0 72 H30 M0 78 H30"/></g>
+        </g>
+        <g>
+          <path d="M82 104 V58 L100 50 L118 58 V104 Z" fill="#8a5a32" stroke="#4a2a12" stroke-width="1.5"/>
+          <path d="M82 58 L100 50 L118 58 L118 64 L100 56 L82 64 Z" fill="#d8b07a"/>
+          <g stroke="#c8a15a" stroke-width="1" opacity=".55"><path d="M88 72 H112 M88 80 H112 M88 88 H112"/></g>
+        </g>
+        <g fill="#ffe6a0" opacity=".55">
+          <circle cx="44" cy="98" r="1.4"/><circle cx="128" cy="102" r="1.2"/><circle cx="214" cy="98" r="1.1"/>
         </g>
       </svg>`;
     }
