@@ -783,7 +783,7 @@ BM.ui = (function () {
               <div class="status-row" id="st-p"></div>
             </div>
           </div>
-          <div class="fighter enemy" id="f-enemy">
+          <div class="fighter enemy${S.enemy.giant ? ' gigante' : ''}${S.enemy.hand ? ' mao' : ''}" id="f-enemy">
             <div class="f-sprite">${BM.sprites.get(S.enemy.sprite)}</div>
             <div class="f-panel">
               <div class="f-name">${S.enemy.name} <span class="f-lv">${S.enemy.isBoss ? 'CHEFE' : ''}</span></div>
@@ -1221,6 +1221,70 @@ BM.ui = (function () {
     setTimeout(function () { if (onDone) onDone(); }, 4400);
   }
 
+  /* ============================================================
+     CUTSCENE DE MORTE — A Mão do Rei Minos se desintegra
+     ============================================================ */
+  function maoFall(onDone) {
+    current = 'maoFall';
+    BM.audio.playMusic('desligamento');
+    const shards = [
+      [58, 30, -92, 58, 130, .00, 1.2], [66, 24, -74, 86, 210, .05, .9],
+      [74, 30, -54, 102, 150, .10, 1.4], [82, 38, -30, 118, 90, .03, 1.0],
+      [88, 50, 24, 128, 190, .14, 1.3], [84, 62, 44, 96, 250, .08, .8],
+      [76, 70, -18, 132, 120, .18, 1.1], [68, 78, -64, 144, 170, .06, 1.5],
+      [60, 66, -104, 112, 230, .12, 1.0], [54, 52, -122, 74, 80, .02, .9],
+      [62, 44, -86, 92, 300, .16, 1.2], [70, 54, -46, 120, 140, .09, .7],
+      [78, 46, -8, 138, 200, .20, 1.1], [86, 74, 32, 108, 260, .11, .9],
+      [52, 40, -132, 40, 90, .24, 1.6], [58, 58, -118, 60, 170, .30, 1.3],
+      [66, 48, -70, 70, 260, .34, 1.5], [74, 62, -24, 84, 110, .28, 1.2],
+      [82, 56, 12, 92, 220, .36, 1.4], [88, 66, 36, 76, 300, .32, 1.1]
+    ].map(function (p) {
+      return '<i class="mao-shard" style="left:' + p[0] + '%;top:' + p[1] +
+        '%;--x:' + p[2] + 'px;--y:' + p[3] + 'px;--r:' + p[4] +
+        'deg;--d:' + p[5] + 's;--s:' + p[6] + '"></i>';
+    }).join('');
+    mount(
+      '<div class="screen scene-death maofall" id="mao-fall">' +
+      '<div class="death-stage mao-death-stage">' +
+      '<div class="mao-fall-aura"></div>' +
+      '<div class="mao-fall-body" id="mao-body">' + BM.sprites.mao() + '</div>' +
+      '<div class="mao-shards" id="mao-shards">' + shards + '</div>' +
+      '<div class="mao-dust" id="mao-dust"></div>' +
+      '<div class="mao-flash" id="mao-flash"></div>' +
+      '</div>' +
+      '<div class="death-caption" id="mao-cap"></div>' +
+      '</div>');
+    const scene = el('#mao-fall');
+    const body = el('#mao-body');
+    const cap = el('#mao-cap');
+    const dust = el('#mao-dust');
+    const shardsEl = el('#mao-shards');
+    const flash = el('#mao-flash');
+    setTimeout(function () {
+      cap.innerHTML = '<div class="dc-title">A MÃO DO REI MINOS SE RACHETA</div>' +
+        '<div class="dc-text">A catedral de Lust range. O último guardião perde a força.</div>';
+      cap.classList.add('on');
+      body.classList.add('rachando');
+      BM.audio.play('ko');
+    }, 700);
+    setTimeout(function () {
+      scene.classList.add('impacto');
+      body.classList.add('desintegrando');
+      shardsEl.classList.add('on');
+      dust.classList.add('on');
+      flash.classList.add('on');
+      BM.audio.play('heavy');
+      cap.innerHTML = '<div class="dc-title">O GUARDIÃO SE DESFAZ</div>' +
+        '<div class="dc-text">Pedra, carne e séculos de desejo viram pó violeta.</div>';
+    }, 2100);
+    setTimeout(function () {
+      cap.innerHTML = '<div class="dc-title">A MÃO ESTÁ VAZIA</div>' +
+        '<div class="dc-text">O silêncio volta à catedral. Lust não tem mais dono.</div>';
+      BM.audio.play('shutdown');
+    }, 4300);
+    setTimeout(function () { if (onDone) onDone(); }, 5600);
+  }
+
 /* ============================================================
      SPRITES/UI SNIPPETS — introduções de chefe e modal
      ============================================================ */
@@ -1238,9 +1302,10 @@ BM.ui = (function () {
     current = 'enemyIntro';
     const lines = [];               // chefes não falam: só a imagem e o nome
     const gigante = !!enemy.giant;
+    const mao = !!enemy.hand;
     BM.audio.playMusic(musicFor(layerIndex, true));
     mount(
-      '<div class="screen scene-boss' + (gigante ? ' gigante' : '') + '" id="scene-boss">' +
+      '<div class="screen scene-boss' + (gigante ? ' gigante' : '') + (mao ? ' mao' : '') + '" id="scene-boss">' +
       '<div class="boss-stage"><div class="boss-sprite" id="boss-sprite">' + BM.sprites.get(enemy.sprite) + '</div></div>' +
       '<div class="boss-title" id="boss-title">' + enemy.name + '</div>' +
       '<div class="boss-sub" id="boss-sub">' + D.FACTIONS[enemy.faction].name.toUpperCase() + ' · CHEFE</div>' +
@@ -1673,7 +1738,7 @@ BM.ui = (function () {
     mount, el, els, toast,
     get current() { return current; },
     title, shop, loadout, lobby, layerMap, dialogue, battle, battleUpdate,
-    battleLog, floatText, shake, flashTurn, promptParry, result, layerResult, gabrielBleed, v2Death,
+    battleLog, floatText, shake, flashTurn, promptParry, result, layerResult, gabrielBleed, v2Death, maoFall,
     deathScene, gameOver, enemyIntro, bossIntro, modal, options, credits, ending, postCredits,
     savePick
   };

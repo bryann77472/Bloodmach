@@ -320,9 +320,11 @@ BM.main = (function () {
       });
       return;
     }
-    if (info.bossId === 'minos') {
-      BM.ui.dialogue(D.STORY.afterMinos, function () {
-        BM.ui.lobby();
+    if (info.bossId === 'mao') {
+      BM.ui.maoFall(function () {
+        BM.ui.dialogue(D.STORY.afterMao, function () {
+          BM.ui.lobby();
+        });
       });
       return;
     }

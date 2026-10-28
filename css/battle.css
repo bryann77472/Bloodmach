@@ -91,7 +91,7 @@
   width:78%; height:40%; border-radius:50%; pointer-events:none; z-index:-1;
   background:radial-gradient(closest-side, rgba(255,96,60,.18), transparent 76%);
 }
-.fighter.player{ left:3%; }
+.fighter.player{ left:3%; z-index:5; }
 .fighter.enemy{ right:3%; flex-direction:row-reverse; }
 .fighter .f-sprite{ flex:1 1 auto; min-width:0; height:100%; display:flex; align-items:flex-end; justify-content:center; }
 .fighter .f-sprite svg, .fighter .f-sprite img{ height:100%; width:auto; max-width:100%; display:block; object-fit:contain; filter:drop-shadow(0 12px 20px rgba(0,0,0,.6)); }
@@ -102,9 +102,27 @@
 @keyframes hurt{ 0%,100%{transform:none; filter:none} 30%{transform:translateX(-8px)} 60%{transform:translateX(6px)} }
 .fighter.attacking .f-sprite{ animation: lunge .3s ease; }
 .fighter.enemy.attacking .f-sprite{ animation: lungeR .3s ease; }
-.fighter.enemy.gigante{ width:76%; height:100%; bottom:0; }
-.fighter.enemy.gigante .f-sprite{ height:300%; align-items:flex-end; }
-.fighter.enemy.gigante .f-panel{ width:min(280px,40%); }
+.fighter.enemy.gigante{ width:72%; height:100%; bottom:0; right:-4%; align-items:stretch; }
+.fighter.enemy.gigante .f-sprite{ height:100%; flex:1 1 auto; min-width:0; }
+.fighter.enemy.gigante .f-sprite svg{ width:100%; height:100%; filter:drop-shadow(0 0 54px rgba(198,76,255,.30)) drop-shadow(0 14px 28px rgba(0,0,0,.75)); }
+.fighter.enemy.gigante .f-panel{ position:absolute; right:8%; left:auto; bottom:4%; width:min(280px,42%); z-index:4; }
+
+/* A Mão do Rei Minos: sprite colossal entrando pela direita.
+   O painel de vida continua no lugar normal de qualquer inimigo
+   (à esquerda do lutador), mas acima da camada da mão. */
+.fighter.enemy.mao{ overflow:visible; }
+.fighter.enemy.mao .f-sprite{
+  position:absolute; right:-8%; bottom:-8%; width:195%; height:142%;
+  z-index:1; display:flex; align-items:flex-end; justify-content:flex-end;
+  pointer-events:none;
+}
+.fighter.enemy.mao .f-sprite svg{
+  width:100%; height:100%; max-width:none; object-fit:contain;
+  filter:drop-shadow(0 0 50px rgba(198,76,255,.26)) drop-shadow(0 18px 32px rgba(0,0,0,.78));
+}
+.fighter.enemy.mao .f-panel{
+  position:absolute; left:0; bottom:0; z-index:6;
+}
 .fighter.enemy.fugindo .f-sprite{ animation:fugirEnemigo 1.2s ease-in forwards; }
 @keyframes fugirEnemigo{
   0%{ transform:translateX(0) scale(1); opacity:1; }
@@ -137,6 +155,10 @@
 @media (max-width:700px){
   .f-panel{ width:58%; }
   .fighter{ bottom:5%; width:48%; height:70%; }
+  .fighter.enemy.gigante .f-panel{ width:min(260px,46%); }
+  .fighter.enemy.gigante .f-name{ font-size:.66rem; letter-spacing:.08em; gap:4px; }
+  .fighter.enemy.gigante .f-lv{ font-size:.58rem; }
+  .fighter.enemy.gigante .f-faction{ font-size:.54rem; letter-spacing:.1em; }
 }
 
 /* ---------------- CENTRO / INTENÇÃO ---------------- */

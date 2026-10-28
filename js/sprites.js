@@ -454,7 +454,6 @@ BM.sprites = (function () {
   const gLust = { pele: '#b08a7c', pele2: '#6d4a44', osso: '#f0e0c8', mascara: '#e8d8b8', sombra: '#3a2622', sangue: '#c02040' };
   const gGlut = { pele: '#9aa06a', pele2: '#5c5f38', osso: '#e8e2c0', mascara: '#dfe0b0', sombra: '#2e3018', sangue: '#8f7a20' };
   const gGreed = { pele: '#b9814f', pele2: '#7a4a2a', osso: '#f2dfb2', mascara: '#f6e6b8', sombra: '#3a2412', sangue: '#b8862a' };
-  const gMinos = { carn: '#3a1442', carn2: '#1a0722', osso: '#c9b8d8', olho: '#ffe9ff', brilho: '#d24cff', sombra: '#12040f' };
 
   /* casca genérica: máscara branca, corpo magro */
   function casca(c, opt) {
@@ -823,63 +822,239 @@ BM.sprites = (function () {
     escaravelho: () => scarab()
   };
 
-  /* ---------------- CORPO DE MINOS (gigante) ----------------
-     Referência: REF-CORPSE-MINOS-IN-GAME — a cavidade do tórax
-     vista do ponto de vista do V1, com o crânio e os dois olhos. */
-  function minos() {
-    return svg(defs + `
+  /* ---------------- A MÃO DO REI MINOS (gigante) ----------------
+     Chefe de Lust: uma mão colossal de pedra e carne, entrando pela
+     direita da tela. A palma está aberta e os dedos apontam para V1.
+     A referência é a mão do Rei Minos no Ultrakill: pele roxa/negra,
+     veios brilhantes, anéis de pedra e arame farpado. */
+  function mao() {
+    return '<svg viewBox="0 0 430 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMaxYMax meet">' +
+      defs + `
       <defs>
-        <radialGradient id="g-cavity" cx=".5" cy=".42" r=".65">
-          <stop offset="0" stop-color="#5a1a68"/><stop offset=".45" stop-color="#2a0836"/><stop offset="1" stop-color="#0d0312"/>
-        </radialGradient>
-        <radialGradient id="g-eyeM" cx=".5" cy=".5" r=".5">
-          <stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#ffd6ff"/><stop offset="1" stop-color="#c64cff" stop-opacity="0"/>
-        </radialGradient>
-        <linearGradient id="g-rib" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="#6a3a78"/><stop offset=".5" stop-color="#3c1848"/><stop offset="1" stop-color="#1d0a26"/>
+        <linearGradient id="g-mao-skin" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#33243d"/>
+          <stop offset=".38" stop-color="#1b1024"/>
+          <stop offset=".72" stop-color="#0d0612"/>
+          <stop offset="1" stop-color="#040106"/>
         </linearGradient>
+        <linearGradient id="g-mao-skin2" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#4a3658"/>
+          <stop offset=".45" stop-color="#271832"/>
+          <stop offset="1" stop-color="#0a0410"/>
+        </linearGradient>
+        <linearGradient id="g-mao-stone" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#1a1220"/>
+          <stop offset=".55" stop-color="#0b0610"/>
+          <stop offset="1" stop-color="#020104"/>
+        </linearGradient>
+        <radialGradient id="g-mao-aura" cx=".55" cy=".48" r=".55">
+          <stop offset="0" stop-color="#c64cff" stop-opacity=".22"/>
+          <stop offset=".55" stop-color="#6a1a8a" stop-opacity=".08"/>
+          <stop offset="1" stop-color="#c64cff" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="g-mao-palm-light" cx=".42" cy=".35" r=".6">
+          <stop offset="0" stop-color="#a07ab0" stop-opacity=".22"/>
+          <stop offset=".55" stop-color="#5a3a68" stop-opacity=".08"/>
+          <stop offset="1" stop-color="#2a1a34" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="g-mao-gem" cx=".4" cy=".35" r=".65">
+          <stop offset="0" stop-color="#f4dcff"/>
+          <stop offset=".28" stop-color="#d88cff"/>
+          <stop offset=".7" stop-color="#8a2ac0"/>
+          <stop offset="1" stop-color="#3a0a50"/>
+        </radialGradient>
+        <filter id="g-mao-soft" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3"/>
+        </filter>
+        <filter id="g-mao-soft2" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="1.4"/>
+        </filter>
       </defs>
-      <ellipse cx="100" cy="250" rx="96" ry="12" fill="rgba(0,0,0,.55)"/>
-      <!-- cavidade do tórax -->
-      <path d="M100 24 C160 40 190 110 184 190 C176 236 140 252 100 252 C60 252 24 236 16 190 C10 110 40 40 100 24 Z"
-            fill="url(#g-cavity)" stroke="#0d0312" stroke-width="4"/>
-      <!-- costelas -->
-      <g stroke="url(#g-rib)" stroke-width="13" fill="none" stroke-linecap="round">
-        <path d="M40 66 C74 58 126 58 160 66"/>
-        <path d="M28 100 C70 90 130 90 172 100"/>
-        <path d="M20 138 C68 126 132 126 180 138"/>
-        <path d="M18 176 C68 162 132 162 182 176"/>
-        <path d="M24 212 C72 198 128 198 176 212"/>
-      </g>
-      <g stroke="#7d4a8c" stroke-width="3" fill="none" opacity=".55">
-        <path d="M40 66 C74 58 126 58 160 66"/><path d="M20 138 C68 126 132 126 180 138"/>
-      </g>
-      <!-- mãos de dedos cruzados sobre o peito -->
-      <g stroke="#4a2058" stroke-width="9" fill="none" stroke-linecap="round">
-        <path d="M62 150 q22 12 38 30"/><path d="M138 150 q-22 12 -38 30"/>
-        <path d="M74 146 q18 10 26 26"/><path d="M126 146 q-18 10 -26 26"/>
-      </g>
-      <!-- crânio com a coroa -->
+
+      <!-- aura violeta -->
+      <ellipse cx="268" cy="132" rx="184" ry="126" fill="url(#g-mao-aura)"/>
+
+      <!-- antebraço saindo da direita -->
+      <path d="M330 58 C366 40 408 50 430 76 L430 246 C406 260 364 252 330 226 Z"
+            fill="url(#g-mao-skin)" stroke="#050208" stroke-width="3"/>
+      <path d="M330 58 C352 52 370 56 378 70 L378 236 C364 246 344 242 330 226 Z"
+            fill="#08030c" opacity=".55"/>
+
+      <!-- bracelete de pedra no pulso -->
       <g>
-        <path d="M78 74 L122 74 L128 100 L120 124 L80 124 L72 100 Z" fill="#241033" stroke="#0d0312" stroke-width="3"/>
-        <path d="M80 86 L120 86 L118 94 L82 94 Z" fill="#0a020e"/>
-        <ellipse cx="92" cy="90" rx="11" ry="9" fill="url(#g-eyeM)"/>
-        <ellipse cx="108" cy="90" rx="11" ry="9" fill="url(#g-eyeM)"/>
-        <circle cx="92" cy="90" r="3.4" fill="#fff"/>
-        <circle cx="108" cy="90" r="3.4" fill="#fff"/>
-        <path d="M88 108 L112 108 L108 118 L92 118 Z" fill="#0a020e"/>
-        <path d="M92 108 l2 10 M98 108 l2 10 M104 108 l2 10" stroke="#4a2058" stroke-width="2"/>
-        <!-- coroa -->
-        <path d="M80 70 L76 40 L88 56 L96 32 L104 56 L116 40 L120 70 Z" fill="#2a1036" stroke="#0d0312" stroke-width="3"/>
-        <circle cx="96" cy="30" r="4" fill="#c64cff" opacity=".8"/>
-        <circle cx="116" cy="40" r="3" fill="#c64cff" opacity=".6"/>
+        <path d="M324 72 L352 60 L364 80 L364 220 L350 238 L324 226 Z"
+              fill="url(#g-mao-stone)" stroke="#050208" stroke-width="2.4"/>
+        <path d="M324 72 L352 60 L364 80 L336 94 Z" fill="#3a2a44" opacity=".65"/>
+        <g stroke="#7a2aa0" stroke-width="1.2" opacity=".5">
+          <path d="M330 108 L358 100"/><path d="M330 138 L360 130"/>
+          <path d="M330 168 L358 160"/><path d="M330 198 L356 190"/>
+        </g>
+        <g fill="none" stroke="#000" stroke-width="1.1" opacity=".55">
+          <path d="M332 84 L340 96 L334 110 L344 122"/>
+          <path d="M350 134 L342 146 L350 158"/>
+        </g>
+        <g fill="none" stroke="#b45cff" stroke-width=".8" opacity=".35">
+          <path d="M332 84 L340 96 L334 110 L344 122"/>
+        </g>
       </g>
-      <!-- brilho geral -->
-      <ellipse cx="100" cy="86" rx="52" ry="40" fill="#c64cff" opacity=".10"/>
-    `);
+
+      <!-- dedos: indicador, médio, anelar e mindinho -->
+      <g>
+        <!-- mindinho -->
+        <path d="M212 166 C184 172 152 182 124 196 C108 204 100 214 104 224 C108 234 122 236 136 228 C164 214 190 204 214 196 Z"
+              fill="url(#g-mao-skin)" stroke="#050208" stroke-width="2.6"/>
+        <!-- anelar -->
+        <path d="M208 134 C168 136 118 144 68 158 C48 164 34 174 36 186 C38 198 54 204 72 200 C124 186 170 170 210 164 Z"
+              fill="url(#g-mao-skin)" stroke="#050208" stroke-width="2.8"/>
+        <!-- médio -->
+        <path d="M210 98 C166 86 108 80 50 82 C28 82 12 90 12 104 C12 118 28 126 50 126 C108 128 166 136 210 146 Z"
+              fill="url(#g-mao-skin)" stroke="#050208" stroke-width="3"/>
+        <!-- indicador -->
+        <path d="M206 70 C166 52 112 40 58 40 C36 40 22 48 22 60 C22 72 36 82 58 84 C112 88 166 102 206 116 Z"
+              fill="url(#g-mao-skin)" stroke="#050208" stroke-width="2.8"/>
+      </g>
+
+      <!-- palma aberta -->
+      <path d="M170 78 C196 46 248 38 292 54 C326 66 348 94 352 130 L352 174 C348 210 318 234 276 240 C238 246 204 232 184 208 C166 186 160 160 162 132 C162 110 164 92 170 78 Z"
+            fill="url(#g-mao-skin)" stroke="#050208" stroke-width="3"/>
+      <ellipse cx="246" cy="126" rx="92" ry="78" fill="url(#g-mao-palm-light)"/>
+      <ellipse cx="240" cy="160" rx="58" ry="48" fill="#0a0410" opacity=".28"/>
+      <ellipse cx="292" cy="204" rx="42" ry="30" fill="#1a1020" opacity=".55"/>
+      <ellipse cx="230" cy="210" rx="46" ry="30" fill="#2a1a30" opacity=".42"/>
+
+      <!-- polegar, por cima da palma -->
+      <path d="M250 200 C218 208 186 220 160 236 C146 244 132 246 126 238 C120 230 130 220 146 212 C176 196 210 190 242 188 Z"
+            fill="url(#g-mao-skin2)" stroke="#050208" stroke-width="2.8"/>
+
+      <!-- vinco entre polegar e mindinho -->
+      <path d="M226 196 C196 210 166 224 140 238" fill="none" stroke="#000" stroke-width="2.2" opacity=".65"/>
+
+      <!-- nós dos dedos -->
+      <g fill="#33243d" stroke="#050208" stroke-width="1.4" opacity=".72">
+        <ellipse cx="196" cy="92" rx="18" ry="13"/>
+        <ellipse cx="198" cy="122" rx="20" ry="14"/>
+        <ellipse cx="198" cy="152" rx="19" ry="14"/>
+        <ellipse cx="202" cy="182" rx="17" ry="13"/>
+        <ellipse cx="234" cy="198" rx="22" ry="14"/>
+      </g>
+
+      <!-- dobras e articulações -->
+      <g fill="none" stroke="#050208" stroke-width="1.8" opacity=".7">
+        <path d="M150 54 Q144 68 150 82"/><path d="M104 48 Q100 62 106 76"/>
+        <path d="M150 94 Q144 108 150 122"/><path d="M102 90 Q98 104 104 118"/>
+        <path d="M150 140 Q144 154 150 168"/><path d="M102 150 Q98 164 104 178"/>
+        <path d="M160 182 Q154 196 160 210"/>
+        <path d="M182 224 Q174 234 180 242"/>
+      </g>
+      <g fill="none" stroke="#8a6a9a" stroke-width=".9" opacity=".22">
+        <path d="M150 56 Q145 68 150 80"/><path d="M150 96 Q145 108 150 120"/>
+        <path d="M150 142 Q145 154 150 166"/>
+      </g>
+
+      <!-- unhas escuras -->
+      <g fill="#100818" stroke="#4a2a5a" stroke-width="1.2">
+        <path d="M48 44 C36 44 28 50 28 60 C28 70 36 76 48 76 C56 76 60 70 58 62 C56 52 54 46 48 44 Z"/>
+        <path d="M40 88 C28 88 20 94 20 104 C20 114 28 120 40 120 C48 120 52 114 50 106 C48 96 46 90 40 88 Z"/>
+        <path d="M66 164 C54 166 48 174 50 184 C52 192 60 196 70 192 C78 188 80 180 74 172 Z"/>
+        <path d="M126 200 C116 204 112 212 116 220 C120 228 130 228 138 222 C144 216 140 206 132 202 Z"/>
+        <path d="M150 238 C140 242 136 248 140 254 C144 260 154 260 160 254 C166 248 162 240 156 238 Z"/>
+      </g>
+      <g fill="none" stroke="#a86ac0" stroke-width=".8" opacity=".45">
+        <path d="M42 50 C36 52 34 58 36 64"/><path d="M34 96 C28 98 26 104 28 110"/>
+        <path d="M60 172 C56 176 56 182 60 186"/><path d="M122 208 C118 212 118 218 122 222"/>
+        <path d="M146 244 C142 248 142 252 146 255"/>
+      </g>
+
+      <!-- anel de pedra no dedo anelar -->
+      <g transform="rotate(7 154 162)">
+        <path d="M134 142 L164 148 L160 182 L130 176 Z" fill="url(#g-mao-stone)" stroke="#050208" stroke-width="2"/>
+        <path d="M134 142 L164 148 L162 157 L132 151 Z" fill="#4a2a5a" opacity=".8"/>
+        <circle cx="150" cy="163" r="13" fill="#8a2ac0" opacity=".45" filter="url(#g-mao-soft2)"/>
+        <path d="M147 153 L159 157 L155 173 L143 169 Z" fill="url(#g-mao-gem)" stroke="#e0a0ff" stroke-width=".9"/>
+        <path d="M149 157 L155 159 L153 168 L147 166 Z" fill="#f4dcff" opacity=".9"/>
+      </g>
+
+      <!-- placas de pedra incrustadas -->
+      <g fill="url(#g-mao-stone)" stroke="#050208" stroke-width="1.6">
+        <path d="M300 66 L332 58 L342 82 L316 92 Z"/>
+        <path d="M322 150 L350 142 L356 172 L330 182 Z"/>
+        <path d="M286 196 L316 188 L326 214 L298 224 Z"/>
+      </g>
+      <g fill="none" stroke="#7a2aa0" stroke-width=".9" opacity=".35">
+        <path d="M304 70 L330 64"/><path d="M326 154 L350 148"/><path d="M290 200 L316 194"/>
+      </g>
+
+      <!-- rachaduras e veios brilhantes -->
+      <g fill="none" stroke="#000" stroke-width="2.4" opacity=".6">
+        <path d="M350 100 L330 116 L336 132 L318 146 L324 164"/>
+        <path d="M300 86 L292 110 L300 126"/>
+        <path d="M250 100 L244 124 L252 142"/>
+        <path d="M220 170 L210 190 L218 206"/>
+        <path d="M170 110 L160 128 L166 144"/>
+        <path d="M150 60 L144 74 L150 88"/>
+        <path d="M110 96 L104 110 L110 122"/>
+        <path d="M100 160 L94 174 L100 186"/>
+      </g>
+      <g fill="none" stroke="#b45cff" stroke-width="2.2" opacity=".34" filter="url(#g-mao-soft)">
+        <path d="M350 100 L330 116 L336 132 L318 146 L324 164"/>
+        <path d="M300 86 L292 110 L300 126"/>
+        <path d="M250 100 L244 124 L252 142"/>
+        <path d="M220 170 L210 190 L218 206"/>
+        <path d="M170 110 L160 128 L166 144"/>
+        <path d="M150 60 L144 74 L150 88"/>
+        <path d="M110 96 L104 110 L110 122"/>
+        <path d="M100 160 L94 174 L100 186"/>
+      </g>
+      <g fill="none" stroke="#e0a0ff" stroke-width=".9" opacity=".62">
+        <path d="M350 100 L330 116 L336 132 L318 146 L324 164"/>
+        <path d="M300 86 L292 110 L300 126"/>
+        <path d="M250 100 L244 124 L252 142"/>
+        <path d="M220 170 L210 190 L218 206"/>
+        <path d="M170 110 L160 128 L166 144"/>
+        <path d="M150 60 L144 74 L150 88"/>
+        <path d="M110 96 L104 110 L110 122"/>
+        <path d="M100 160 L94 174 L100 186"/>
+      </g>
+
+      <!-- arame farpado no pulso -->
+      <g fill="none" stroke="#4a3a52" stroke-width="1.7" opacity=".72">
+        <path d="M330 90 C360 104 374 126 366 152 C358 178 334 192 312 186"/>
+        <path d="M342 96 C364 110 372 130 364 152"/>
+      </g>
+      <g fill="none" stroke="#2a1a32" stroke-width="1.1" opacity=".85">
+        <path d="M338 98 l-6 -6 M338 98 l6 -6"/>
+        <path d="M354 114 l-6 -6 M354 114 l6 -6"/>
+        <path d="M362 136 l-6 -6 M362 136 l6 -6"/>
+        <path d="M356 160 l-6 -6 M356 160 l6 -6"/>
+        <path d="M338 178 l-6 -6 M338 178 l6 -6"/>
+      </g>
+
+      <!-- luz de contorno violeta -->
+      <g fill="none" stroke="#b45cff" stroke-width="4" opacity=".24" filter="url(#g-mao-soft)">
+        <path d="M206 70 C166 52 112 40 58 40 C40 40 28 44 24 52"/>
+        <path d="M210 98 C166 86 108 80 50 82 C34 82 20 86 14 94"/>
+        <path d="M208 134 C168 136 118 144 68 158 C54 162 42 168 38 176"/>
+        <path d="M212 166 C184 172 152 182 124 196 C112 202 104 208 102 216"/>
+        <path d="M250 200 C218 208 186 220 160 236 C150 242 140 244 132 242"/>
+        <path d="M170 78 C196 46 248 38 292 54"/>
+        <path d="M330 58 C366 40 408 50 430 76"/>
+      </g>
+      <g fill="none" stroke="#e0a0ff" stroke-width="1" opacity=".5">
+        <path d="M206 70 C166 52 112 40 58 40 C40 40 28 44 24 52"/>
+        <path d="M210 98 C166 86 108 80 50 82 C34 82 20 86 14 94"/>
+        <path d="M208 134 C168 136 118 144 68 158 C54 162 42 168 38 176"/>
+        <path d="M212 166 C184 172 152 182 124 196 C112 202 104 208 102 216"/>
+        <path d="M250 200 C218 208 186 220 160 236 C150 242 140 244 132 242"/>
+        <path d="M170 78 C196 46 248 38 292 54"/>
+        <path d="M330 58 C366 40 408 50 430 76"/>
+      </g>
+
+      <!-- sombra interna na base -->
+      <path d="M184 208 C210 238 262 248 306 232 C330 224 344 210 350 194 L352 238 C330 254 280 258 238 244 C214 236 194 222 184 208 Z"
+            fill="#020104" opacity=".55"/>
+    ` + '</svg>';
   }
 
-  /* ---------------- GABRIEL ---------------- */
   function gabriel() {
     return svg(defs + `
       <ellipse cx="100" cy="250" rx="70" ry="10" fill="#000" opacity=".5"/>
@@ -1988,7 +2163,7 @@ BM.sprites = (function () {
 
   /* ---------------- MAPA DE SPRITES ---------------- */
   const registry = Object.assign({
-    v1, v2, gabriel, motor, minos: function () { return minos(); },
+    v1, v2, gabriel, motor, mao: function () { return mao(); },
   }, INIMIGOS);
   const _reg = {
     husk_gordo: husks.husk_gordo,
@@ -2008,7 +2183,7 @@ BM.sprites = (function () {
       const fn = registry[name] || registry.husk;
       return fn(accent);
     },
-    v1, v2, v1Svg, v2Svg, fallbackV1, fallbackV2, gabriel, motor, minos, portrait, arena, layerArt, actArt,
+    v1, v2, v1Svg, v2Svg, fallbackV1, fallbackV2, gabriel, motor, mao, portrait, arena, layerArt, actArt,
     INIMIGOS,
     armSprite, legSprite, chassisSprite, itemSprite, scrapSprite, coreSprite
   };

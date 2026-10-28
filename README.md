@@ -38,7 +38,7 @@ ainda estão em expansão.
 | Camada | Ambiente | Modificador | Chefe |
 |---|---|---|---|
 | **1. Limbo** | Vale ensolarado: céu azul, montanhas, árvores, grama e água (anoitece contra o V2) | *Maré Morta* — dano recebido +10% | **V2** (ele **foge**) |
-| **2. Lust** | Metrópole neon de arranha-céus, com plataforma suspensa sobre o vazio | *Luxúria* — inimigos golpeiam 18% mais forte | **O Corpo do Rei Minos** (gigante) |
+| **2. Lust** | Metrópole neon de arranha-céus, com plataforma suspensa sobre o vazio | *Luxúria* — inimigos golpeiam 18% mais forte | **A Mão do Rei Minos** (gigante) |
 | **3. Gluttony** | Estômago de carne exposta, pequenas poças de ácido e bile | *Digestão Ácida* — toda cura 30% menor | **Gabriel** |
 
 **Ato II — Imperfect Hatred** tem **1 camada** por enquanto:
@@ -77,8 +77,14 @@ mapa da camada e no card da Oficina:
 - **V2 — Ascensão** é o chefe de Greed: uma versão **mais forte**, dourada, com mais HP,
   cópias do seu arsenal e a técnica inevitável `ASCENSÃO`. **Ele não foge**: quando cai,
   a camada termina e uma cutscene mostra o corpo desligando no deserto.
-- **O Corpo do Rei Minos** é o chefe de Lust: um corpo gigante que ocupa a tela inteira,
-  desenhado a partir da referência do jogo original (a cavidade do tórax vista do V1).
+- **A Mão do Rei Minos** é o chefe de Lust: uma mão colossal de pedra e carne que
+  entra pela direita da tela, aberta, com os dedos apontando para V1. Ela tem veios
+  violetas, placas de pedra, um anel de pedra e arame farpado no pulso.
+- O painel de vida do chefe fica no mesmo lugar do painel de qualquer inimigo — à
+  esquerda do lutador —, mas acima da camada da mão. O sprite gigante não empurra
+  nem reposiciona a caixa de vida.
+- Quando a mão é derrotada, uma cutscene mostra a pedra rachando, o brilho violeta
+  tomando conta dela e a mão se desintegrando em cacos e pó antes do diálogo final.
 - **Cutscene só dos chefes**: antes de encarar um chefe, ele aparece em tela cheia com
   o nome e a facção (sem falar, como no original) e a luta começa quando você clica.
   Os **inimigos comuns entram direto na luta**, sem cutscene.
@@ -166,7 +172,7 @@ removidos (Vulture, Crawler, Glutton, Bloated Husk, Glutton Arm, Plagueborn).
 - **Gluttony**: Soothsayer, Filet Machine, **Big John**, **Tallow Golem**, **Drone II**, **Ceremoniar III**
 - **Greed**: Chacal de Anúbis, Múmia Real, Legionário de Bronze, Esfinge de Ouro,
   Colosso de Marfim, Escaravelho Solar
-- **Chefes**: V2 (Limbo), V2 — Ascensão (Greed), O Corpo do Rei Minos (Lust), Gabriel (Gluttony)
+- **Chefes**: V2 (Limbo), A Mão do Rei Minos (Lust), Gabriel (Gluttony), V2 — Ascensão (Greed)
 - **Nenhum inimigo se cura** — não existe golpe de cura no elenco, e o modificador de
   cura da Lust foi trocado por um de ataque.
 

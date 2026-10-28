@@ -848,6 +848,8 @@ BM.battle = (function () {
       hp: enemyHp, maxHp: enemyHp, atk: Math.round(enemyDef.atk * atkScale * diffAtk), def: Math.round(enemyDef.def * hpScale),
       vel: enemyDef.vel, level: enemyLevel, status: {}, cooldowns: {},
       moves: enemyDef.moves.slice(), intent: null, phase: 1, isBoss: isBoss,
+      giant: !!enemyDef.giant,
+      hand: !!enemyDef.hand,
       bossName: enemyDef.name,
       gravityCharge: 0, cancelNext: false
     };

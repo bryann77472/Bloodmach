@@ -406,7 +406,7 @@ BM.DATA = (function () {
       desc: 'Metrópole neon de arranha-céus colossais, passarelas e andaimes no vazio.',
       modifier: { id: 'luxuria', name: 'Luxúria', desc: 'Os inimigos golpeiam 18% mais forte.', atkMul: 1.18 },
       encounters: ['enthusiast', 'journeyman', 'corporal', 'fanatic', 'lustful_husk', 'ceremoniar2'],
-      boss: 'minos',
+      boss: 'mao',
       checkpoints: [3],
       theme: { a: '#a326c4', b: '#22053a', c: '#ff5ad0' }
     },
@@ -553,14 +553,14 @@ BM.DATA = (function () {
         { name: 'Chumbo', type: 'explosao', power: 22, acc: 87, kind: 'explosive', range: 'any', parryable: false, text: 'VAI LANÇAR CHUMBO' }
       ]
     },
-    minos: {
-      id: 'minos', name: 'O Corpo do Rei Minos', faction: 'carne', sprite: 'minos',
-      hp: 1350, atk: 29, def: 32, vel: 5, exp: 700, scrap: 420, boss: true, giant: true,
+    mao: {
+      id: 'mao', name: 'A Mão do Rei Minos', faction: 'carne', sprite: 'mao',
+      hp: 1350, atk: 29, def: 32, vel: 5, exp: 700, scrap: 420, boss: true, hand: true,
       moves: [
         { name: 'Esmagamento', type: 'impacto', power: 31, acc: 94, kind: 'melee', range: 'perto', parryable: true, text: 'VAI ESMAGAR' },
         { name: 'Dedos', type: 'corte', power: 27, acc: 92, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI ESGARRA' },
-        { name: 'Cavidade', type: 'sangue', power: 29, acc: 90, kind: 'ranged', range: 'longe', parryable: false, text: 'VAI VOMITAR' },
-        { name: 'Sentença do Rei', type: 'explosao', power: 35, acc: 100, kind: 'inevitable', range: 'any', parryable: false, unavoidable: true, minHp: 0.3, text: 'SENTENÇA DO REI' }
+        { name: 'Palma', type: 'impacto', power: 29, acc: 90, kind: 'ranged', range: 'longe', parryable: false, effect: 'push', text: 'VAI EMPURRAR' },
+        { name: 'Dedo do Rei', type: 'explosao', power: 35, acc: 100, kind: 'inevitable', range: 'any', parryable: false, unavoidable: true, minHp: 0.3, text: 'DEDO DO REI' }
       ]
     },
 
@@ -724,6 +724,7 @@ BM.DATA = (function () {
     esfinge: ['A esfinge abre os olhos e sorri com dentes de pedra.'],
     colosso: ['O colosso se move. A areia treme.'],
     escaravelho: ['Um sol pequeno desce zumbindo sobre a areia.'],
+    mao: ['Uma mão colossal se ergue do vazio, aberta, apontando para você.'],
     v2_greed: ['O deserto se cala. V2 desce das pirâmides, dourado e mais forte.']
   };
 
@@ -740,8 +741,8 @@ BM.DATA = (function () {
       { who:'V2', text:'Você não passa de um protótipo enferrujado. Eu sou o próximo passo.', portrait:'v2' },
       { who:'V1', text:'[ ... ]', portrait:'v1' }
     ],
-    afterMinos: [
-      { who:'MOTOR', text:'O Corpo do Rei Minos parou de se mover. A catedral range e silencia.', portrait:'motor' },
+    afterMao: [
+      { who:'MOTOR', text:'A Mão do Rei Minos se desfaz em pó. A catedral de Lust range e silencia.', portrait:'motor' },
       { who:'MOTOR', text:'Abaixo: Gluttony. A fábrica de digestão. Algo espera lá embaixo — e o seu nome está gravado nas peças.', portrait:'motor' }
     ],
     afterV2: [
@@ -749,11 +750,11 @@ BM.DATA = (function () {
       { who:'V2', text:'Eu sou o modelo. Você é a peça descartada.', portrait:'v2' },
       { who:'V2', text:'— pare. Você não tem sangue. Não tem mais nada.', portrait:'v2' },
       { who:'MOTOR', text:'Unidade V2 desativada. Núcleo EXTRAÍDO. Novos sistemas disponíveis para integração.', portrait:'motor' },
-      { who:'MOTOR', text:'Abaixo: Lust. O corpo do Rei Minos espera por alguém que o mate.', portrait:'motor' }
+      { who:'MOTOR', text:'Abaixo: Lust. A mão do Rei Minos se ergue das trevas, aberta, esperando por você.', portrait:'motor' }
     ],
     lustStart: [
-      { who:'MOTOR', text:'Lust. Uma catedral de carne onde os corpos se arrastam e beijam o que sobrou do Rei Minos.', portrait:'motor' },
-      { who:'MOTOR', text:'Recomendo: parry. O Feedbacker responde bem contra lâminas de luz.', portrait:'motor' }
+      { who:'MOTOR', text:'Lust. Uma catedral de carne onde os corpos se arrastam diante da mão do Rei Minos.', portrait:'motor' },
+      { who:'MOTOR', text:'Recomendo: parry. O Feedbacker responde bem contra dedos de pedra.', portrait:'motor' }
     ],
     gluttonyStart: [
       { who:'MOTOR', text:'Gluttony. A fábrica de digestão. Aqui o sangue é ingrediente.', portrait:'motor' },
