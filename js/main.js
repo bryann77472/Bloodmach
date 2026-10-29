@@ -91,6 +91,15 @@ BM.main = (function () {
       BM.battle.start({ enemyId: enemyId, layerIndex: layerIndex, hp: currentHp });
       BM.ui.battle();
     }
+    // Heresy: o nó do chefe abre o portão de Dis antes da batalha.
+    // A música para no clique e só volta quando a batalha realmente começa.
+    if (enemyId === 'gabriel_heresy') {
+      BM.audio.stopMusic();
+      BM.ui.heresyGate(layerIndex, function () {
+        BM.ui.dialogue(D.STORY.gabrielHeresyBefore, comecar);
+      });
+      return;
+    }
     // cutscene de entrada: somente os chefes têm (aparece sem falar)
     if (enemyDef && enemyDef.boss) BM.ui.enemyIntro(enemyId, layerIndex, comecar);
     else comecar();
@@ -291,6 +300,13 @@ BM.main = (function () {
       d.progress.node = 0;
       BM.save.persist();
       BM.ui.toast('HELLWHIP E PEÇAS DE FIBRA LIBERADOS NA LOJA', 'ok');
+    } else if (bossId === 'ferryman') {
+      d.flags.ferrymanDead = true;
+      BM.save.persist();
+    } else if (bossId === 'gabriel_heresy') {
+      d.flags.heresyGabrielDead = true;
+      BM.save.persist();
+      BM.ui.toast('THUNDERFIST, CARCAÇA BLOODFORGE E PERNAS SHADOW STEP LIBERADOS NA LOJA', 'ok');
     }
     // a camada foi concluída: libera a próxima e paga os núcleos
     d.flags['camada' + layerIndex + 'Feita'] = true;
@@ -309,7 +325,19 @@ BM.main = (function () {
       }
       BM.save.persist();
     }
-    BM.ui.layerResult({ layerIndex: layerIndex, layerName: D.LAYERS[layerIndex].name, rank: rank, bossId: bossId, pago: pago });
+    const resultInfo = { layerIndex: layerIndex, layerName: D.LAYERS[layerIndex].name, rank: rank, bossId: bossId, pago: pago, keepMusic: bossId === 'gabriel_heresy' };
+    // Heresy: a morte de Gabriel e as últimas palavras vêm antes do resultado da camada.
+    if (bossId === 'gabriel_heresy') {
+      BM.ui.heresyGabrielDeath(function () {
+        BM.ui.blackScreen(function () {
+          BM.ui.dialogue(D.STORY.gabrielHeresyLastWords, function () {
+            BM.ui.layerResult(resultInfo);
+          });
+        });
+      });
+      return;
+    }
+    BM.ui.layerResult(resultInfo);
   }
 
   function afterLayer(info) {
@@ -333,6 +361,12 @@ BM.main = (function () {
         BM.ui.dialogue(D.STORY.afterGreedV2, function () {
           BM.ui.lobby();
         });
+      });
+      return;
+    }
+    if (info.bossId === 'ferryman') {
+      BM.ui.dialogue(D.STORY.afterFerryman, function () {
+        BM.ui.lobby();
       });
       return;
     }

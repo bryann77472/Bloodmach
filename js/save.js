@@ -34,7 +34,7 @@ BM.save = (function () {
       progress: { layer: 0, node: 0, unlockedLayers: 1, checkpoint: null,
         layerStats: { t0: 0, dmg: 0, styleMax: 0, maxHp: 0 },
         pending: { scrap: 0, xp: 0 } },
-      flags: { tutorial: false, v2Dead: false, nucleo_v2: false, gabrielDead: false, greedV2Dead: false, hellwhipUnlocked: false, ending: false, ngPlus: false },
+      flags: { tutorial: false, v2Dead: false, nucleo_v2: false, gabrielDead: false, greedV2Dead: false, hellwhipUnlocked: false, ferrymanDead: false, heresyGabrielDead: false, ending: false, ngPlus: false },
       settings: {
         som: true, volume: 0.7, musica: 0.4, tremor: true,
         dificuldade: 'standard', parryAssist: false, textoRápido: false
@@ -67,6 +67,8 @@ BM.save = (function () {
       gabrielDead: !!(d.flags && d.flags.gabrielDead),
       greedV2Dead: !!(d.flags && d.flags.greedV2Dead),
       hellwhipUnlocked: !!(d.flags && d.flags.hellwhipUnlocked),
+      ferrymanDead: !!(d.flags && d.flags.ferrymanDead),
+      heresyGabrielDead: !!(d.flags && d.flags.heresyGabrielDead),
       camada: (d.progress && d.progress.layer) || 0,
       tutorial: !!(d.flags && d.flags.tutorial),
       updatedAt: d.updatedAt || 0
@@ -310,6 +312,7 @@ BM.save = (function () {
     if (u === 'v2' && !d.flags.v2Dead) return { ok: false, reason: 'DERROTE O V2' };
     if (u === 'gabriel' && !d.flags.gabrielDead) return { ok: false, reason: 'DERROTE GABRIEL' };
     if (u === 'greed' && !d.flags.greedV2Dead) return { ok: false, reason: 'DERROTE O V2 EM GREED' };
+    if (u === 'heresyGabriel' && !d.flags.heresyGabrielDead) return { ok: false, reason: 'DERROTE GABRIEL EM HERESY' };
     if (u === 'layer2') return { ok: false, reason: 'CAMADA 2 — EM DESENVOLVIMENTO' };
     return { ok: true, reason: '' };
   }

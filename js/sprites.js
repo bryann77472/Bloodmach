@@ -454,13 +454,16 @@ BM.sprites = (function () {
   const gLust = { pele: '#b08a7c', pele2: '#6d4a44', osso: '#f0e0c8', mascara: '#e8d8b8', sombra: '#3a2622', sangue: '#c02040' };
   const gGlut = { pele: '#9aa06a', pele2: '#5c5f38', osso: '#e8e2c0', mascara: '#dfe0b0', sombra: '#2e3018', sangue: '#8f7a20' };
   const gGreed = { pele: '#b9814f', pele2: '#7a4a2a', osso: '#f2dfb2', mascara: '#f6e6b8', sombra: '#3a2412', sangue: '#b8862a' };
+  const gWrath = { pele: '#7c8a8e', pele2: '#4a5a60', osso: '#dce4e2', mascara: '#cdd8d6', sombra: '#1d2a30', sangue: '#3a6a7a' };
+  const gHeresy = { pele: '#8a4a3a', pele2: '#5a2a20', osso: '#e8c8a8', mascara: '#e0b090', sombra: '#2a0e0a', sangue: '#d83a1a' };
 
   /* casca genérica: máscara branca, corpo magro */
   function casca(c, opt) {
-    const o = Object.assign({ h: 1, mask: true, arma: '', head: '', cor: c.pele }, opt || {});
+    const o = Object.assign({ h: 1, mask: true, arma: '', head: '', costas: '', cor: c.pele }, opt || {});
     const s = o.h;
     return svg(defs + `
       <ellipse cx="100" cy="250" rx="${40 * s}" ry="8" fill="rgba(0,0,0,.45)"/>
+      ${o.costas}
       <g>
         <rect x="${86 - 9 * s}" y="${176}" width="${18 * s}" height="${54 * s}" fill="${c.pele2}"/>
         <rect x="${108 - 9 * s}" y="${176}" width="${18 * s}" height="${54 * s}" fill="${c.pele2}"/>
@@ -565,6 +568,103 @@ BM.sprites = (function () {
       <path d="M78 66 q-8 4 -10 14 M122 66 q8 4 10 14" stroke="#7a5a2a" stroke-width="3" fill="none"/>
     </g>`;
 
+  /* ---- WRATH: cabeças e corpos temáticos ---- */
+  const headBarqueiro = `
+    <g>
+      <path d="M74 106 C70 76 80 46 100 42 C120 46 130 76 126 106 L112 114 L88 114 Z"
+            fill="#182228" stroke="#070b0e" stroke-width="2"/>
+      <path d="M84 84 C84 62 116 62 116 84 L112 104 L88 104 Z" fill="#c8d2d0" stroke="#5a6a70" stroke-width="2"/>
+      <rect x="87" y="82" width="11" height="5" fill="#070b0e"/><rect x="102" y="82" width="11" height="5" fill="#070b0e"/>
+      <circle cx="92.5" cy="84.5" r="2" fill="#9fe8ff"/><circle cx="107.5" cy="84.5" r="2" fill="#9fe8ff"/>
+      <path d="M93 99 L107 99" stroke="#5a6a70" stroke-width="2"/>
+      <path d="M76 106 Q100 122 124 106" stroke="#2a3a42" stroke-width="4" fill="none"/>
+      <path d="M100 42 L100 28" stroke="#5a6a70" stroke-width="3"/>
+      <circle cx="100" cy="26" r="4" fill="#9fe8ff" opacity=".8"/>
+    </g>`;
+
+  const headNoiva = `
+    <g>
+      <path d="M68 112 C60 72 78 42 100 38 C122 42 140 72 132 112 L118 124 L82 124 Z"
+            fill="#8a9a98" opacity=".55"/>
+      <ellipse cx="100" cy="88" rx="23" ry="27" fill="#b8c4c0" stroke="#4a5a5c" stroke-width="2"/>
+      <path d="M78 74 Q100 60 122 74" stroke="#6a7a78" stroke-width="5" fill="none"/>
+      <path d="M82 88 Q88 84 94 88 M106 88 Q112 84 118 88" stroke="#2a3a3c" stroke-width="3" fill="none"/>
+      <path d="M88 88 L86 104 M112 88 L114 104" stroke="#3a5a60" stroke-width="2" opacity=".8"/>
+      <path d="M92 106 Q100 110 108 106" stroke="#4a5a5c" stroke-width="2" fill="none"/>
+      <path d="M72 118 Q100 134 128 118" stroke="#4a6a68" stroke-width="4" fill="none" opacity=".8"/>
+      <g fill="#6a8a7a" opacity=".8">
+        <path d="M74 66 q-8 20 2 36" stroke="#6a8a7a" stroke-width="3" fill="none"/>
+        <path d="M126 66 q8 20 -2 36" stroke="#6a8a7a" stroke-width="3" fill="none"/>
+      </g>
+    </g>`;
+
+  const headCorsario = `
+    <g>
+      <path d="M68 66 L76 38 L124 38 L132 66 L118 60 L100 70 L82 60 Z"
+            fill="#1a2228" stroke="#070b0e" stroke-width="2"/>
+      <path d="M76 38 Q100 26 124 38" stroke="#2a3a42" stroke-width="3" fill="none"/>
+      <ellipse cx="100" cy="88" rx="23" ry="27" fill="#c8d2d0" stroke="#5a6a70" stroke-width="2"/>
+      <rect x="86" y="80" width="11" height="5" fill="#070b0e"/><rect x="103" y="80" width="11" height="5" fill="#070b0e"/>
+      <path d="M86 80 L118 80" stroke="#070b0e" stroke-width="5"/>
+      <circle cx="108" cy="82" r="6" fill="#070b0e" stroke="#5a6a70" stroke-width="1.5"/>
+      <path d="M92 102 Q100 108 108 102" stroke="#5a6a70" stroke-width="2" fill="none"/>
+      <path d="M100 66 L100 50" stroke="#5a6a70" stroke-width="2"/>
+      <path d="M76 104 Q100 118 124 104" stroke="#2a3a42" stroke-width="4" fill="none"/>
+    </g>`;
+
+  /* ---- HERESY: cabeças e corpos temáticos ---- */
+  const headHeretic = `
+    <g>
+      <path d="M72 108 C66 74 80 42 100 36 C120 42 134 74 128 108 L112 116 L88 116 Z"
+            fill="#2a0e0a" stroke="#0a0302" stroke-width="2"/>
+      <path d="M84 86 C84 64 116 64 116 86 L112 104 L88 104 Z" fill="#d8b090" stroke="#5a2a20" stroke-width="2"/>
+      <rect x="87" y="82" width="11" height="5" fill="#1a0806"/><rect x="102" y="82" width="11" height="5" fill="#1a0806"/>
+      <circle cx="92.5" cy="84.5" r="2.2" fill="#ffb01f"/><circle cx="107.5" cy="84.5" r="2.2" fill="#ffb01f"/>
+      <path d="M93 100 L107 100" stroke="#5a2a20" stroke-width="2"/>
+      <path d="M78 70 L84 54 L90 70 L96 52 L102 70 L108 54 L114 70 L122 52"
+            stroke="#ff9d2e" stroke-width="2" fill="none" opacity=".8"/>
+      <path d="M100 36 L100 22" stroke="#ffb01f" stroke-width="3"/>
+      <circle cx="100" cy="20" r="5" fill="#ffb01f" opacity=".8"/>
+      <path d="M74 108 Q100 126 126 108" stroke="#3a1a12" stroke-width="4" fill="none"/>
+    </g>`;
+
+  const headExecutioner = `
+    <g>
+      <path d="M76 68 C76 44 124 44 124 68 L122 98 L112 112 L88 112 L78 98 Z"
+            fill="#3a2a26" stroke="#0a0605" stroke-width="3"/>
+      <rect x="82" y="70" width="36" height="14" rx="3" fill="#120a08" stroke="#6a4a3a" stroke-width="1.5"/>
+      <rect x="86" y="73" width="10" height="5" fill="#ff7a1a"/><rect x="104" y="73" width="10" height="5" fill="#ff7a1a"/>
+      <path d="M88 96 L112 96" stroke="#6a4a3a" stroke-width="3"/>
+      <path d="M76 62 L60 34 L82 48 Z" fill="#2a1a16" stroke="#0a0605" stroke-width="2"/>
+      <path d="M124 62 L140 34 L118 48 Z" fill="#2a1a16" stroke="#0a0605" stroke-width="2"/>
+      <path d="M100 44 L100 28" stroke="#6a4a3a" stroke-width="3"/>
+      <path d="M88 112 L88 122 M112 112 L112 122" stroke="#6a4a3a" stroke-width="3"/>
+    </g>`;
+
+  const headIronKnight = `
+    <g>
+      <path d="M80 70 C80 42 120 42 120 70 L120 96 L110 108 L90 108 L80 96 Z"
+            fill="#3a4048" stroke="#0a0e12" stroke-width="3"/>
+      <path d="M82 74 L118 74 L114 86 L86 86 Z" fill="#120a08" stroke="#8a4a2a" stroke-width="2"/>
+      <rect x="88" y="76" width="10" height="5" fill="#ffb01f"/><rect x="102" y="76" width="10" height="5" fill="#ffb01f"/>
+      <path d="M100 42 C92 28 94 16 100 6 C106 16 108 28 100 42" fill="#ff7a1a" stroke="#7a2a0a" stroke-width="2"/>
+      <path d="M80 92 L120 92" stroke="#5a6470" stroke-width="3"/>
+      <path d="M84 96 L84 110 M116 96 L116 110" stroke="#5a6470" stroke-width="3"/>
+      <circle cx="100" cy="64" r="4" fill="#ffb01f" opacity=".8"/>
+    </g>`;
+
+  const headGargula = `
+    <g>
+      <path d="M78 100 C72 78 78 58 100 50 C122 58 128 78 122 100 L110 108 L90 108 Z"
+            fill="#5a6068" stroke="#1a1e24" stroke-width="3"/>
+      <path d="M80 58 L64 30 L86 44 Z" fill="#3a4048" stroke="#1a1e24" stroke-width="2"/>
+      <path d="M120 58 L136 30 L114 44 Z" fill="#3a4048" stroke="#1a1e24" stroke-width="2"/>
+      <rect x="86" y="78" width="11" height="5" fill="#120e0a"/><rect x="103" y="78" width="11" height="5" fill="#120e0a"/>
+      <circle cx="91.5" cy="80.5" r="2" fill="#9fe8ff"/><circle cx="108.5" cy="80.5" r="2" fill="#9fe8ff"/>
+      <path d="M90 96 L100 104 L110 96" stroke="#1a1e24" stroke-width="3" fill="none"/>
+      <path d="M84 66 Q100 56 116 66" stroke="#8a949c" stroke-width="3" fill="none"/>
+    </g>`;
+
   function sphinx() {
     return svg(defs + `
       <ellipse cx="100" cy="246" rx="66" ry="8" fill="rgba(0,0,0,.5)"/>
@@ -659,6 +759,202 @@ BM.sprites = (function () {
       <path d="M84 122 q-10 8 -20 4 M116 122 q10 8 20 4" stroke="#c8a15a" stroke-width="3" fill="none"/>
       <g fill="#ffcf5a" opacity=".5">
         <circle cx="58" cy="132" r="2"/><circle cx="142" cy="136" r="1.8"/><circle cx="100" cy="96" r="1.6"/>
+      </g>
+    `);
+  }
+
+  /* ============================================================
+     WRATH / HERESY — corpos especiais
+     ============================================================ */
+  function tempestade() {
+    return svg(defs + `
+      <ellipse cx="100" cy="248" rx="54" ry="9" fill="rgba(0,0,0,.5)"/>
+      <g opacity=".95">
+        <ellipse cx="100" cy="102" rx="68" ry="38" fill="#26363e" stroke="#0d161a" stroke-width="3"/>
+        <ellipse cx="62" cy="112" rx="34" ry="24" fill="#1e2c34" stroke="#0d161a" stroke-width="2"/>
+        <ellipse cx="138" cy="112" rx="36" ry="24" fill="#1e2c34" stroke="#0d161a" stroke-width="2"/>
+        <ellipse cx="100" cy="84" rx="42" ry="26" fill="#3a4e58" stroke="#0d161a" stroke-width="2"/>
+        <ellipse cx="100" cy="76" rx="26" ry="14" fill="#5a7480" opacity=".55"/>
+      </g>
+      <g fill="#9fe8ff">
+        <ellipse cx="82" cy="106" rx="9" ry="6"/>
+        <ellipse cx="118" cy="106" rx="9" ry="6"/>
+        <circle cx="82" cy="106" r="3.2" fill="#e8ffff"/>
+        <circle cx="118" cy="106" r="3.2" fill="#e8ffff"/>
+      </g>
+      <g stroke="#9fe8ff" stroke-width="3.4" fill="none" stroke-linejoin="round" opacity=".95">
+        <path d="M118 126 L104 160 L118 158 L96 202"/>
+        <path d="M62 132 L50 162 L62 160 L46 192" opacity=".55"/>
+      </g>
+      <g stroke="#7fa8b8" stroke-width="2" opacity=".4" stroke-linecap="round">
+        <path d="M42 150 L34 186"/><path d="M58 158 L50 202"/><path d="M142 154 L134 194"/>
+        <path d="M158 146 L150 184"/><path d="M74 170 L68 208"/><path d="M128 170 L122 206"/>
+      </g>
+      <g fill="#bff4ff" opacity=".7">
+        <circle cx="52" cy="94" r="2"/><circle cx="148" cy="88" r="1.6"/><circle cx="100" cy="58" r="1.8"/>
+      </g>
+    `);
+  }
+
+  function fornalha() {
+    return svg(defs + `
+      <ellipse cx="100" cy="248" rx="58" ry="9" fill="rgba(0,0,0,.55)"/>
+      <rect x="64" y="196" width="24" height="48" rx="3" fill="#24100c" stroke="#090302" stroke-width="2"/>
+      <rect x="112" y="196" width="24" height="48" rx="3" fill="#24100c" stroke="#090302" stroke-width="2"/>
+      <rect x="54" y="236" width="44" height="12" rx="3" fill="#160806"/>
+      <rect x="102" y="236" width="44" height="12" rx="3" fill="#160806"/>
+      <path d="M62 104 L138 104 L154 150 L144 202 L56 202 L46 150 Z" fill="#2a1410" stroke="#090302" stroke-width="3"/>
+      <path d="M62 104 L138 104 L146 124 L54 124 Z" fill="#4a2418" opacity=".8"/>
+      <rect x="72" y="128" width="56" height="46" rx="4" fill="#080201" stroke="#5a2a1a" stroke-width="2"/>
+      <g fill="#ff7a1a" opacity=".95">
+        <path d="M100 132 C90 144 86 152 92 162 C96 168 104 168 108 162 C114 152 108 144 100 132 Z"/>
+        <path d="M82 138 C76 148 78 158 86 162 C92 164 96 158 92 152 C88 146 86 142 82 138 Z" opacity=".8"/>
+        <path d="M118 138 C124 148 122 158 114 162 C108 164 104 158 108 152 C112 146 114 142 118 138 Z" opacity=".8"/>
+      </g>
+      <g stroke="#3a1a12" stroke-width="3">
+        <path d="M76 146 L124 146"/><path d="M76 160 L124 160"/>
+      </g>
+      <g>
+        <rect x="78" y="50" width="44" height="40" rx="4" fill="#2a1410" stroke="#090302" stroke-width="3"/>
+        <rect x="84" y="62" width="32" height="10" rx="2" fill="#080201"/>
+        <rect x="88" y="64" width="10" height="6" fill="#ffb01f"/>
+        <rect x="102" y="64" width="10" height="6" fill="#ffb01f"/>
+        <path d="M100 50 L100 36" stroke="#4a2418" stroke-width="4"/>
+        <circle cx="100" cy="32" r="5" fill="#ffb01f" opacity=".8"/>
+      </g>
+      <g fill="#3a1a12" stroke="#090302" stroke-width="2">
+        <rect x="34" y="112" width="18" height="62" rx="5"/>
+        <rect x="148" y="112" width="18" height="62" rx="5"/>
+        <rect x="28" y="168" width="28" height="16" rx="4"/>
+        <rect x="144" y="168" width="28" height="16" rx="4"/>
+      </g>
+      <g fill="#ff7a1a" opacity=".55">
+        <circle cx="44" cy="190" r="2.4"/><circle cx="156" cy="188" r="2"/><circle cx="100" cy="214" r="2.2"/>
+      </g>
+      <g fill="#2a2a2e" opacity=".4">
+        <circle cx="100" cy="20" r="7"/><circle cx="112" cy="10" r="5"/><circle cx="88" cy="8" r="4"/>
+      </g>
+    `);
+  }
+
+  function serpenteLava() {
+    return svg(defs + `
+      <ellipse cx="100" cy="244" rx="58" ry="9" fill="rgba(0,0,0,.55)"/>
+      <g fill="none" stroke-linecap="round">
+        <path d="M46 232 C22 196 44 164 84 172 C136 184 166 142 146 108 C130 80 92 82 76 106 C62 128 78 152 104 150"
+              stroke="#2a0a06" stroke-width="30"/>
+        <path d="M46 232 C22 196 44 164 84 172 C136 184 166 142 146 108 C130 80 92 82 76 106 C62 128 78 152 104 150"
+              stroke="#8a1a12" stroke-width="22"/>
+        <path d="M46 232 C22 196 44 164 84 172 C136 184 166 142 146 108 C130 80 92 82 76 106 C62 128 78 152 104 150"
+              stroke="#ff7a1a" stroke-width="4" opacity=".8"/>
+      </g>
+      <g fill="#ffb01f" opacity=".8">
+        <circle cx="52" cy="208" r="3"/><circle cx="72" cy="176" r="2.4"/><circle cx="120" cy="176" r="3"/>
+        <circle cx="154" cy="132" r="2.2"/><circle cx="118" cy="94" r="2.6"/>
+      </g>
+      <g transform="translate(104 148)">
+        <path d="M-22 0 C-28 -18 -12 -30 4 -28 C22 -26 34 -10 28 8 C22 24 2 30 -12 20 Z"
+              fill="#3a0e08" stroke="#0a0202" stroke-width="3"/>
+        <path d="M-14 -8 L2 -16 L8 -4 L-8 4 Z" fill="#ffb01f"/>
+        <path d="M-6 -12 L-2 -6 L4 -12" fill="none" stroke="#0a0202" stroke-width="2"/>
+        <path d="M18 -6 L34 -2 L22 8 Z" fill="#ff7a1a" opacity=".8"/>
+        <path d="M-20 10 C-10 18 6 20 18 12" fill="none" stroke="#ffb01f" stroke-width="2" opacity=".7"/>
+        <path d="M-18 -12 C-26 -22 -22 -34 -12 -40" fill="none" stroke="#ff7a1a" stroke-width="3" opacity=".7"/>
+      </g>
+      <g fill="#ff7a1a" opacity=".5">
+        <circle cx="86" cy="226" r="2"/><circle cx="114" cy="232" r="1.6"/><circle cx="140" cy="196" r="2"/>
+      </g>
+    `);
+  }
+
+  function almaQueimada() {
+    return svg(defs + `
+      <ellipse cx="100" cy="246" rx="44" ry="8" fill="rgba(0,0,0,.45)"/>
+      <path d="M100 52 C130 52 146 84 146 132 L152 220 L128 204 L116 236 L100 214 L84 236 L72 204 L48 220 L54 132 C54 84 70 52 100 52 Z"
+            fill="#1e0c08" stroke="#080202" stroke-width="3" opacity=".95"/>
+      <path d="M100 66 C122 66 134 92 134 130 L138 198 L122 188 L112 212 L100 196 L88 212 L78 188 L62 198 L66 130 C66 92 78 66 100 66 Z"
+            fill="#3a1a12" opacity=".7"/>
+      <g fill="#ff7a1a" opacity=".85">
+        <path d="M100 34 C90 50 94 62 100 70 C106 60 112 50 100 34 Z"/>
+        <path d="M72 58 C62 72 66 84 74 92 C78 80 82 70 72 58 Z" opacity=".7"/>
+        <path d="M128 58 C138 72 134 84 126 92 C122 80 118 70 128 58 Z" opacity=".7"/>
+      </g>
+      <g fill="#080202">
+        <ellipse cx="86" cy="96" rx="8" ry="12"/>
+        <ellipse cx="114" cy="96" rx="8" ry="12"/>
+      </g>
+      <g fill="#ffb01f">
+        <circle cx="86" cy="96" r="3"/>
+        <circle cx="114" cy="96" r="3"/>
+      </g>
+      <path d="M88 122 Q100 130 112 122" fill="none" stroke="#080202" stroke-width="3"/>
+      <g stroke="#6a2a1a" stroke-width="4" fill="none" opacity=".9">
+        <path d="M62 142 Q100 158 138 142"/>
+        <path d="M58 170 Q100 186 142 170"/>
+        <path d="M66 198 Q100 212 134 198"/>
+      </g>
+      <g fill="#ffb01f" opacity=".65">
+        <circle cx="56" cy="116" r="2.2"/><circle cx="146" cy="126" r="2"/><circle cx="100" cy="48" r="2.4"/>
+        <circle cx="78" cy="214" r="1.8"/><circle cx="124" cy="220" r="1.6"/>
+      </g>
+    `);
+  }
+
+  function ferryman() {
+    return svg(defs + `
+      <defs>
+        <radialGradient id="g-ferry-lantern" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#e8ffff"/>
+          <stop offset=".35" stop-color="#9fe8ff" stop-opacity=".9"/>
+          <stop offset="1" stop-color="#3a8aa0" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <ellipse cx="100" cy="250" rx="58" ry="10" fill="rgba(0,0,0,.55)"/>
+      <ellipse cx="100" cy="236" rx="58" ry="12" fill="#0a0e12" opacity=".8"/>
+      <path d="M62 226 C52 232 42 236 30 238 L170 238 C158 236 148 232 138 226 Z" fill="#1a2228" stroke="#05080a" stroke-width="2"/>
+      <path d="M100 40 C132 40 150 68 154 112 L172 232 L28 232 L46 112 C50 68 68 40 100 40 Z"
+            fill="#11181c" stroke="#05080a" stroke-width="3"/>
+      <path d="M78 84 C78 58 122 58 122 84 L118 116 L82 116 Z" fill="#1a2228" stroke="#05080a" stroke-width="3"/>
+      <ellipse cx="100" cy="94" rx="17" ry="21" fill="#b8c4c0" stroke="#4a5a5c" stroke-width="2"/>
+      <rect x="86" y="88" width="11" height="5" fill="#070b0e"/>
+      <rect x="103" y="88" width="11" height="5" fill="#070b0e"/>
+      <circle cx="91.5" cy="90.5" r="2.2" fill="#9fe8ff"/>
+      <circle cx="108.5" cy="90.5" r="2.2" fill="#9fe8ff"/>
+      <path d="M92 106 L108 106" stroke="#4a5a5c" stroke-width="2"/>
+      <path d="M82 116 Q100 128 118 116" fill="none" stroke="#2a3a42" stroke-width="4"/>
+      <path d="M64 132 L136 132 L150 220 L50 220 Z" fill="#151e22" stroke="#05080a" stroke-width="2"/>
+      <g stroke="#3a4a50" stroke-width="3" fill="none" opacity=".85">
+        <path d="M70 144 Q100 158 130 144"/>
+        <path d="M66 172 Q100 188 134 172"/>
+        <path d="M60 200 Q100 216 140 200"/>
+      </g>
+      <g fill="#6a7a80" opacity=".8">
+        <circle cx="74" cy="150" r="3"/><circle cx="100" cy="158" r="3"/><circle cx="126" cy="150" r="3"/>
+        <circle cx="68" cy="180" r="2.6"/><circle cx="100" cy="188" r="2.6"/><circle cx="132" cy="180" r="2.6"/>
+      </g>
+      <g stroke="#5a4a34" stroke-linecap="round">
+        <path d="M154 48 L42 232" stroke="#2a2016" stroke-width="12"/>
+        <path d="M154 48 L42 232" stroke="#6a563a" stroke-width="8"/>
+        <path d="M42 232 L32 246 L54 242 Z" fill="#3a2e1e" stroke="#1a120a" stroke-width="2"/>
+        <path d="M154 48 L164 36" stroke="#6a563a" stroke-width="6"/>
+      </g>
+      <g transform="translate(38 146)">
+        <circle cx="0" cy="0" r="30" fill="url(#g-ferry-lantern)" opacity=".9"/>
+        <path d="M-12 -10 L12 -10 L14 14 L-14 14 Z" fill="#2a3a42" stroke="#0a0e12" stroke-width="2"/>
+        <path d="M-9 -10 L-6 -18 L6 -18 L9 -10" fill="none" stroke="#6a7a80" stroke-width="2"/>
+        <circle cx="0" cy="2" r="7" fill="#bff4ff"/>
+        <circle cx="0" cy="2" r="3" fill="#ffffff"/>
+        <path d="M-14 14 L14 14" stroke="#6a7a80" stroke-width="2"/>
+      </g>
+      <g stroke="#3a4a50" stroke-width="2" fill="none" opacity=".7">
+        <path d="M84 132 C74 152 78 176 88 190"/>
+        <path d="M116 132 C126 152 122 176 112 190"/>
+      </g>
+      <g fill="#9fe8ff" opacity=".55">
+        <circle cx="28" cy="168" r="2"/><circle cx="48" cy="190" r="1.6"/><circle cx="158" cy="172" r="1.8"/>
+      </g>
+      <g stroke="#6a8a90" stroke-width="2" opacity=".35" stroke-linecap="round">
+        <path d="M70 228 L68 244"/><path d="M94 232 L92 250"/><path d="M126 230 L128 246"/>
       </g>
     `);
   }
@@ -819,7 +1115,110 @@ BM.sprites = (function () {
     }),
     esfinge: () => sphinx(),
     colosso: () => colossus(),
-    escaravelho: () => scarab()
+    escaravelho: () => scarab(),
+
+    /* ---- WRATH ---- */
+    afogado: () => casca(gWrath, {
+      h: 1.02, mask: true,
+      costas: '<g stroke="#2a5a50" stroke-width="4" fill="none" opacity=".8">' +
+        '<path d="M70 132 q-10 30 2 54"/><path d="M130 132 q10 30 -2 54"/>' +
+        '<path d="M78 136 q-16 24 -6 48" opacity=".6"/><path d="M122 136 q16 24 6 48" opacity=".6"/></g>',
+      arma: '<g>' +
+        '<path d="M144 148 L166 92" stroke="#4a5a60" stroke-width="6"/>' +
+        '<path d="M156 96 L156 72 M166 92 L178 72 M146 98 L138 78" stroke="#9aa3b0" stroke-width="4" fill="none"/>' +
+        '<path d="M58 128 q-18 30 4 56" stroke="#3a4a50" stroke-width="4" fill="none"/>' +
+        '<g fill="none" stroke="#5a6a70" stroke-width="2.4">' +
+        '<ellipse cx="52" cy="142" rx="5" ry="3"/><ellipse cx="48" cy="154" rx="5" ry="3"/>' +
+        '<ellipse cx="50" cy="166" rx="5" ry="3"/><ellipse cx="56" cy="178" rx="5" ry="3"/></g>' +
+        '</g>'
+    }),
+    gargula: () => casca(gWrath, {
+      h: 0.96, mask: false, head: headGargula,
+      costas: '<g opacity=".95">' +
+        '<path d="M74 122 L18 66 L36 132 L10 154 L66 158 Z" fill="#3a4048" stroke="#1a1e24" stroke-width="3"/>' +
+        '<path d="M126 122 L182 66 L164 132 L190 154 L134 158 Z" fill="#3a4048" stroke="#1a1e24" stroke-width="3"/>' +
+        '<path d="M68 124 L30 84 M64 138 L24 114 M132 124 L170 84 M136 138 L176 114" stroke="#5a6068" stroke-width="2" opacity=".7"/>' +
+        '</g>',
+      arma: '<g stroke="#9aa3b0" stroke-width="3" fill="none">' +
+        '<path d="M58 154 L44 170 M142 154 L156 170"/>' +
+        '<path d="M44 170 l-8 8 M44 170 l4 10 M156 170 l8 8 M156 170 l-4 10"/></g>'
+    }),
+    barqueiro: () => casca(gWrath, {
+      h: 1.08, mask: false, head: headBarqueiro,
+      arma: '<g>' +
+        '<path d="M150 78 L42 224" stroke="#4a3a24" stroke-width="7"/>' +
+        '<path d="M42 224 l-8 12 l18 -4 z" fill="#2a2016" stroke="#0a0e12" stroke-width="2"/>' +
+        '<g transform="translate(48 148)">' +
+        '<circle cx="0" cy="0" r="24" fill="#9fe8ff" opacity=".16"/>' +
+        '<path d="M-10 -8 L10 -8 L12 12 L-12 12 Z" fill="#2a3a42" stroke="#0a0e12" stroke-width="2"/>' +
+        '<path d="M-7 -8 L-5 -15 L5 -15 L7 -8" fill="none" stroke="#6a7a80" stroke-width="2"/>' +
+        '<circle cx="0" cy="2" r="6" fill="#bff4ff"/></g>' +
+        '<g stroke="#3a4a50" stroke-width="2" fill="none" opacity=".8">' +
+        '<path d="M72 132 q-8 24 4 40"/><path d="M128 132 q8 24 -4 40"/></g>' +
+        '</g>'
+    }),
+    noiva_afogada: () => casca(gWrath, {
+      h: 1.02, mask: false, head: headNoiva,
+      costas: '<g opacity=".55">' +
+        '<path d="M64 116 C54 160 60 204 48 232 L152 232 C140 204 146 160 136 116 Z" fill="#8a9a98"/>' +
+        '<path d="M72 128 C66 168 72 204 64 226 M128 128 C134 168 128 204 136 226" stroke="#b8c4c0" stroke-width="2" fill="none"/>' +
+        '</g>',
+      arma: '<g>' +
+        '<path d="M142 156 q18 -8 24 -26" stroke="#5a6a70" stroke-width="4" fill="none"/>' +
+        '<path d="M164 132 l12 -18" stroke="#9aa3b0" stroke-width="3"/>' +
+        '<path d="M56 128 q-18 30 2 54" stroke="#4a6a68" stroke-width="3" fill="none" opacity=".8"/>' +
+        '<g fill="#6a8a7a" opacity=".8"><circle cx="52" cy="146" r="2"/><circle cx="50" cy="160" r="1.6"/><circle cx="56" cy="174" r="1.8"/></g>' +
+        '</g>'
+    }),
+    tempestade: () => tempestade(),
+    corsario: () => casca(gWrath, {
+      h: 1.0, mask: false, head: headCorsario,
+      arma: '<g>' +
+        '<path d="M142 154 q24 -20 34 -42" stroke="#9aa3b0" stroke-width="5" fill="none"/>' +
+        '<path d="M176 112 l10 -12" stroke="#c8d2d0" stroke-width="4"/>' +
+        '<path d="M58 152 q-16 20 -4 34" stroke="#6a7a80" stroke-width="4" fill="none"/>' +
+        '<path d="M54 186 l-10 8" stroke="#9aa3b0" stroke-width="3"/>' +
+        '<path d="M54 186 q-8 2 -10 8" stroke="#9aa3b0" stroke-width="2" fill="none"/>' +
+        '</g>'
+    }),
+    ferryman: () => ferryman(),
+
+    /* ---- HERESY ---- */
+    herege: () => casca(gHeresy, {
+      h: 1.02, mask: false, head: headHeretic,
+      arma: '<g>' +
+        '<path d="M144 150 L166 102" stroke="#3a1a12" stroke-width="6"/>' +
+        '<path d="M166 102 L174 92" stroke="#ffb01f" stroke-width="4"/>' +
+        '<circle cx="176" cy="90" r="6" fill="#ff7a1a" opacity=".7"/>' +
+        '<rect x="48" y="150" width="26" height="34" rx="2" fill="#3a1a12" stroke="#0a0302" stroke-width="2"/>' +
+        '<path d="M54 156 L68 156 M54 164 L68 164 M54 172 L64 172" stroke="#e8c8a8" stroke-width="1.6" opacity=".7"/>' +
+        '<path d="M48 150 L74 150" stroke="#ff7a1a" stroke-width="2" opacity=".7"/>' +
+        '</g>'
+    }),
+    fornalha: () => fornalha(),
+    serpente_lava: () => serpenteLava(),
+    carrasco: () => casca(gHeresy, {
+      h: 1.35, mask: false, head: headExecutioner,
+      arma: '<g>' +
+        '<path d="M148 66 L148 226" stroke="#3a2a26" stroke-width="8"/>' +
+        '<path d="M148 70 C182 72 190 98 184 122 L148 112 Z" fill="#5a6068" stroke="#1a1e24" stroke-width="3"/>' +
+        '<path d="M154 82 C174 84 178 98 174 112" fill="none" stroke="#9aa3b0" stroke-width="2" opacity=".7"/>' +
+        '<path d="M148 112 L148 226" stroke="#6a4a3a" stroke-width="3" opacity=".7"/>' +
+        '<path d="M54 130 q-14 32 4 58" stroke="#6a4a3a" stroke-width="4" fill="none"/>' +
+        '</g>'
+    }),
+    alma_queimada: () => almaQueimada(),
+    cavaleiro_ferro: () => casca(gHeresy, {
+      h: 1.18, mask: false, head: headIronKnight,
+      arma: '<g>' +
+        '<path d="M148 150 L170 78" stroke="#9aa3b0" stroke-width="5"/>' +
+        '<path d="M170 78 L176 62" stroke="#c8d2d0" stroke-width="4"/>' +
+        '<path d="M164 92 L176 88" stroke="#ffb01f" stroke-width="2" opacity=".8"/>' +
+        '<path d="M42 128 L72 122 L78 170 L58 194 L38 170 Z" fill="#3a1a12" stroke="#8a4a2a" stroke-width="3"/>' +
+        '<path d="M50 146 L66 142 L70 166 L58 180 L46 166 Z" fill="#ff7a1a" opacity=".5"/>' +
+        '<path d="M58 134 L58 184" stroke="#ffb01f" stroke-width="2" opacity=".5"/>' +
+        '</g>'
+    })
   };
 
   /* ---------------- A MÃO DO REI MINOS (gigante) ----------------
@@ -1914,12 +2313,340 @@ BM.sprites = (function () {
     </svg>`;
   }
 
+  /* ============================================================
+     WRATH — mar tempestuoso, pontes de ferro, torres afogadas
+     ============================================================ */
+  function sceneWrath() {
+    return `<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="wr-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#070d12"/><stop offset=".45" stop-color="#24343c"/>
+          <stop offset=".76" stop-color="#4a606a"/><stop offset="1" stop-color="#7c9098"/>
+        </linearGradient>
+        <radialGradient id="wr-moon">
+          <stop offset="0" stop-color="#e8fbff"/><stop offset=".35" stop-color="#b8dce8" stop-opacity=".75"/>
+          <stop offset="1" stop-color="#8ab8c8" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="wr-water" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#2a3c44"/><stop offset=".5" stop-color="#16242c"/><stop offset="1" stop-color="#070d12"/>
+        </linearGradient>
+        <linearGradient id="wr-stone" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4a5a60"/><stop offset="1" stop-color="#1a242a"/>
+        </linearGradient>
+        <linearGradient id="wr-iron" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#1a242a"/><stop offset=".5" stop-color="#5a6a70"/><stop offset="1" stop-color="#1a242a"/>
+        </linearGradient>
+        <radialGradient id="wr-glow">
+          <stop offset="0" stop-color="#9fe8ff" stop-opacity=".35"/><stop offset="1" stop-color="#9fe8ff" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="800" height="360" fill="url(#wr-sky)"/>
+      <circle cx="652" cy="64" r="46" fill="url(#wr-moon)"/>
+      <circle cx="652" cy="64" r="18" fill="#d8f4ff" opacity=".7"/>
+      <g fill="#101a20" opacity=".9">
+        <ellipse cx="120" cy="62" rx="120" ry="30"/><ellipse cx="230" cy="48" rx="86" ry="24"/>
+        <ellipse cx="420" cy="78" rx="150" ry="34"/><ellipse cx="610" cy="44" rx="110" ry="26"/>
+        <ellipse cx="730" cy="84" rx="120" ry="30"/><ellipse cx="320" cy="112" rx="130" ry="24" opacity=".65"/>
+      </g>
+      <g stroke="#d8f4ff" stroke-width="3" fill="none" stroke-linejoin="round" opacity=".85">
+        <path d="M610 20 L590 84 L614 78 L584 146 L606 140 L576 208"/>
+        <path d="M220 34 L208 74 L222 70 L206 112" opacity=".45"/>
+      </g>
+      <g fill="#16242a" opacity=".92">
+        <path d="M46 258 V158 L58 128 L70 158 V258 Z"/>
+        <path d="M58 128 L44 92 L58 108 L72 88 L70 118 Z"/>
+        <path d="M108 258 V186 L118 164 L128 186 V258 Z"/>
+        <path d="M118 164 L108 138 L118 150 L128 136 L128 160 Z"/>
+        <path d="M218 258 V132 L234 92 L250 132 V258 Z"/>
+        <path d="M234 92 L218 54 L234 72 L250 50 L250 88 Z"/>
+        <path d="M470 258 V176 L484 144 L498 176 V258 Z"/>
+        <path d="M484 144 L470 112 L484 128 L498 110 L498 140 Z"/>
+        <path d="M700 258 V146 L718 108 L736 146 V258 Z"/>
+        <path d="M718 108 L700 66 L718 84 L736 62 L736 102 Z"/>
+      </g>
+      <g stroke="#6a8a94" stroke-width="2" opacity=".35" fill="none">
+        <path d="M56 190 H62 M54 210 H64 M54 230 H64 M112 210 H124 M112 230 H124"/>
+        <path d="M228 180 H240 M226 204 H242 M226 228 H242 M480 200 H490 M480 224 H490"/>
+      </g>
+      <g stroke="#3a4a50" fill="none">
+        <path d="M0 212 Q200 174 400 212 T800 202" stroke-width="9"/>
+        <path d="M0 228 Q200 190 400 228 T800 218" stroke-width="4"/>
+        <path d="M0 196 Q200 158 400 196 T800 186" stroke-width="2" opacity=".55"/>
+        <g stroke-width="3" opacity=".8">
+          <path d="M96 210 V258"/><path d="M196 190 V258"/><path d="M300 190 V258"/>
+          <path d="M404 210 V258"/><path d="M508 198 V258"/><path d="M612 198 V258"/><path d="M716 206 V258"/>
+        </g>
+        <g stroke-width="1.6" opacity=".5">
+          <path d="M0 218 Q100 198 200 218 T400 218 T600 208 T800 208"/>
+          <path d="M0 222 Q100 202 200 222 T400 222 T600 212 T800 212"/>
+        </g>
+      </g>
+      <g>
+        <path d="M64 272 C104 248 184 246 238 268 L222 294 L88 296 Z" fill="#141e24" stroke="#070b0e" stroke-width="3"/>
+        <path d="M156 258 L168 186" stroke="#3a2a1e" stroke-width="6"/>
+        <path d="M168 196 L210 238" stroke="#3a2a1e" stroke-width="3"/>
+        <path d="M168 196 L126 232" stroke="#3a2a1e" stroke-width="3"/>
+        <path d="M174 184 L206 170 L198 214 Z" fill="#26343a" opacity=".8"/>
+      </g>
+      <g>
+        <path d="M588 260 C624 244 694 244 742 262 L726 286 L604 288 Z" fill="#121c22" stroke="#070b0e" stroke-width="3"/>
+        <path d="M670 254 L680 198" stroke="#3a2a1e" stroke-width="5"/>
+        <path d="M680 206 L712 240" stroke="#3a2a1e" stroke-width="2.5"/>
+      </g>
+      <path d="M0 260 C70 250 140 266 210 258 C290 248 360 268 430 260 C510 250 580 268 650 258 C710 250 760 262 800 256 L800 360 L0 360 Z"
+            fill="url(#wr-water)"/>
+      <g stroke="#7fa8b8" stroke-width="2" fill="none" opacity=".45" stroke-linecap="round">
+        <path d="M0 284 Q60 276 120 284 T240 284 T360 280 T480 286 T600 282 T720 286 T800 282"/>
+        <path d="M0 310 Q70 302 140 310 T280 310 T420 306 T560 312 T700 308 T800 310"/>
+        <path d="M0 338 Q80 330 160 338 T320 338 T480 334 T640 340 T800 336"/>
+      </g>
+      <g stroke="#bff4ff" stroke-width="1.4" opacity=".35">
+        <path d="M90 272 L84 286"/><path d="M240 278 L234 292"/><path d="M390 270 L384 286"/>
+        <path d="M540 280 L534 294"/><path d="M690 272 L684 288"/>
+      </g>
+      <path d="M0 318 H800 V360 H0 Z" fill="url(#wr-stone)"/>
+      <path d="M0 318 H800" stroke="#9fb8c0" stroke-width="2" opacity=".6"/>
+      <g stroke="#0d161a" stroke-width="1.5" opacity=".7">
+        <path d="M0 334 H800 M0 350 H800"/>
+        <path d="M100 318 V360 M220 318 V360 M340 318 V360 M460 318 V360 M580 318 V360 M700 318 V360"/>
+      </g>
+      <g fill="#9fe8ff" opacity=".5">
+        <circle cx="120" cy="326" r="2"/><circle cx="300" cy="330" r="1.6"/><circle cx="520" cy="324" r="1.8"/>
+        <circle cx="700" cy="332" r="1.5"/>
+      </g>
+      <g stroke="#cfefff" stroke-width="1.6" opacity=".28" stroke-linecap="round">
+        <path d="M20 300 L8 330"/><path d="M150 292 L138 324"/><path d="M330 296 L318 328"/>
+        <path d="M500 290 L488 322"/><path d="M680 296 L668 328"/><path d="M770 292 L758 324"/>
+      </g>
+    </svg>`;
+  }
+
+  function sceneWrathShip() {
+    return `<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="ws-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#050a0e"/><stop offset=".48" stop-color="#24343c"/>
+          <stop offset=".8" stop-color="#4a606a"/><stop offset="1" stop-color="#6a7c84"/>
+        </linearGradient>
+        <linearGradient id="ws-sea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#24343c"/><stop offset="1" stop-color="#070d12"/>
+        </linearGradient>
+        <linearGradient id="ws-deck" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4a3424"/><stop offset=".45" stop-color="#2e2018"/><stop offset="1" stop-color="#160e0a"/>
+        </linearGradient>
+        <linearGradient id="ws-wood" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#2a1c12"/><stop offset=".5" stop-color="#6a4a2e"/><stop offset="1" stop-color="#2a1c12"/>
+        </linearGradient>
+        <radialGradient id="ws-lantern">
+          <stop offset="0" stop-color="#ffe6a0"/><stop offset=".35" stop-color="#ffb01f" stop-opacity=".65"/>
+          <stop offset="1" stop-color="#ff7a1a" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="800" height="360" fill="url(#ws-sky)"/>
+      <g fill="#0d161a" opacity=".92">
+        <ellipse cx="120" cy="58" rx="140" ry="32"/><ellipse cx="320" cy="46" rx="120" ry="26"/>
+        <ellipse cx="560" cy="66" rx="160" ry="34"/><ellipse cx="740" cy="48" rx="100" ry="24"/>
+      </g>
+      <g stroke="#d8f4ff" stroke-width="3" fill="none" stroke-linejoin="round" opacity=".9">
+        <path d="M520 18 L500 82 L524 76 L494 144 L516 138 L486 206"/>
+        <path d="M220 40 L208 80 L222 76 L206 118" opacity=".45"/>
+      </g>
+      <path d="M0 214 C80 204 160 220 240 212 C320 204 400 222 480 214 C560 206 640 222 720 214 C760 210 780 214 800 212 L800 360 L0 360 Z"
+            fill="url(#ws-sea)"/>
+      <g stroke="#7fa8b8" stroke-width="2" fill="none" opacity=".4">
+        <path d="M0 240 Q70 232 140 240 T280 240 T420 236 T560 242 T700 238 T800 240"/>
+        <path d="M0 272 Q80 264 160 272 T320 272 T480 268 T640 274 T800 270"/>
+      </g>
+      <path d="M0 236 L800 214 L800 360 L0 360 Z" fill="url(#ws-deck)"/>
+      <g stroke="#120a06" stroke-width="2" opacity=".8">
+        <path d="M0 258 H800"/><path d="M0 282 H800"/><path d="M0 308 H800"/><path d="M0 336 H800"/>
+        <path d="M40 236 L20 360"/><path d="M160 232 L150 360"/><path d="M280 228 L280 360"/>
+        <path d="M400 224 L410 360"/><path d="M520 220 L540 360"/><path d="M640 216 L670 360"/><path d="M760 212 L800 360"/>
+      </g>
+      <g stroke="#7a5a3a" stroke-width="1.4" opacity=".4">
+        <path d="M52 244 L36 356"/><path d="M172 240 L162 356"/><path d="M292 236 L292 356"/>
+        <path d="M412 232 L422 356"/><path d="M532 228 L552 356"/><path d="M652 224 L682 356"/>
+      </g>
+      <g>
+        <path d="M0 250 H800" stroke="#1a120c" stroke-width="12"/>
+        <path d="M0 246 H800" stroke="#6a4a2e" stroke-width="4"/>
+        <g stroke="#2a1c12" stroke-width="5">
+          <path d="M60 248 V216"/><path d="M180 248 V216"/><path d="M300 248 V216"/>
+          <path d="M420 248 V216"/><path d="M540 248 V216"/><path d="M660 248 V216"/><path d="M780 248 V216"/>
+        </g>
+        <path d="M0 216 H800" stroke="#6a4a2e" stroke-width="6"/>
+        <path d="M0 210 H800" stroke="#9a7a4a" stroke-width="2" opacity=".5"/>
+      </g>
+      <g>
+        <path d="M640 212 L650 24 L660 212 Z" fill="url(#ws-wood)" stroke="#120a06" stroke-width="3"/>
+        <path d="M650 34 L650 210" stroke="#9a7a4a" stroke-width="2" opacity=".5"/>
+        <path d="M650 54 L760 150 L650 132 Z" fill="#2a1c12" opacity=".85" stroke="#120a06" stroke-width="2"/>
+        <path d="M650 54 L540 150 L650 132 Z" fill="#241810" opacity=".8" stroke="#120a06" stroke-width="2"/>
+        <g stroke="#6a4a2e" stroke-width="2" opacity=".7" fill="none">
+          <path d="M650 36 L760 150"/><path d="M650 36 L540 150"/>
+          <path d="M650 70 L740 148"/><path d="M650 70 L560 148"/>
+        </g>
+      </g>
+      <g stroke="#2a1c12" stroke-width="3" fill="none" opacity=".8">
+        <path d="M80 248 Q240 200 400 248"/><path d="M400 248 Q560 200 720 248"/>
+      </g>
+      <g transform="translate(116 194)">
+        <circle cx="0" cy="0" r="34" fill="url(#ws-lantern)" opacity=".9"/>
+        <path d="M-8 -14 L8 -14 L10 10 L-10 10 Z" fill="#2a1c12" stroke="#0a0604" stroke-width="2"/>
+        <path d="M-6 -14 L-4 -22 L4 -22 L6 -14" fill="none" stroke="#6a4a2e" stroke-width="2"/>
+        <circle cx="0" cy="-2" r="5" fill="#ffe6a0"/>
+        <path d="M-12 10 L12 10" stroke="#6a4a2e" stroke-width="2"/>
+      </g>
+      <g transform="translate(684 186)">
+        <circle cx="0" cy="0" r="30" fill="url(#ws-lantern)" opacity=".75"/>
+        <path d="M-7 -12 L7 -12 L9 8 L-9 8 Z" fill="#2a1c12" stroke="#0a0604" stroke-width="2"/>
+        <circle cx="0" cy="-2" r="4.5" fill="#ffe6a0"/>
+      </g>
+      <g fill="#1a120c" stroke="#0a0604" stroke-width="2">
+        <rect x="32" y="276" width="38" height="46" rx="6"/>
+        <rect x="34" y="270" width="34" height="10" rx="3"/>
+        <path d="M34 288 H68 M34 300 H68 M34 312 H68" stroke="#6a4a2e" stroke-width="2" opacity=".6"/>
+        <rect x="728" y="282" width="32" height="40" rx="5"/>
+        <path d="M730 296 H758 M730 308 H758" stroke="#6a4a2e" stroke-width="2" opacity=".6"/>
+      </g>
+      <g fill="#ffb01f" opacity=".5">
+        <circle cx="116" cy="178" r="2"/><circle cx="684" cy="172" r="1.6"/><circle cx="420" cy="210" r="1.4"/>
+      </g>
+      <g stroke="#cfefff" stroke-width="1.5" opacity=".25" stroke-linecap="round">
+        <path d="M40 90 L28 126"/><path d="M180 74 L168 110"/><path d="M340 96 L328 132"/>
+        <path d="M600 82 L588 118"/><path d="M760 94 L748 130"/>
+      </g>
+    </svg>`;
+  }
+
+  /* ============================================================
+     HERESY — Dis em chamas, catedrais em ruínas, ferro incandescente
+     ============================================================ */
+  function sceneHeresy() {
+    return `<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="he-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#080202"/><stop offset=".34" stop-color="#2a0806"/>
+          <stop offset=".64" stop-color="#8a1a12"/><stop offset=".86" stop-color="#d84a18"/><stop offset="1" stop-color="#ffb01f"/>
+        </linearGradient>
+        <radialGradient id="he-glow">
+          <stop offset="0" stop-color="#ffd27a" stop-opacity=".9"/><stop offset=".35" stop-color="#ff7a1a" stop-opacity=".4"/>
+          <stop offset="1" stop-color="#d82a10" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="he-stone" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4a2a22"/><stop offset=".55" stop-color="#24100c"/><stop offset="1" stop-color="#0a0302"/>
+        </linearGradient>
+        <linearGradient id="he-iron" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#120a08"/><stop offset=".5" stop-color="#5a2a1a"/><stop offset="1" stop-color="#120a08"/>
+        </linearGradient>
+        <linearGradient id="he-lava" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffd27a"/><stop offset=".35" stop-color="#ff7a1a"/><stop offset="1" stop-color="#8a1208"/>
+        </linearGradient>
+        <radialGradient id="he-window">
+          <stop offset="0" stop-color="#fff3c4"/><stop offset=".45" stop-color="#ffb01f"/><stop offset="1" stop-color="#d82a10" stop-opacity=".2"/>
+        </radialGradient>
+      </defs>
+      <rect width="800" height="360" fill="url(#he-sky)"/>
+      <circle cx="400" cy="310" r="280" fill="url(#he-glow)" opacity=".55"/>
+      <g fill="#1a0806" opacity=".95">
+        <path d="M40 300 V130 L58 96 L76 130 V300 Z"/>
+        <path d="M58 96 L40 54 L58 76 L76 48 L76 88 Z"/>
+        <path d="M118 300 V190 L132 166 L146 190 V300 Z"/>
+        <path d="M132 166 L118 138 L132 152 L146 134 L146 162 Z"/>
+        <path d="M680 300 V120 L700 82 L720 120 V300 Z"/>
+        <path d="M700 82 L680 38 L700 62 L720 32 L720 76 Z"/>
+        <path d="M752 300 V178 L766 152 L780 178 V300 Z"/>
+        <path d="M766 152 L752 122 L766 138 L780 118 L780 148 Z"/>
+      </g>
+      <g fill="#2a0e0a" opacity=".9">
+        <path d="M236 302 V154 L258 118 L280 154 V302 Z"/>
+        <path d="M258 118 L236 70 L258 96 L280 66 L280 112 Z"/>
+        <path d="M520 302 V154 L542 118 L564 154 V302 Z"/>
+        <path d="M542 118 L520 70 L542 96 L564 66 L564 112 Z"/>
+      </g>
+      <g>
+        <path d="M300 302 V136 L340 70 L380 136 V302 Z" fill="#1a0806" stroke="#3a1410" stroke-width="3"/>
+        <path d="M420 302 V136 L460 70 L500 136 V302 Z" fill="#1a0806" stroke="#3a1410" stroke-width="3"/>
+        <path d="M340 70 L400 14 L460 70 L440 302 L360 302 Z" fill="#0d0302" stroke="#3a1410" stroke-width="3"/>
+        <path d="M360 302 V156 Q400 118 440 156 V302 Z" fill="#050101" stroke="#8a2a1a" stroke-width="2"/>
+        <path d="M400 14 L400 302" stroke="#3a1410" stroke-width="2" opacity=".7"/>
+        <g fill="url(#he-window)">
+          <circle cx="400" cy="112" r="18"/>
+          <path d="M382 112 L400 94 L418 112 L400 130 Z" opacity=".9"/>
+          <rect x="366" y="174" width="12" height="46" rx="6"/>
+          <rect x="422" y="174" width="12" height="46" rx="6"/>
+        </g>
+        <g fill="none" stroke="#8a2a1a" stroke-width="2" opacity=".8">
+          <path d="M360 156 Q400 118 440 156"/>
+          <path d="M348 214 H452"/><path d="M354 250 H446"/>
+        </g>
+      </g>
+      <g fill="#2a0e0a">
+        <rect x="0" y="250" width="800" height="52"/>
+        <path d="M0 250 L60 210 L120 250 L180 218 L240 250 L300 224 L360 250 L420 214 L480 250 L540 226 L600 250 L660 216 L720 250 L780 224 L800 250 Z"/>
+      </g>
+      <g fill="#ff7a1a" opacity=".8">
+        <path d="M54 250 C44 230 48 214 58 200 C62 218 70 228 66 250 Z"/>
+        <path d="M128 250 C118 232 122 216 132 204 C136 220 144 232 140 250 Z"/>
+        <path d="M252 250 C242 230 246 214 256 202 C260 218 268 230 264 250 Z"/>
+        <path d="M676 250 C666 230 670 214 680 202 C684 218 692 230 688 250 Z"/>
+        <path d="M744 250 C734 232 738 216 748 204 C752 220 760 232 756 250 Z"/>
+      </g>
+      <g fill="none" stroke="#ffb01f" stroke-width="2" opacity=".6">
+        <path d="M58 202 C52 218 58 232 54 246"/><path d="M132 206 C126 222 132 236 128 248"/>
+        <path d="M256 204 C250 220 256 234 252 246"/><path d="M680 204 C674 220 680 234 676 246"/>
+      </g>
+      <g>
+        <path d="M0 300 C80 286 150 304 220 296 C300 286 370 306 450 298 C530 290 600 306 680 298 C740 292 780 300 800 296 L800 360 L0 360 Z" fill="#120604"/>
+        <path d="M0 306 C90 292 160 310 240 302 C330 292 400 312 490 304 C580 296 650 312 730 304 C770 300 790 304 800 302 L800 332 C740 338 680 326 610 334 C540 342 470 326 390 334 C310 342 230 326 150 334 C90 340 40 334 0 338 Z"
+              fill="url(#he-lava)"/>
+        <g stroke="#ffd27a" stroke-width="2" opacity=".7" fill="none">
+          <path d="M0 310 Q90 296 160 310 T320 310 T480 306 T640 312 T800 308"/>
+          <path d="M40 324 Q120 312 200 324 T360 324 T520 320 T680 326"/>
+        </g>
+        <g fill="#ffb01f" opacity=".75">
+          <circle cx="90" cy="316" r="2.2"/><circle cx="250" cy="320" r="1.8"/><circle cx="410" cy="314" r="2"/>
+          <circle cx="570" cy="322" r="1.6"/><circle cx="720" cy="316" r="2.1"/>
+        </g>
+      </g>
+      <g>
+        <rect x="42" y="286" width="86" height="34" rx="3" fill="url(#he-iron)" stroke="#050101" stroke-width="3"/>
+        <rect x="50" y="294" width="70" height="18" rx="2" fill="#0a0302"/>
+        <g stroke="#ff7a1a" stroke-width="2" opacity=".9">
+          <path d="M54 300 H116"/><path d="M54 306 H116"/><path d="M54 312 H100"/>
+        </g>
+        <rect x="660" y="282" width="98" height="38" rx="3" fill="url(#he-iron)" stroke="#050101" stroke-width="3"/>
+        <rect x="670" y="290" width="78" height="20" rx="2" fill="#0a0302"/>
+        <g stroke="#ffb01f" stroke-width="2" opacity=".8">
+          <path d="M674 296 H744"/><path d="M674 302 H744"/><path d="M674 308 H724"/>
+        </g>
+      </g>
+      <g stroke="#1a0806" stroke-width="3" fill="none" opacity=".9">
+        <path d="M300 302 Q280 260 300 220"/><path d="M500 302 Q520 260 500 220"/>
+        <path d="M220 302 Q200 250 220 200"/><path d="M580 302 Q600 250 580 200"/>
+      </g>
+      <g fill="#ffb01f" opacity=".7">
+        <circle cx="160" cy="180" r="2"/><circle cx="340" cy="120" r="1.6"/><circle cx="480" cy="150" r="2.2"/>
+        <circle cx="620" cy="100" r="1.8"/><circle cx="700" cy="190" r="1.5"/><circle cx="240" cy="90" r="1.7"/>
+        <circle cx="560" cy="220" r="2"/><circle cx="100" cy="240" r="1.6"/>
+      </g>
+      <g fill="#ff7a1a" opacity=".35">
+        <circle cx="300" cy="200" r="40"/><circle cx="500" cy="210" r="46"/><circle cx="400" cy="250" r="60"/>
+      </g>
+      <g fill="none" stroke="#ffd27a" stroke-width="1.6" opacity=".45" stroke-linecap="round">
+        <path d="M120 150 q20 -18 40 0"/><path d="M640 140 q20 -18 40 0"/><path d="M380 60 q20 -18 40 0"/>
+      </g>
+    </svg>`;
+  }
+
   function arena(theme, opts) {
     opts = opts || {};
     if (theme === 'limbo') return sceneLimbo(!!opts.night);
     if (theme === 'lust') return sceneLust();
     if (theme === 'gluttony') return sceneGluttony(!!opts.noAcid);
     if (theme === 'greed') return sceneGreed();
+    if (theme === 'wrath') return opts.ship ? sceneWrathShip() : sceneWrath();
+    if (theme === 'heresy') return sceneHeresy();
     const a = theme.a, b = theme.b, c = theme.c;
     return '<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
       `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
@@ -2155,6 +2882,68 @@ BM.sprites = (function () {
         <g fill="#ffe6a0" opacity=".55">
           <circle cx="44" cy="98" r="1.4"/><circle cx="128" cy="102" r="1.2"/><circle cx="214" cy="98" r="1.1"/>
         </g>
+      </svg>`;
+    }
+    if (id === 'wrath') {
+      return `<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lwa-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#070d12"/><stop offset=".55" stop-color="#3a4e58"/><stop offset="1" stop-color="#7c9098"/>
+          </linearGradient>
+          <linearGradient id="lwa-water" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#2a3c44"/><stop offset="1" stop-color="#070d12"/>
+          </linearGradient>
+        </defs>
+        <rect width="240" height="120" fill="url(#lwa-sky)"/>
+        <g fill="#101a20" opacity=".9">
+          <ellipse cx="44" cy="20" rx="42" ry="10"/><ellipse cx="150" cy="14" rx="54" ry="12"/><ellipse cx="212" cy="28" rx="36" ry="9"/>
+        </g>
+        <path d="M190 6 L182 30 L194 28 L180 56 L192 54 L176 84" stroke="#d8f4ff" stroke-width="2" fill="none" opacity=".8"/>
+        <g fill="#16242a">
+          <path d="M28 92 V50 L38 32 L48 50 V92 Z"/><path d="M38 32 L26 8 L38 20 L50 6 L50 28 Z"/>
+          <path d="M166 92 V46 L176 28 L186 46 V92 Z"/><path d="M176 28 L166 6 L176 16 L186 4 L186 24 Z"/>
+        </g>
+        <path d="M0 82 C40 74 80 84 120 78 C160 72 200 84 240 78 L240 120 L0 120 Z" fill="url(#lwa-water)"/>
+        <g stroke="#7fa8b8" stroke-width="1.4" fill="none" opacity=".5">
+          <path d="M0 94 Q30 88 60 94 T120 94 T180 90 T240 94"/>
+          <path d="M0 108 Q30 102 60 108 T120 108 T180 104 T240 108"/>
+        </g>
+        <path d="M0 78 Q60 64 120 78 T240 74" fill="none" stroke="#3a4a50" stroke-width="5"/>
+        <path d="M0 84 Q60 70 120 84 T240 80" fill="none" stroke="#1a242a" stroke-width="2"/>
+        <g stroke="#3a4a50" stroke-width="2"><path d="M42 78 V96"/><path d="M96 72 V98"/><path d="M150 74 V98"/><path d="M204 76 V98"/></g>
+        <g fill="#9fe8ff" opacity=".6"><circle cx="60" cy="100" r="1.2"/><circle cx="142" cy="104" r="1"/><circle cx="214" cy="98" r="1.1"/></g>
+      </svg>`;
+    }
+    if (id === 'heresy') {
+      return `<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lhe-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#080202"/><stop offset=".5" stop-color="#8a1a12"/><stop offset="1" stop-color="#ffb01f"/>
+          </linearGradient>
+          <linearGradient id="lhe-lava" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffd27a"/><stop offset=".45" stop-color="#ff7a1a"/><stop offset="1" stop-color="#8a1208"/>
+          </linearGradient>
+        </defs>
+        <rect width="240" height="120" fill="url(#lhe-sky)"/>
+        <circle cx="120" cy="106" r="70" fill="#ff7a1a" opacity=".28"/>
+        <g fill="#1a0806">
+          <path d="M12 100 V46 L22 28 L32 46 V100 Z"/><path d="M22 28 L12 6 L22 16 L32 4 L32 24 Z"/>
+          <path d="M208 100 V42 L220 24 L232 42 V100 Z"/><path d="M220 24 L208 2 L220 12 L232 0 L232 20 Z"/>
+        </g>
+        <g fill="#0d0302" stroke="#3a1410" stroke-width="1.5">
+          <path d="M76 100 V40 L100 12 L124 40 V100 Z"/>
+          <path d="M164 100 V40 L188 12 L212 40 V100 Z"/>
+          <path d="M124 40 L144 100 L96 100 Z"/>
+        </g>
+        <g fill="#ffb01f" opacity=".8">
+          <circle cx="100" cy="42" r="7"/><rect x="96" y="56" width="8" height="18" rx="4"/>
+          <path d="M36 100 C30 86 34 76 40 68 C44 78 50 88 46 100 Z"/>
+          <path d="M196 100 C190 86 194 76 200 68 C204 78 210 88 206 100 Z"/>
+        </g>
+        <path d="M0 94 C40 86 80 100 120 92 C160 84 200 98 240 90 L240 120 L0 120 Z" fill="#120604"/>
+        <path d="M0 100 C40 92 80 106 120 98 C160 90 200 104 240 96 L240 114 C200 120 160 108 120 114 C80 120 40 110 0 116 Z"
+              fill="url(#lhe-lava)"/>
+        <g fill="#ffb01f" opacity=".7"><circle cx="40" cy="108" r="1.3"/><circle cx="120" cy="110" r="1.1"/><circle cx="200" cy="106" r="1.2"/></g>
       </svg>`;
     }
     return '<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="120" fill="#1a1013"/></svg>';

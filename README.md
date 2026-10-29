@@ -30,8 +30,7 @@ A **Oficina** tem **Atos** (coluna esquerda, acima das camadas). Cada ato tem um
 com **número, status, nome, arte, descrição e botão de entrada** — igual aos cards de
 camada. O **Ato I — Infinity Hyperdeath** está liberado. O **Ato II — Imperfect
 Hatred** abre depois que as **3 camadas do Ato I** forem concluídas; o Ato III mostra
-*WORK IN PROGRESS*. O Ato II tem **1 camada jogável, Greed**; as outras camadas do ato
-ainda estão em expansão.
+*WORK IN PROGRESS*. O Ato II tem **3 camadas jogáveis: Greed, Wrath e Heresy**.
 
 **Ato I** tem **3 camadas**, com **6 inimigos + 1 chefe** cada:
 
@@ -41,17 +40,19 @@ ainda estão em expansão.
 | **2. Lust** | Metrópole neon de arranha-céus, com plataforma suspensa sobre o vazio | *Luxúria* — inimigos golpeiam 18% mais forte | **A Mão do Rei Minos** (gigante) |
 | **3. Gluttony** | Estômago de carne exposta, pequenas poças de ácido e bile | *Digestão Ácida* — toda cura 30% menor | **Gabriel** |
 
-**Ato II — Imperfect Hatred** tem **1 camada** por enquanto:
+**Ato II — Imperfect Hatred** tem **3 camadas**:
 
 | Camada | Ambiente | Modificador | Chefe |
 |---|---|---|---|
 | **1. Greed** | Deserto incandescente com pirâmides colossais, templos egípcios e colunatas greco-romanas | *Sol Impiedoso* — dano recebido +15% | **V2 — Ascensão** (não foge: **morre**) |
+| **2. Wrath** | Mar escuro sob tempestade, pontes de ferro, torres góticas afogadas e cascos de navios | *Maré de Ferro* — dano recebido +12% | **Ferryman** (arena no convés de um navio) |
+| **3. Heresy** | Cidade de Dis: catedrais em ruínas, sepulcros de ferro incandescente e abismos de lava e sangue | *Fogo Eterno* — ataque dos inimigos +20% | **Gabriel — Heresia** (mais forte que o do Ato I) |
 
 Cada camada é mais dura que a anterior: inimigos com **mais HP e mais ATQ** (a base de
 escala junto com o seu nível). **A camada só abre quando a anterior do mesmo ato é
 concluída** — finishar Limbo abre Lust, finishar Lust abre Gluttony. **O Ato II só
-abre depois que as 3 camadas do Ato I forem concluídas**; Greed, a primeira camada do
-Ato II, foi balanceada para o **nível 20**.
+abre depois que as 3 camadas do Ato I forem concluídas**; Greed, Wrath e Heresy foram
+balanceadas para o **nível 20**.
 
 **Cenários** — cada camada tem arte vetorial própria, usada na arena de batalha, no
 mapa da camada e no card da Oficina:
@@ -70,13 +71,33 @@ mapa da camada e no card da Oficina:
 - **Greed — O Deserto dos Reis:** céu incandescente, sol colossal, pirâmides gigantes,
   templo egípcio, obelisco, estátua quebrada, colunata greco-romana e dunas de areia.
   A luta acontece num terraço de arenito, com o deserto ao fundo.
+- **Wrath — O Mar dos Afogados:** água escura e cinzenta, céu de tempestade cortado por
+  relâmpagos, pontes de ferro, torres góticas submersas e cascos de navios abandonados.
+  Contra o **Ferryman**, a arena vira o **convés de um navio**, com mastro, cordas e
+  lanterna.
+- **Heresy — A Cidade de Dis:** catedrais góticas em ruínas, sepulcros de ferro
+  incandescente, brasas no ar e abismos de lava e sangue fervente. A paleta é dominada
+  por **vermelho-sangue, carvão e amarelo-fogo**.
 - Modificadores de camada: *Maré Morta* (dano +10%), *Luxúria* (inimigos +18% ATQ),
-  *Digestão Ácida* (cura −30%) e *Sol Impiedoso* (dano recebido +15%).
+  *Digestão Ácida* (cura −30%), *Sol Impiedoso* (dano recebido +15%), *Maré de Ferro*
+  (dano recebido +12%) e *Fogo Eterno* (inimigos +20% ATQ).
 - **V2** é o chefe de Limbo: copia seus 2 braços e seus 4 movimentos, usa parry… e **foge**
   quando é derrotado — a fuga conta como derrota, conclui a camada e libera o **Whiplash**.
 - **V2 — Ascensão** é o chefe de Greed: uma versão **mais forte**, dourada, com mais HP,
   cópias do seu arsenal e a técnica inevitável `ASCENSÃO`. **Ele não foge**: quando cai,
   a camada termina e uma cutscene mostra o corpo desligando no deserto.
+- **Ferryman** é o chefe de Wrath: um barqueiro gigante com remo, lanterna e correntes
+  de almas, enfrentado no convés de um navio. Ele usa a inevitável `SENTENÇA DO
+  BARQUEIRO`; ao cair, o navio afunda e as águas se aquietam.
+- **Gabriel — Heresia** é o chefe de Heresy: a versão mais forte do anjo, com **1400 de
+  HP**, mais ataque e defesa que o Gabriel de Gluttony, asas de brasa e a inevitável
+  `SENTENÇA FINAL`. O nó do chefe abre o **portão de Dis**; ele só se abre **quando
+  você clica nele**. Depois, uma tela preta mostra as falas de Gabriel antes da luta.
+- **Morte de Gabriel em Heresy:** depois da vitória, uma cutscene mostra o anjo
+  queimando e desintegrando. As falas da cutscene avançam com **clique ou Espaço**.
+  Em seguida, a tela preta mostra as últimas palavras e só então aparece o resultado
+  da camada. A **música de desligamento continua tocando na tela de rank** de Heresy,
+  sem trocar para a música de chefe da fase.
 - **A Mão do Rei Minos** é o chefe de Lust: uma mão colossal de pedra e carne que
   entra pela direita da tela, aberta, com os dedos apontando para V1. Ela tem veios
   violetas, placas de pedra, um anel de pedra e arame farpado no pulso.
@@ -127,7 +148,7 @@ No fim de cada camada o jogo avalia três categorias:
 
 | Categoria | S |
 |---|---|
-| **Tempo** | dentro do alvo da camada (540s / 600s / 660s / 720s) |
+| **Tempo** | dentro do alvo da camada (540s / 600s / 660s / 720s / 780s / 840s) |
 | **Vida perdida** | até 10% do HP máximo |
 | **Estilo** | 320+ pontos |
 
@@ -142,7 +163,8 @@ Sucata e um Núcleo.
 - **Sangue = cura**: técnicas marcadas `+X% SANGUE` curam quando acertam.
 - **Parry** (só com o Feedbacker equipado): uma **circunferência aparece em um ponto
   aleatório da tela** e encolhe até o fim da janela. Você só para o golpe **clicando
-  dentro do círculo** — não existe mais barra nem tecla espaço.
+  dentro do círculo** — não existe mais barra nem tecla espaço. Só existe **uma
+  circunferência ativa por vez**, mesmo que dois golpes sejam resolvidos juntos.
   O anel fica **verde** na zona perfeita (anula, reflete, atordoa) e **amarelo** na
   zona boa (metade do dano). As duas zonas são **pequenas**: o verde é só os últimos
   12% da janela e o amarelo os 24% anteriores.
@@ -164,7 +186,7 @@ inimigos ajustam HP e ATQ junto com o seu nível. Uma luta comum dura **6 a 14 t
 e um chefe **12 a 18**. Uma camada inteira (6 inimigos + chefe) leva cerca de
 **10 minutos** de jogo.
 
-### Elenco (24 inimigos + 4 chefes, sprites próprios)
+### Elenco (36 inimigos + 6 chefes, sprites próprios)
 Baseado nos inimigos **originais de Ultrakill** — os que não existem no jogo foram
 removidos (Vulture, Crawler, Glutton, Bloated Husk, Glutton Arm, Plagueborn).
 - **Limbo**: Husk, Stray, Wretch, Caged Thing, **Drone**, **Ceremoniar**
@@ -172,7 +194,12 @@ removidos (Vulture, Crawler, Glutton, Bloated Husk, Glutton Arm, Plagueborn).
 - **Gluttony**: Soothsayer, Filet Machine, **Big John**, **Tallow Golem**, **Drone II**, **Ceremoniar III**
 - **Greed**: Chacal de Anúbis, Múmia Real, Legionário de Bronze, Esfinge de Ouro,
   Colosso de Marfim, Escaravelho Solar
-- **Chefes**: V2 (Limbo), A Mão do Rei Minos (Lust), Gabriel (Gluttony), V2 — Ascensão (Greed)
+- **Wrath**: Afogado, Gárgula de Ferro, Barqueiro Menor, Noiva Afogada, Tempestade Viva,
+  Corsário Morto
+- **Heresy**: Herege, Fornalha Viva, Serpente de Lava, Carrasco de Dis, Alma Queimada,
+  Cavaleiro de Ferro
+- **Chefes**: V2 (Limbo), A Mão do Rei Minos (Lust), Gabriel (Gluttony), V2 — Ascensão
+  (Greed), Ferryman (Wrath), Gabriel — Heresia (Heresy)
 - **Nenhum inimigo se cura** — não existe golpe de cura no elenco, e o modificador de
   cura da Lust foi trocado por um de ataque.
 
@@ -185,8 +212,12 @@ São **duas trilhas de camada** que se revezam entre as camadas e duas de chefe:
 | **2. Lust** | music 2 | music 2 boss |
 | **3. Gluttony** | music 1 | music 1 boss |
 | **4. Greed** | music 2 | music 2 boss |
+| **5. Wrath** | music 1 | music 1 boss |
+| **6. Heresy** | music 2 | music 2 boss |
 
 A regra é a alternância por número da camada: ímpar → *music 1*, par → *music 2*.
+No nó de **Gabriel — Heresia**, a música para no clique; o portão de Dis e o diálogo
+em tela preta ficam em silêncio, e a faixa de chefe só começa quando a batalha começa.
 A **loja** e a tela de **ajustar movimentos** usam a mesma faixa (sem reiniciar a música
 ao trocar de uma para a outra).
 
@@ -218,7 +249,7 @@ progresso e depois **comprado na loja**:
 | **Whiplash** | Verde | 400 ◆ | **derrotar o V2** (Limbo) |
 | **Bloodreaver** | Carmim | 600 ◆ | **derrotar o Gabriel** (Gluttony) |
 | **Hellwhip** | Laranja | 600 ◆ | **derrotar V2 — Ascensão** (Greed) |
-| **Thunderfist** | Amarelo | 450 ◆ | camada 2 — *em desenvolvimento* |
+| **Thunderfist** | Amarelo | 450 ◆ | **derrotar Gabriel — Heresia** (Heresy) |
 | **Venomclaw** | Verde | 500 ◆ | camada 2 — *em desenvolvimento* |
 | **Soulreaver** | Branco | 550 ◆ | camada 2 — *em desenvolvimento* |
 | **Voidgrip** | Preto | 700 ◆ | camada 2 — *em desenvolvimento* |
@@ -227,16 +258,19 @@ progresso e depois **comprado na loja**:
 | **Carcaça de Forja** | — | 350 ◆ | **derrotar o V2** (Limbo, Ato I) |
 | **Pernas de Fibra** | — | 250 ◆ | **derrotar V2 — Ascensão** (Greed, Ato II) |
 | **Carcaça de Fibra** | — | 250 ◆ | **derrotar V2 — Ascensão** (Greed, Ato II) |
-| **Pernas Shadow Step** | Branca | 300 ◆ | camada 2 — *em desenvolvimento* |
+| **Pernas Shadow Step** | Branca | 300 ◆ | **derrotar Gabriel — Heresia** (Heresy) |
 | **Pernas Berserk Springs** | Verde | 300 ◆ | camada 2 — *em desenvolvimento* |
 | **Carcaça Titan Husk** | Cinza | 400 ◆ | camada 2 — *em desenvolvimento* |
-| **Carcaça Bloodforge** | Vermelha | 400 ◆ | camada 2 — *em desenvolvimento* |
+| **Carcaça Bloodforge** | Vermelha | 400 ◆ | **derrotar Gabriel — Heresia** (Heresy) |
 
-Todas as peças listadas como *camada 2* (Thunderfist, Venomclaw, Soulreaver, Voidgrip,
-Gravityhook, Shadow Step, Berserk Springs, Titan Husk e Bloodforge) ficam **bloqueadas
-e impossíveis de usar** enquanto a camada 2 não existir. O conteúdo delas já está
-pronto no jogo (movimentos, passivas e sprites) e entra assim que a camada for liberada.
-O **Hellwhip** saiu dessa lista: agora é liberado ao derrotar **V2 — Ascensão** em Greed. As **Pernas de Fibra** e a **Carcaça de Fibra**, que antes exigiam o Gabriel, agora também exigem o **V2 — Ascensão**.
+As peças listadas como *camada 2* (Venomclaw, Soulreaver, Voidgrip, Gravityhook,
+Berserk Springs e Titan Husk) ficam **bloqueadas e impossíveis de usar** enquanto a
+camada 2 não existir. O conteúdo delas já está pronto no jogo (movimentos, passivas e
+sprites) e entra assim que a camada for liberada. **Thunderfist**, **Pernas Shadow
+Step** e **Carcaça Bloodforge** saíram dessa lista: agora são liberados ao derrotar
+**Gabriel — Heresia** em Heresy. O **Hellwhip** é liberado ao derrotar **V2 —
+Ascensão** em Greed. As **Pernas de Fibra** e a **Carcaça de Fibra** também exigem o
+**V2 — Ascensão**.
 
 **As novas peças, quando liberadas:**
 

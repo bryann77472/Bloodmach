@@ -22,8 +22,8 @@ BM.battle = (function () {
   const ESCALA_JOGADOR = 0.40;
   const ESCALA_INIMIGO = 1.00;
   // ATQ/DEF de referência do V1 no nível base de cada camada (para escalar os inimigos)
-  const BASE_ATK = { limbo: 38, lust: 56, gluttony: 74, greed: 77 };
-  const BASE_DEF = { limbo: 28, lust: 40, gluttony: 52, greed: 54 };
+  const BASE_ATK = { limbo: 38, lust: 56, gluttony: 74, greed: 77, wrath: 77, heresy: 77 };
+  const BASE_DEF = { limbo: 28, lust: 40, gluttony: 52, greed: 54, wrath: 54, heresy: 54 };
 
   function log(msg, cls) {
     if (!S) return;
@@ -790,7 +790,7 @@ BM.battle = (function () {
   }
 
   async function runTurn(action) {
-    if (!S || S.over) return;
+    if (!S || S.over || S.busy) return;
     const st = S;                 // guarda a batalha deste turno
     S.busy = true;
     refresh();

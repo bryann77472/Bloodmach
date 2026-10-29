@@ -56,6 +56,28 @@
 .arena[data-layer="greed"] .arena-bg{ opacity:.95; }
 .arena[data-layer="greed"] .arena-floor{ background:linear-gradient(180deg, transparent, rgba(70,34,12,.34)); }
 
+.arena[data-layer="wrath"]{
+  background:linear-gradient(180deg,#070d12 0%,#24343c 56%,#0a1216 100%);
+}
+.arena[data-layer="wrath"] .arena-bg{ opacity:.98; }
+.arena[data-layer="wrath"] .arena-floor{ background:linear-gradient(180deg, transparent, rgba(3,9,13,.58)); }
+
+.arena[data-layer="heresy"]{
+  background:linear-gradient(180deg,#080202 0%,#5a0e08 55%,#1a0604 100%);
+}
+.arena[data-layer="heresy"] .arena-bg{ opacity:.98; }
+.arena[data-layer="heresy"] .arena-floor{ background:linear-gradient(180deg, transparent, rgba(20,3,2,.58)); }
+
+/* variantes de chefe */
+.arena[data-variant="ship"]{
+  background:linear-gradient(180deg,#050a0e 0%,#24343c 52%,#120a06 100%);
+}
+.arena[data-variant="ship"] .arena-bg{ opacity:1; }
+.arena[data-variant="ship"] .arena-floor{ background:linear-gradient(180deg, transparent, rgba(8,5,3,.38)); }
+
+.arena[data-variant="heresy"] .arena-bg{ opacity:1; }
+.arena[data-variant="heresy"] .arena-floor{ background:linear-gradient(180deg, transparent, rgba(20,3,2,.52)); }
+
 /* o Limbo anoitece contra o V2 */
 .arena[data-variant="night"]{
   background:linear-gradient(180deg,#060a20 0%,#16224a 58%,#0a1220 100%);
@@ -106,6 +128,19 @@
 .fighter.enemy.gigante .f-sprite{ height:100%; flex:1 1 auto; min-width:0; }
 .fighter.enemy.gigante .f-sprite svg{ width:100%; height:100%; filter:drop-shadow(0 0 54px rgba(198,76,255,.30)) drop-shadow(0 14px 28px rgba(0,0,0,.75)); }
 .fighter.enemy.gigante .f-panel{ position:absolute; right:8%; left:auto; bottom:4%; width:min(280px,42%); z-index:4; }
+
+/* Gabriel em Heresy: o mesmo corpo, agora coroado por brasas */
+.fighter.enemy.heresy::before{
+  background:radial-gradient(closest-side, rgba(255,90,20,.34), rgba(255,176,31,.12) 52%, transparent 78%);
+}
+.fighter.enemy.heresy .f-sprite svg{
+  filter:sepia(.35) saturate(1.55) hue-rotate(-12deg) brightness(1.07) contrast(1.04)
+         drop-shadow(0 0 38px rgba(255,80,20,.42)) drop-shadow(0 12px 24px rgba(0,0,0,.72));
+}
+.fighter.enemy.heresy .f-panel{
+  border:1px solid rgba(255,120,30,.28);
+  box-shadow:0 0 22px rgba(255,80,20,.16), 0 2px 12px rgba(0,0,0,.35);
+}
 
 /* A Mão do Rei Minos: sprite colossal entrando pela direita.
    O painel de vida continua no lugar normal de qualquer inimigo

@@ -247,7 +247,7 @@ BM.DATA = (function () {
   ARMS.push(
     {
       id:'thunderfist', name:'Thunderfist', cor:'Amarelo', corHex:'#ffd23f', type:'impacto',
-      role:'Paralisa o inimigo com descargas', price:450, unlock:'layer2',
+      role:'Paralisa o inimigo com descargas', price:450, unlock:'heresyGabriel',
       passive:{ id:'shock', name:'Estática', desc:'20% de chance de paralisar o alvo a cada golpe.' },
       moves:['trovao_soco','trovao_corrente','trovao_tempestade','trovao_pulso']
     },
@@ -299,7 +299,7 @@ BM.DATA = (function () {
     },
     {
       id:'shadow', name:'Pernas Shadow Step', peso:1, vel:1.05, esquiva:0.15, fuga:0.60,
-      ability:null, price:300, unlock:'layer2',
+      ability:null, price:300, unlock:'heresyGabriel',
       passive:{ id:'shadowGuard', name:'Passo Sombrio', desc:'Depois de esquivar, o próximo golpe recebido causa 50% menos dano.' },
       desc:'Passos que atravessam a sombra. Pesadas, mas flexíveis.',
       abilityDesc:'Passo Sombrio: depois de esquivar, o próximo golpe recebido causa 50% menos dano.'
@@ -333,7 +333,7 @@ BM.DATA = (function () {
       desc:'Casca colossal de husk endurecido. Lenta e pesada, quase indestrutível.'
     },
     {
-      id:'bloodforge', name:'Carcaça Bloodforge', peso:1, hp:1.20, vel:0.90, price:400, unlock:'layer2',
+      id:'bloodforge', name:'Carcaça Bloodforge', peso:1, hp:1.20, vel:0.90, price:400, unlock:'heresyGabriel',
       passive:{ id:'bloodforge', name:'Forja de Sangue', desc:'Regenera 20% da vida total a cada 3 turnos.' },
       desc:'Placas forjadas com sangue. O corpo se refaz sozinho.'
     },
@@ -385,7 +385,7 @@ BM.DATA = (function () {
      ============================================================ */
   const ACTS = [
     { id: 'act1', num: 'I', name: 'Infinity Hyperdeath', desc: 'Três camadas: os campos ensolarados, a metrópole neon e o estômago de carne.', wip: false, layers: ['limbo', 'lust', 'gluttony'] },
-    { id: 'act2', num: 'II', name: 'Imperfect Hatred', desc: 'O deserto dos reis: pirâmides colossais e ruínas greco-romanas. A primeira camada de um ato em expansão.', wip: false, layers: ['greed'] },
+    { id: 'act2', num: 'II', name: 'Imperfect Hatred', desc: 'Greed, Wrath e Heresy: o deserto dos reis, o mar dos afogados e a cidade de Dis em chamas eternas.', wip: false, layers: ['greed', 'wrath', 'heresy'] },
     { id: 'act3', num: 'III', name: 'Expiação', desc: 'O julgamento final. Em desenvolvimento.', wip: true, layers: [] }
   ];
 
@@ -429,6 +429,26 @@ BM.DATA = (function () {
       boss: 'v2_greed',
       checkpoints: [3],
       theme: { a: '#e8b45a', b: '#5a2412', c: '#ffe6a0' }
+    },
+    {
+      id: 'wrath', act: 2, order: 2, baseLevel: 21,
+      name: 'Wrath', subtitle: 'O Mar dos Afogados',
+      desc: 'Águas escuras e cinzentas sob um céu tempestuoso, pontes de ferro, torres góticas afogadas e cascas de navios abandonados.',
+      modifier: { id: 'mare', name: 'Maré de Ferro', desc: 'A tempestade corrói o V1: dano recebido +12%.', dmgPlayer: 1.12 },
+      encounters: ['afogado', 'gargula', 'barqueiro', 'noiva_afogada', 'tempestade', 'corsario'],
+      boss: 'ferryman',
+      checkpoints: [3],
+      theme: { a: '#63727a', b: '#111b22', c: '#9fd8e8' }
+    },
+    {
+      id: 'heresy', act: 2, order: 3, baseLevel: 23,
+      name: 'Heresy', subtitle: 'A Cidade de Dis',
+      desc: 'Catedrais góticas em ruínas, sepulcros de ferro incandescente e abismos de lava e sangue fervente sob um céu de brasas.',
+      modifier: { id: 'fogoeterno', name: 'Fogo Eterno', desc: 'As chamas de Dis enfurecem os condenados: ataque dos inimigos +20%.', atkMul: 1.20 },
+      encounters: ['herege', 'fornalha', 'serpente_lava', 'carrasco', 'alma_queimada', 'cavaleiro_ferro'],
+      boss: 'gabriel_heresy',
+      checkpoints: [3],
+      theme: { a: '#b3261c', b: '#1a0806', c: '#ffb01f' }
     }
   ];
 
@@ -695,6 +715,140 @@ BM.DATA = (function () {
         { name: 'Recarga', type: null, kind: 'buff', effect: 'buffAtk', text: 'VAI SE RECARREGAR' },
         { name: 'Ascensão', type: 'explosao', power: 42, acc: 100, kind: 'inevitable', range: 'any', parryable: false, unavoidable: true, minHp: 0.35, text: 'ASCENSÃO' }
       ]
+    },
+
+    /* ================= WRATH ================= */
+    afogado: {
+      id: 'afogado', name: 'Afogado', faction: 'casca', sprite: 'afogado',
+      hp: 580, atk: 35, def: 30, vel: 10, exp: 145, scrap: 84,
+      moves: [
+        { name: 'Tridente Enferrujado', type: 'corte', power: 30, acc: 93, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI PERFURAR' },
+        { name: 'Corrente do Porto', type: 'impacto', power: 28, acc: 90, kind: 'melee', range: 'perto', parryable: true, effect: 'push', text: 'VAI ACORRENTAR' },
+        { name: 'Água nos Pulmões', type: 'sangue', power: 26, acc: 88, kind: 'ranged', range: 'longe', parryable: false, effect: 'ferrugem', text: 'VAI AFOGAR' }
+      ]
+    },
+    gargula: {
+      id: 'gargula', name: 'Gárgula de Ferro', faction: 'demonio', sprite: 'gargula',
+      hp: 620, atk: 36, def: 38, vel: 12, exp: 152, scrap: 88,
+      moves: [
+        { name: 'Garra de Pedra', type: 'corte', power: 31, acc: 93, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI RASGAR' },
+        { name: 'Uivo da Tempestade', type: 'impacto', power: 29, acc: 89, kind: 'ranged', range: 'longe', parryable: false, effect: 'push', text: 'VAI UIVAR' },
+        { name: 'Pouso de Ferro', type: 'impacto', power: 33, acc: 90, kind: 'melee', range: 'any', parryable: true, effect: 'approach', text: 'VAI DESCER' }
+      ]
+    },
+    barqueiro: {
+      id: 'barqueiro', name: 'Barqueiro Menor', faction: 'carne', sprite: 'barqueiro',
+      hp: 640, atk: 37, def: 32, vel: 9, exp: 158, scrap: 92,
+      moves: [
+        { name: 'Remo Pesado', type: 'impacto', power: 32, acc: 92, kind: 'melee', range: 'perto', parryable: true, effect: 'push', text: 'VAI REMAR' },
+        { name: 'Lanterna Fria', type: 'fogo', power: 28, acc: 90, kind: 'ranged', range: 'longe', parryable: false, text: 'VAI ILUMINAR' },
+        { name: 'Corrente de Almas', type: 'corte', power: 29, acc: 91, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI PRENDER' }
+      ]
+    },
+    noiva_afogada: {
+      id: 'noiva_afogada', name: 'Noiva Afogada', faction: 'carne', sprite: 'noiva_afogada',
+      hp: 600, atk: 36, def: 28, vel: 14, exp: 150, scrap: 86,
+      moves: [
+        { name: 'Véu de Algas', type: 'corte', power: 27, acc: 94, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI ENVOLVER' },
+        { name: 'Lamento', type: 'sangue', power: 30, acc: 90, kind: 'ranged', range: 'longe', parryable: false, effect: 'ferrugem', text: 'VAI LAMENTAR' },
+        { name: 'Abraço Frio', type: 'impacto', power: 31, acc: 91, kind: 'melee', range: 'perto', parryable: true, text: 'VAI ABRAÇAR' }
+      ]
+    },
+    tempestade: {
+      id: 'tempestade', name: 'Tempestade Viva', faction: 'demonio', sprite: 'tempestade',
+      hp: 560, atk: 39, def: 26, vel: 20, exp: 160, scrap: 94,
+      moves: [
+        { name: 'Raio', type: 'fogo', power: 34, acc: 88, kind: 'ranged', range: 'longe', parryable: false, text: 'VAI CAIR' },
+        { name: 'Vendaval', type: 'impacto', power: 28, acc: 90, kind: 'ranged', range: 'longe', parryable: true, effect: 'push', text: 'VAI SOPRAR' },
+        { name: 'Descarga', type: 'explosao', power: 32, acc: 86, kind: 'ranged', range: 'any', parryable: false, text: 'VAI DESCARGAR' }
+      ]
+    },
+    corsario: {
+      id: 'corsario', name: 'Corsário Morto', faction: 'casca', sprite: 'corsario',
+      hp: 610, atk: 38, def: 33, vel: 16, exp: 156, scrap: 90,
+      moves: [
+        { name: 'Cutelo do Corsário', type: 'corte', power: 32, acc: 93, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI CORTAR' },
+        { name: 'Gancho', type: 'corte', power: 28, acc: 91, kind: 'melee', range: 'perto', parryable: true, effect: 'push', text: 'VAI GANCHAR' },
+        { name: 'Pederneira', type: 'explosao', power: 30, acc: 87, kind: 'ranged', range: 'longe', parryable: false, text: 'VAI ATIRAR' }
+      ]
+    },
+    ferryman: {
+      id: 'ferryman', name: 'Ferryman', faction: 'carne', sprite: 'ferryman',
+      hp: 1150, atk: 41, def: 36, vel: 12, exp: 1600, scrap: 1000, boss: true,
+      moves: [
+        { name: 'Remo do Juízo', type: 'impacto', power: 38, acc: 92, kind: 'melee', range: 'perto', parryable: true, effect: 'push', text: 'VAI REMAR' },
+        { name: 'Lanterna dos Afogados', type: 'fogo', power: 34, acc: 90, kind: 'ranged', range: 'longe', parryable: false, text: 'VAI CHAMAR' },
+        { name: 'Corrente de Almas', type: 'sangue', power: 32, acc: 91, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI ACORRENTAR' },
+        { name: 'Maré Negra', type: null, kind: 'buff', effect: 'buffDef', text: 'VAI AFUNDAR' },
+        { name: 'Sentença do Barqueiro', type: 'explosao', power: 48, acc: 100, kind: 'inevitable', range: 'any', parryable: false, unavoidable: true, minHp: 0.35, text: 'SENTENÇA DO BARQUEIRO' }
+      ]
+    },
+
+    /* ================= HERESY ================= */
+    herege: {
+      id: 'herege', name: 'Herege', faction: 'casca', sprite: 'herege',
+      hp: 680, atk: 40, def: 34, vel: 10, exp: 185, scrap: 105,
+      moves: [
+        { name: 'Ferro em Brasa', type: 'fogo', power: 34, acc: 92, kind: 'melee', range: 'perto', parryable: true, text: 'VAI MARCAR' },
+        { name: 'Livro Profano', type: 'sangue', power: 31, acc: 90, kind: 'ranged', range: 'longe', parryable: false, effect: 'ferrugem', text: 'VAI RECITAR' },
+        { name: 'Grito Herético', type: 'impacto', power: 30, acc: 91, kind: 'ranged', range: 'longe', parryable: true, effect: 'push', text: 'VAI GRITAR' }
+      ]
+    },
+    fornalha: {
+      id: 'fornalha', name: 'Fornalha Viva', faction: 'maquina', sprite: 'fornalha',
+      hp: 820, atk: 41, def: 44, vel: 5, exp: 200, scrap: 115,
+      moves: [
+        { name: 'Jato de Chama', type: 'fogo', power: 36, acc: 89, kind: 'ranged', range: 'longe', parryable: false, text: 'VAI QUEIMAR' },
+        { name: 'Porta Incandescente', type: 'impacto', power: 34, acc: 91, kind: 'melee', range: 'perto', parryable: true, text: 'VAI ABRIR' },
+        { name: 'Superaquecer', type: null, kind: 'buff', effect: 'buffAtk', text: 'VAI SUPERAQUECER' }
+      ]
+    },
+    serpente_lava: {
+      id: 'serpente_lava', name: 'Serpente de Lava', faction: 'demonio', sprite: 'serpente_lava',
+      hp: 720, atk: 43, def: 32, vel: 17, exp: 195, scrap: 110,
+      moves: [
+        { name: 'Presa de Magma', type: 'corte', power: 33, acc: 93, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI MORDER' },
+        { name: 'Cuspe de Lava', type: 'fogo', power: 35, acc: 88, kind: 'ranged', range: 'longe', parryable: false, text: 'VAI CUSPIR' },
+        { name: 'Enroscar', type: 'impacto', power: 32, acc: 90, kind: 'melee', range: 'perto', parryable: true, text: 'VAI ENROSCAR' }
+      ]
+    },
+    carrasco: {
+      id: 'carrasco', name: 'Carrasco de Dis', faction: 'carne', sprite: 'carrasco',
+      hp: 780, atk: 44, def: 38, vel: 7, exp: 205, scrap: 120,
+      moves: [
+        { name: 'Machado do Carrasco', type: 'corte', power: 38, acc: 91, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI DECAPITAR' },
+        { name: 'Pé de Cabra', type: 'impacto', power: 35, acc: 90, kind: 'melee', range: 'perto', parryable: true, effect: 'push', text: 'VAI QUEBRAR' },
+        { name: 'Sentença de Dis', type: 'sangue', power: 34, acc: 89, kind: 'ranged', range: 'longe', parryable: false, effect: 'ferrugem', text: 'VAI CONDENAR' }
+      ]
+    },
+    alma_queimada: {
+      id: 'alma_queimada', name: 'Alma Queimada', faction: 'demonio', sprite: 'alma_queimada',
+      hp: 660, atk: 42, def: 30, vel: 19, exp: 190, scrap: 108,
+      moves: [
+        { name: 'Lamento Eterno', type: 'sangue', power: 32, acc: 92, kind: 'ranged', range: 'longe', parryable: true, text: 'VAI LAMENTAR' },
+        { name: 'Chama Eterna', type: 'fogo', power: 37, acc: 88, kind: 'ranged', range: 'longe', parryable: false, text: 'VAI ARDER' },
+        { name: 'Cinzas', type: 'sangue', power: 29, acc: 90, kind: 'ranged', range: 'longe', parryable: true, effect: 'ferrugem', text: 'VAI SUFOCAR' }
+      ]
+    },
+    cavaleiro_ferro: {
+      id: 'cavaleiro_ferro', name: 'Cavaleiro de Ferro', faction: 'maquina', sprite: 'cavaleiro_ferro',
+      hp: 860, atk: 42, def: 46, vel: 8, exp: 210, scrap: 125,
+      moves: [
+        { name: 'Espada Incandescente', type: 'corte', power: 36, acc: 92, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI CORTAR' },
+        { name: 'Martelo de Escória', type: 'impacto', power: 38, acc: 89, kind: 'melee', range: 'perto', parryable: true, text: 'VAI ESMAGAR' },
+        { name: 'Escudo de Brasa', type: null, kind: 'buff', effect: 'buffDef', text: 'VAI PROTEGER' }
+      ]
+    },
+    gabriel_heresy: {
+      id: 'gabriel_heresy', name: 'Gabriel — Heresia', faction: 'anjo', sprite: 'gabriel',
+      hp: 1400, atk: 45, def: 40, vel: 15, exp: 2400, scrap: 1500, boss: true, heresy: true,
+      moves: [
+        { name: 'Espada Herética', type: 'corte', power: 40, acc: 94, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI DESFERRIR' },
+        { name: 'Combo Profano', type: 'impacto', power: 44, acc: 91, kind: 'melee', range: 'perto', parryable: true, text: 'VAI COMBINAR' },
+        { name: 'Julgamento de Fogo', type: 'fogo', power: 42, acc: 89, kind: 'ranged', range: 'longe', parryable: false, text: 'VAI JULGAR' },
+        { name: 'Asas de Brasa', type: null, kind: 'buff', effect: 'buffAtk', text: 'VAI ARDER' },
+        { name: 'Sentença Final', type: 'explosao', power: 58, acc: 100, kind: 'inevitable', range: 'any', parryable: false, unavoidable: true, minHp: 0.35, text: 'SENTENÇA FINAL' }
+      ]
     }
   };
 
@@ -725,7 +879,21 @@ BM.DATA = (function () {
     colosso: ['O colosso se move. A areia treme.'],
     escaravelho: ['Um sol pequeno desce zumbindo sobre a areia.'],
     mao: ['Uma mão colossal se ergue do vazio, aberta, apontando para você.'],
-    v2_greed: ['O deserto se cala. V2 desce das pirâmides, dourado e mais forte.']
+    v2_greed: ['O deserto se cala. V2 desce das pirâmides, dourado e mais forte.'],
+    afogado: ['Um corpo inchado emerge das águas cinzentas, tridente em punho.'],
+    gargula: ['Uma gárgula de ferro abre as asas sob o relâmpago.'],
+    barqueiro: ['Um barqueiro menor ergue o remo, a lanterna balançando no escuro.'],
+    noiva_afogada: ['Um véu de algas se arrasta pela ponte. Algo espera dentro dele.'],
+    tempestade: ['A tempestade ganha olhos. O ar cheira a ferro queimado.'],
+    corsario: ['Um corsário morto sobe do casco afundado, cutelo entre os dentes.'],
+    ferryman: ['O navio range. O Ferryman se ergue no convés, remo e lanterna em mãos.'],
+    herege: ['Um herege marca o próprio corpo com ferro em brasa.'],
+    fornalha: ['Uma fornalha viva abre a portinhola do peito. O calor cega.'],
+    serpente_lava: ['Uma serpente de magma desliza entre os sepulcros incandescentes.'],
+    carrasco: ['O carrasco de Dis arrasta o machado pelas pedras da catedral.'],
+    alma_queimada: ['Uma alma queimada flutua, ainda gritando o nome de Deus.'],
+    cavaleiro_ferro: ['Um cavaleiro de ferro incandescente ergue a espada em brasa.'],
+    gabriel_heresy: ['O portão de Dis se abre. Gabriel desce entre chamas e cinzas.']
   };
 
 
@@ -765,6 +933,38 @@ BM.DATA = (function () {
       { who:'MOTOR', text:'As assinaturas de V2 estão aqui. Mais fortes. Mais douradas.', portrait:'motor' },
       { who:'V2', text:'Você demorou. Eu já não sou o mesmo corpo.', portrait:'v2' }
     ],
+    wrathStart: [
+      { who:'MOTOR', text:'Wrath. O mar dos afogados. A tempestade não para de cair desde que a cidade afundou.', portrait:'motor' },
+      { who:'MOTOR', text:'Pontes de ferro, torres góticas e cascos de navios. Algo maior navega entre os destroços.', portrait:'motor' },
+      { who:'V1', text:'[ ... ]', portrait:'v1' }
+    ],
+    heresyStart: [
+      { who:'MOTOR', text:'Heresy. A cidade de Dis. Catedrais em ruínas, sepulcros de ferro e rios de sangue fervente.', portrait:'motor' },
+      { who:'MOTOR', text:'Gabriel está aqui. Não é o anjo que você feriu em Gluttony. Este desceu mais fundo.', portrait:'motor' },
+      { who:'MOTOR', text:'Quando o portão abrir, não espere perdão.', portrait:'motor' },
+      { who:'V1', text:'[ ... ]', portrait:'v1' }
+    ],
+    gabrielHeresyBefore: [
+      { who:'GABRIEL', text:'Máquina...', portrait:'gabriel' },
+      { who:'GABRIEL', text:'Eu vou te destruir.', portrait:'gabriel' },
+      { who:'GABRIEL', text:'Vou te despedaçar, espalhar os restos da sua forma profana por todas as ESTRELAS!', portrait:'gabriel' },
+      { who:'GABRIEL', text:'Vou te triturar até que as próprias FAÍSCAS SUPLIQUEM POR PIEDADE!', portrait:'gabriel' },
+      { who:'GABRIEL', text:'Minhas mãos vão se deleitar ao acabar com você...', portrait:'gabriel' },
+      { who:'GABRIEL', text:'AQUI E AGORA!', portrait:'gabriel' }
+    ],
+    gabrielHeresyDeath: [
+      { who:'GABRIEL', text:'Impossível... eu carreguei a luz através de mil eras.', portrait:'gabriel' },
+      { who:'GABRIEL', text:'E você... uma máquina faminta... não deveria ter chegado até aqui.', portrait:'gabriel' },
+      { who:'GABRIEL', text:'Mas eu vejo agora. A vontade que me falta... é toda sua.', portrait:'gabriel' }
+    ],
+    gabrielHeresyLastWords: [
+      { who:'GABRIEL', text:'Que teus sofrimentos sejam muitos... e teus dias poucos.', portrait:'gabriel' }
+    ],
+    afterFerryman: [
+      { who:'MOTOR', text:'O Ferryman afunda com o navio. As águas de Wrath se aquietam.', portrait:'motor' },
+      { who:'MOTOR', text:'A ponte de ferro range adiante. Heresy espera: a cidade de Dis, onde as catedrais queimam sem fim.', portrait:'motor' },
+      { who:'V1', text:'[ ... ]', portrait:'v1' }
+    ],
     gabrielBefore: [
       { who:'GABRIEL', text:'Então é você. A lâmina que não aceita ser julgada.', portrait:'gabriel' },
       { who:'GABRIEL', text:'Você não tem alma, V1. Não tem alma, e por isso não tem perdão. Só fome, e metal.', portrait:'gabriel' },
@@ -778,7 +978,7 @@ BM.DATA = (function () {
     afterGreedV2: [
       { who:'MOTOR', text:'V2 — Ascensão foi desativada. O núcleo dourado está na oficina.', portrait:'motor' },
       { who:'MOTOR', text:'Hellwhip e as peças de Fibra liberados para compra. O deserto de Greed está em silêncio.', portrait:'motor' },
-      { who:'MOTOR', text:'As outras camadas de Imperfect Hatred ainda dormem sob a areia.', portrait:'motor' },
+      { who:'MOTOR', text:'As pontes de Wrath rangem adiante. E além delas, Dis queima sem fim.', portrait:'motor' },
       { who:'V1', text:'[ ... ]', portrait:'v1' }
     ],
     bossIntro: {
@@ -791,6 +991,14 @@ BM.DATA = (function () {
         { who: 'GABRIEL', text: 'Então é você. A lâmina que não aceita ser julgada.', portrait: 'gabriel' },
         { who: 'GABRIEL', text: 'Você não tem alma, V1. Não tem alma, e por isso não tem perdão. Só fome, e metal.', portrait: 'gabriel' },
         { who: 'GABRIEL', text: 'Vou mostrar qual de nós dois foi feito para seguir em frente.', portrait: 'gabriel' }
+      ],
+      gabriel_heresy: [
+        { who: 'GABRIEL', text: 'Máquina...', portrait: 'gabriel' },
+        { who: 'GABRIEL', text: 'Eu vou te destruir.', portrait: 'gabriel' },
+        { who: 'GABRIEL', text: 'Vou te despedaçar, espalhar os restos da sua forma profana por todas as ESTRELAS!', portrait: 'gabriel' },
+        { who: 'GABRIEL', text: 'Vou te triturar até que as próprias FAÍSCAS SUPLIQUEM POR PIEDADE!', portrait: 'gabriel' },
+        { who: 'GABRIEL', text: 'Minhas mãos vão se deleitar ao acabar com você...', portrait: 'gabriel' },
+        { who: 'GABRIEL', text: 'AQUI E AGORA!', portrait: 'gabriel' }
       ]
     },
     gabrielFoge: [
@@ -820,7 +1028,7 @@ BM.DATA = (function () {
   /* Rank de camada: tempo, vida perdida e estilo. Tudo em S => P (perfeito). */
   const LAYER_RANK = {
     order: ['D', 'C', 'B', 'A', 'S', 'P'],
-    tempoAlvo: { limbo: 540, lust: 600, gluttony: 660, greed: 720 },
+    tempoAlvo: { limbo: 540, lust: 600, gluttony: 660, greed: 720, wrath: 780, heresy: 840 },
     tempo: [
       { key: 'S', max: 1.00 }, { key: 'A', max: 1.40 }, { key: 'B', max: 1.90 },
       { key: 'C', max: 2.60 }, { key: 'D', max: 99 }

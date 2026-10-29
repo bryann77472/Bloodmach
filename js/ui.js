@@ -68,7 +68,7 @@ BM.ui = (function () {
             <h1 class="title-xl">BLOODMACH</h1>
             <div class="logo-drip"></div>
           </div>
-          <div class="logo-sub">Gluttony&nbsp;&nbsp;//&nbsp;&nbsp;Heresy</div>
+          <div class="logo-sub">Wrath&nbsp;&nbsp;//&nbsp;&nbsp;Heresy</div>
           <div class="title-menu">
             <button class="btn primary" data-a="play">Jogar</button>
             <button class="btn" data-a="shop">Loja ${has && d ? '<span class="badge hot">NOVO</span>' : ''}</button>
@@ -767,12 +767,18 @@ BM.ui = (function () {
     BM.audio.playMusic(musicFor(BM.battle.state.layerIndex, BM.battle.state.isBoss));
     const S = BM.battle.state;
     const layer = S.layer;
-    const bossFx = { night: S.isBoss && S.enemy.id === 'v2', noAcid: S.isBoss && S.enemy.id === 'gabriel' };
+    const bossFx = {
+      night: S.isBoss && S.enemy.id === 'v2',
+      noAcid: S.isBoss && S.enemy.id === 'gabriel',
+      ship: S.isBoss && S.enemy.id === 'ferryman',
+      heresy: S.isBoss && S.enemy.id === 'gabriel_heresy'
+    };
+    const variant = bossFx.night ? 'night' : (bossFx.noAcid ? 'noacid' : (bossFx.ship ? 'ship' : (bossFx.heresy ? 'heresy' : '')));
     const arms = BM.save.equippedArms().map(id => D.ARMS.find(a => a.id === id)).filter(Boolean);
     const accent = arms.length ? arms[0].corHex : '#4aa8ff';
     mount(`
       <div class="screen battle" id="battle-root">
-        <div class="arena" id="arena" data-layer="${layer.id}" data-variant="${bossFx.night ? 'night' : (bossFx.noAcid ? 'noacid' : '')}">
+        <div class="arena" id="arena" data-layer="${layer.id}" data-variant="${variant}">
           <div class="arena-bg">${BM.sprites.arena(layer.id, bossFx)}</div>
           <div class="arena-floor"></div>
           <div class="fighter player" id="f-player">
@@ -783,7 +789,7 @@ BM.ui = (function () {
               <div class="status-row" id="st-p"></div>
             </div>
           </div>
-          <div class="fighter enemy${S.enemy.giant ? ' gigante' : ''}${S.enemy.hand ? ' mao' : ''}" id="f-enemy">
+          <div class="fighter enemy${S.enemy.giant ? ' gigante' : ''}${S.enemy.hand ? ' mao' : ''}${bossFx.heresy ? ' heresy' : ''}" id="f-enemy">
             <div class="f-sprite">${BM.sprites.get(S.enemy.sprite)}</div>
             <div class="f-panel">
               <div class="f-name">${S.enemy.name} <span class="f-lv">${S.enemy.isBoss ? 'CHEFE' : ''}</span></div>
@@ -996,12 +1002,22 @@ BM.ui = (function () {
    * encolhe até o fim da janela. Só é possível parar clicando
    * dentro dela: verde = perfeito, amarelo = bom, branco = cedo.
    * ========================================================= */
+  let parryActive = false;
+  let parryWaiters = [];
+
   function promptParry(cfg) {
+    if (parryActive) {
+      return new Promise(resolve => { parryWaiters.push({ cfg: cfg, resolve: resolve }); });
+    }
+    const layer = el('#parry-layer');
+    if (!layer) return Promise.resolve('miss');
+    parryActive = true;
     return new Promise(resolve => {
-      const layer = el('#parry-layer');
       const result = el('#parry-result');
       const hint = el('#parry-hint');
-      if (!layer) { resolve('miss'); return; }
+
+      // Nunca deixe dois círculos ao mesmo tempo: limpa restos de um prompt antigo.
+      Array.prototype.slice.call(layer.querySelectorAll('.parry-circle')).forEach(function (n) { n.remove(); });
 
       const total = Math.max(320, cfg.ms || 1000);
       const pctPerfect = Math.max(0.04, cfg.perfect || 0.12);
@@ -1058,7 +1074,10 @@ BM.ui = (function () {
         setTimeout(() => {
           layer.classList.remove('on');
           if (circle && circle.parentNode) circle.parentNode.removeChild(circle);
+          parryActive = false;
           resolve(res);
+          const next = parryWaiters.shift();
+          if (next) promptParry(next.cfg).then(next.resolve, next.resolve);
         }, res === 'perfect' ? 420 : 260);
       }
 
@@ -1285,6 +1304,153 @@ BM.ui = (function () {
     setTimeout(function () { if (onDone) onDone(); }, 5600);
   }
 
+  /* ============================================================
+     HERESY — portão de Dis, tela preta e morte de Gabriel
+     ============================================================ */
+  function blackScreen(onReady) {
+    current = 'blackScreen';
+    mount('<div class="screen scene-black" id="black-screen"><div class="black-vignette"></div></div>');
+    setTimeout(function () { if (onReady) onReady(); }, 420);
+  }
+
+  function heresyGate(layerIndex, onDone) {
+    current = 'heresyGate';
+    const runes = ['DIS', 'HERESY', 'IGNIS', 'SANGVIS', 'POENA', 'MORS'].map(function (t, i) {
+      return '<span class="gate-rune" style="--r:' + (i * 60) + 'deg">' + t + '</span>';
+    }).join('');
+    mount(
+      '<div class="screen scene-gate" id="heresy-gate">' +
+      '<div class="gate-sky"></div>' +
+      '<div class="gate-embers">' +
+      '<i style="left:12%;top:18%;--d:5s;--s:.9"></i><i style="left:24%;top:42%;--d:7s;--s:1.2"></i>' +
+      '<i style="left:38%;top:12%;--d:6s;--s:.7"></i><i style="left:62%;top:22%;--d:8s;--s:1.1"></i>' +
+      '<i style="left:76%;top:38%;--d:5.5s;--s:.8"></i><i style="left:88%;top:16%;--d:7.5s;--s:1.3"></i>' +
+      '</div>' +
+      '<div class="gate-title">HERESY</div>' +
+      '<div class="gate-sub">A CATEDRAL DE DIS</div>' +
+      '<div class="gate-wrap">' +
+      '<div class="gate-frame">' +
+      '<div class="gate-glow"></div>' +
+      '<div class="gate-door left"><div class="gate-plates"></div><div class="gate-sigil">†</div><div class="gate-runes">' + runes + '</div></div>' +
+      '<div class="gate-door right"><div class="gate-plates"></div><div class="gate-sigil">†</div><div class="gate-runes">' + runes + '</div></div>' +
+      '<div class="gate-seam"></div>' +
+      '<div class="gate-lock"><span>DIS</span></div>' +
+      '</div>' +
+      '</div>' +
+      '<div class="gate-hint" id="gate-hint">CLIQUE NO PORTÃO PARA ABRIR</div>' +
+      '</div>');
+    const gate = el('#heresy-gate');
+    let opened = false, finished = false;
+    function open() {
+      if (opened) return;
+      opened = true;
+      BM.audio.play('heavy');
+      gate.classList.add('abrindo');
+      const hint = el('#gate-hint');
+      if (hint) hint.textContent = 'O PORTÃO SE ABRE';
+      setTimeout(function () {
+        if (finished) return;
+        finished = true;
+        blackScreen(function () { if (onDone) onDone(); });
+      }, 2500);
+    }
+    gate.addEventListener('click', open);
+  }
+
+  function heresyGabrielDeath(onDone) {
+    current = 'heresyGabrielDeath';
+    BM.audio.playMusic('desligamento');
+    const lines = (D.STORY && D.STORY.gabrielHeresyDeath) || [];
+    const embers = [];
+    for (let i = 0; i < 34; i++) {
+      const left = 8 + Math.random() * 84;
+      const top = 16 + Math.random() * 64;
+      const dx = -80 + Math.random() * 160;
+      const dy = -120 + Math.random() * 160;
+      const d = Math.random() * 1.2;
+      const s = 0.5 + Math.random() * 1.4;
+      embers.push('<i class="hg-ember" style="left:' + left + '%;top:' + top +
+        '%;--x:' + dx + 'px;--y:' + dy + 'px;--d:' + d + 's;--s:' + s + '"></i>');
+    }
+    mount(
+      '<div class="screen scene-death heresydeath" id="hg-death">' +
+      '<div class="death-stage hg-stage">' +
+      '<div class="hg-aura"></div>' +
+      '<div class="hg-flames"><i></i><i></i><i></i><i></i><i></i><i></i></div>' +
+      '<div class="death-v1 hg-body" id="hg-body">' + BM.sprites.gabriel() + '</div>' +
+      '<div class="hg-embers">' + embers.join('') + '</div>' +
+      '<div class="hg-flash" id="hg-flash"></div>' +
+      '</div>' +
+      '<div class="death-caption" id="hg-cap"></div>' +
+      '<div class="dc-hint" id="hg-hint"></div>' +
+      '</div>');
+    const scene = el('#hg-death');
+    const body = el('#hg-body');
+    const cap = el('#hg-cap');
+    const hint = el('#hg-hint');
+    const flash = el('#hg-flash');
+    let started = false, ending = false, finished = false, lineIndex = 0;
+
+    function say(n) {
+      const line = lines[n];
+      if (!line) return;
+      cap.innerHTML = '<div class="dc-title">' + esc(line.who || 'GABRIEL') + '</div>' +
+        '<div class="dc-text hg-line">“' + esc(line.text) + '”</div>';
+      cap.classList.add('on');
+      if (hint) hint.textContent = 'CLIQUE / ESPAÇO PARA AVANÇAR · ' + (n + 1) + '/' + lines.length;
+    }
+
+    function cleanup() {
+      scene.removeEventListener('click', advance);
+      document.removeEventListener('keydown', onKey);
+    }
+
+    function finish() {
+      if (finished) return;
+      finished = true;
+      cleanup();
+      if (onDone) onDone();
+    }
+
+    function impact() {
+      if (ending || finished) return;
+      ending = true;
+      scene.classList.add('impacto');
+      body.classList.add('desintegrando');
+      flash.classList.add('on');
+      BM.audio.play('heavy');
+      if (hint) hint.textContent = '';
+      cap.innerHTML = '<div class="dc-title">O ANJO CAI</div>' +
+        '<div class="dc-text">As asas de brasa se apagam. Dis fica em silêncio pela primeira vez.</div>';
+      setTimeout(finish, 1600);
+    }
+
+    function advance() {
+      if (!started || ending || finished) return;
+      if (lineIndex < lines.length - 1) {
+        lineIndex++;
+        BM.audio.play('select');
+        say(lineIndex);
+        return;
+      }
+      impact();
+    }
+
+    function onKey(ev) {
+      if (ev.key === ' ' || ev.key === 'Enter') { ev.preventDefault(); advance(); }
+    }
+
+    BM.audio.play('ko');
+    scene.addEventListener('click', advance);
+    document.addEventListener('keydown', onKey);
+    setTimeout(function () {
+      if (finished) return;
+      started = true;
+      body.classList.add('queimando');
+      say(0);
+    }, 800);
+  }
+
 /* ============================================================
      SPRITES/UI SNIPPETS — introduções de chefe e modal
      ============================================================ */
@@ -1381,7 +1547,8 @@ BM.ui = (function () {
                   ${info.existe
                     ? ('SAVE · NÍVEL ' + info.nivel + ' · ' + fmt(info.scrap) + ' ◆ · CAMADA ' + (info.camada + 1) +
                       (info.v2Dead ? ' · V2 MORTO' : '') + (info.gabrielDead ? ' · GABRIEL MORTO' : '') +
-                      (info.greedV2Dead ? ' · GREED V2 MORTO' : ''))
+                      (info.greedV2Dead ? ' · GREED V2 MORTO' : '') + (info.ferrymanDead ? ' · FERRYMAN MORTO' : '') +
+                      (info.heresyGabrielDead ? ' · GABRIEL HERESY MORTO' : ''))
                     : 'SEM SAVE — COMEÇA DO ZERO'}
                 </div>
                 <button class="btn primary wide" data-save="${k}">${info.existe ? 'CONTINUAR' : 'NOVO JOGO'}</button>
@@ -1510,7 +1677,8 @@ BM.ui = (function () {
   function layerResult(info) {
     current = 'resultCamada';
     const r = info.rank;
-    BM.audio.playMusic(musicFor(info.layerIndex, true));
+    // Heresy: a música do desligamento de Gabriel continua no rank da camada.
+    if (!info.keepMusic) BM.audio.playMusic(musicFor(info.layerIndex, true));
     const cat = (nome, letra, nota) =>
       '<div class="rank-cat"><span>' + nome + '</span><b>' + letra + '</b><i>' + nota + '</i></div>';
     mount(
@@ -1739,6 +1907,7 @@ BM.ui = (function () {
     get current() { return current; },
     title, shop, loadout, lobby, layerMap, dialogue, battle, battleUpdate,
     battleLog, floatText, shake, flashTurn, promptParry, result, layerResult, gabrielBleed, v2Death, maoFall,
+    heresyGate, blackScreen, heresyGabrielDeath,
     deathScene, gameOver, enemyIntro, bossIntro, modal, options, credits, ending, postCredits,
     savePick
   };
