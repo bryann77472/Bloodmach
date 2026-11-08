@@ -1848,6 +1848,309 @@ BM.sprites = (function () {
     </svg>`;
   }
 
+  /* ---- CEPK-14: o último abrigo, antes da quarentena ---- */
+  /* ---- alunos do CEPK-14: uniforme preto com faixas verdes ---- */
+  function cepkStudent(kind) {
+    const skin = {
+      a: '#f1c9a5', b: '#d39a6a', c: '#8b5a3c', d: '#e7b58c', special: '#c98f63'
+    }[kind] || '#e7b58c';
+    const hair = {
+      a: '#2a1a14', b: '#161616', c: '#3b2418', d: '#5b3a22', special: '#141414'
+    }[kind] || '#2a1a14';
+    const special = kind === 'special';
+    const hairTop = special
+      ? `<path d="M23 34 Q25 18 40 18 Q55 18 57 34 Q50 27 40 27 Q30 27 23 34 Z" fill="${hair}"/>`
+      : kind === 'b'
+        ? `<path d="M23 36 Q23 16 40 16 Q57 16 57 36 L53 36 Q54 26 40 26 Q26 26 27 36 Z" fill="${hair}"/><path d="M23 35 Q20 48 24 52 L27 35 Z" fill="${hair}"/><path d="M57 35 Q60 48 56 52 L53 35 Z" fill="${hair}"/>`
+        : kind === 'c'
+          ? `<path d="M23 36 Q23 16 40 16 Q57 16 57 36 Q52 27 40 27 Q28 27 23 36 Z" fill="${hair}"/><circle cx="25" cy="31" r="5" fill="${hair}"/><circle cx="55" cy="31" r="5" fill="${hair}"/>`
+          : `<path d="M23 35 Q24 17 40 17 Q56 17 57 35 Q51 27 40 27 Q29 27 23 35 Z" fill="${hair}"/>`;
+
+    return `<g class="person-body">
+      <ellipse cx="40" cy="147" rx="25" ry="5" fill="#000" opacity=".22"/>
+      <rect x="26" y="105" width="12" height="35" rx="4" fill="#1d1d1d"/>
+      <rect x="42" y="105" width="12" height="35" rx="4" fill="#1d1d1d"/>
+      <rect x="22" y="137" width="19" height="8" rx="3" fill="#0a0a0a"/>
+      <rect x="40" y="137" width="19" height="8" rx="3" fill="#0a0a0a"/>
+      <path d="M22 66 Q40 58 58 66 L60 108 Q40 116 20 108 Z" fill="#161616" stroke="#070707" stroke-width="2"/>
+      <path d="M22 68 L27 68 L25 108 L20 108 Z" fill="#2f8f55"/>
+      <path d="M58 68 L53 68 L55 108 L60 108 Z" fill="#2f8f55"/>
+      <path d="M22 68 Q13 84 17 108 L24 108 Q20 86 28 72 Z" fill="#161616" stroke="#070707" stroke-width="1.5"/>
+      <path d="M58 68 Q67 84 63 108 L56 108 Q60 86 52 72 Z" fill="#161616" stroke="#070707" stroke-width="1.5"/>
+      <path d="M17 92 L23 92 L22 104 L16 104 Z" fill="#2f8f55"/>
+      <path d="M57 92 L63 92 L64 104 L58 104 Z" fill="#2f8f55"/>
+      <circle cx="20" cy="111" r="4" fill="${skin}"/>
+      <circle cx="60" cy="111" r="4" fill="${skin}"/>
+      <path d="M34 64 L40 74 L46 64" fill="none" stroke="#d9ffe4" stroke-width="2"/>
+      <rect x="35" y="54" width="10" height="12" fill="${skin}"/>
+      <circle cx="23" cy="42" r="3" fill="${skin}"/>
+      <circle cx="57" cy="42" r="3" fill="${skin}"/>
+      <ellipse cx="40" cy="40" rx="17" ry="19" fill="${skin}"/>
+      ${hairTop}
+      ${special
+        ? `<g fill="none" stroke="#0a0a0a" stroke-width="2">
+             <rect x="28" y="38" width="11" height="8" rx="2" fill="rgba(200,255,220,.16)"/>
+             <rect x="41" y="38" width="11" height="8" rx="2" fill="rgba(200,255,220,.16)"/>
+             <path d="M39 42 L41 42"/><path d="M28 41 L24 40"/><path d="M52 41 L56 40"/>
+           </g>
+           <path d="M36 50 Q40 52 44 50" fill="none" stroke="#7a3b2e" stroke-width="1.6" stroke-linecap="round"/>
+           <path d="M23 31 Q40 12 57 31 L57 34 L23 34 Z" fill="#111"/>
+           <path d="M20 33 L62 33 L68 39 L16 39 Z" fill="#2f8f55" stroke="#0a0a0a" stroke-width="1.5"/>
+           <rect x="34" y="19" width="12" height="5" rx="2" fill="#2f8f55" opacity=".8"/>
+           <g transform="translate(62 99)">
+             <rect x="0" y="0" width="12" height="10" rx="2" fill="#2f8f55" stroke="#0a0a0a" stroke-width="1.5"/>
+             <circle cx="4" cy="4" r="1.4" fill="#d9ffe4"/><circle cx="8" cy="4" r="1.4" fill="#d9ffe4"/>
+             <rect x="3" y="10" width="2" height="5" fill="#0a0a0a"/><rect x="7" y="10" width="2" height="5" fill="#0a0a0a"/>
+           </g>`
+        : `<circle cx="34" cy="41" r="1.7" fill="#1a1a1a"/><circle cx="46" cy="41" r="1.7" fill="#1a1a1a"/>
+           <path d="M36 50 Q40 52 44 50" fill="none" stroke="#7a3b2e" stroke-width="1.6" stroke-linecap="round"/>`}
+    </g>`;
+  }
+
+  function sceneCepk() {
+    return `<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="cepk-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3f9ee0"/><stop offset=".52" stop-color="#9bd8f5"/><stop offset="1" stop-color="#eaf7e4"/>
+        </linearGradient>
+        <linearGradient id="cepk-road" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#b8b1a3"/><stop offset="1" stop-color="#7a7368"/>
+        </linearGradient>
+        <linearGradient id="cepk-school" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5cae68"/><stop offset="1" stop-color="#1f5f38"/>
+        </linearGradient>
+        <linearGradient id="cepk-school-dark" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3f8f55"/><stop offset="1" stop-color="#16472b"/>
+        </linearGradient>
+        <linearGradient id="cepk-house" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#e8d6b0"/><stop offset="1" stop-color="#c8a77a"/>
+        </linearGradient>
+        <linearGradient id="cepk-roof" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#c46a4e"/><stop offset="1" stop-color="#7a3228"/>
+        </linearGradient>
+        <linearGradient id="cepk-window" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#d9f4ff"/><stop offset="1" stop-color="#8ec8e8"/>
+        </linearGradient>
+        <radialGradient id="cepk-sun">
+          <stop offset="0" stop-color="#fff9d6"/><stop offset="1" stop-color="#fff3b0" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="cepk-warm" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#fff6c8" stop-opacity=".22"/><stop offset="1" stop-color="#7ac8ff" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+
+      <rect width="800" height="360" fill="url(#cepk-sky)"/>
+      <circle cx="660" cy="62" r="78" fill="url(#cepk-sun)" opacity=".8"/>
+      <circle cx="660" cy="62" r="27" fill="#fff9d6"/>
+      <g fill="#fff" opacity=".92">
+        <ellipse cx="112" cy="62" rx="36" ry="9"/><ellipse cx="134" cy="53" rx="22" ry="13"/><ellipse cx="88" cy="54" rx="19" ry="10"/>
+        <ellipse cx="268" cy="44" rx="27" ry="7"/><ellipse cx="284" cy="38" rx="16" ry="9"/>
+        <ellipse cx="530" cy="82" rx="32" ry="8"/><ellipse cx="548" cy="74" rx="19" ry="11"/>
+        <ellipse cx="732" cy="108" rx="24" ry="6"/><ellipse cx="746" cy="102" rx="14" ry="8"/>
+      </g>
+      <g stroke="#3d5a66" stroke-width="2" fill="none" opacity=".42" stroke-linecap="round">
+        <path d="M220 106 q7 -6 14 0 q7 -6 14 0"/><path d="M470 120 q6 -5 12 0 q6 -5 12 0"/>
+        <path d="M600 44 q5 -4 10 0 q5 -4 10 0"/>
+      </g>
+
+      <path d="M0 214 L86 172 L166 214 L250 178 L336 214 L430 166 L520 214 L614 178 L706 214 L800 186 L800 252 L0 252 Z" fill="#9ccf9a" opacity=".72"/>
+      <path d="M0 226 L102 198 L196 226 L300 194 L400 226 L506 192 L606 226 L710 196 L800 222 L800 260 L0 260 Z" fill="#73b77a" opacity=".8"/>
+      <g fill="#6fa98a" opacity=".55">
+        <rect x="28" y="190" width="24" height="36"/><rect x="58" y="178" width="18" height="48"/><rect x="82" y="198" width="28" height="28"/>
+        <rect x="620" y="188" width="22" height="38"/><rect x="650" y="176" width="16" height="50"/><rect x="674" y="196" width="30" height="30"/>
+        <rect x="716" y="184" width="18" height="42"/><rect x="742" y="196" width="24" height="30"/>
+      </g>
+
+      <rect x="0" y="228" width="800" height="132" fill="#7fae6a"/>
+      <path d="M298 360 L502 360 L446 228 L354 228 Z" fill="url(#cepk-road)"/>
+      <path d="M0 360 L298 360 L354 228 L0 228 Z" fill="#cfc8b9"/>
+      <path d="M502 360 L800 360 L800 228 L446 228 Z" fill="#cfc8b9"/>
+      <path d="M298 360 L502 360 L446 228 L354 228 Z" fill="none" stroke="#f0eadc" stroke-width="3" opacity=".55"/>
+      <path d="M400 236 L400 360" stroke="#f4e9c8" stroke-width="4" stroke-dasharray="12 14" opacity=".6"/>
+      <g stroke="#b2aa9c" stroke-width="2" opacity=".7">
+        <path d="M0 250 L348 250"/><path d="M452 250 L800 250"/>
+        <path d="M0 286 L324 286"/><path d="M476 286 L800 286"/>
+      </g>
+
+      <!-- colégio CEPK-14 -->
+      <g>
+        <ellipse cx="400" cy="235" rx="146" ry="12" fill="#2f5d3a" opacity=".28"/>
+        <rect x="286" y="166" width="228" height="64" fill="url(#cepk-school)" stroke="#16472b" stroke-width="2"/>
+        <rect x="362" y="124" width="76" height="106" fill="url(#cepk-school)" stroke="#16472b" stroke-width="2"/>
+        <path d="M350 126 L400 92 L450 126 Z" fill="#2f7a45" stroke="#16472b" stroke-width="2"/>
+        <path d="M400 92 L400 78" stroke="#16472b" stroke-width="3"/>
+        <path d="M400 78 L424 84 L400 90 Z" fill="#d9ffe4" stroke="#2f7a45" stroke-width="1"/>
+        <rect x="292" y="160" width="216" height="9" fill="#2f7a45" stroke="#16472b" stroke-width="1"/>
+        <rect x="368" y="128" width="64" height="9" fill="#2f7a45" stroke="#16472b" stroke-width="1"/>
+        <g fill="url(#cepk-window)" stroke="#16472b" stroke-width="1.5">
+          <rect x="302" y="180" width="22" height="18"/><rect x="336" y="180" width="22" height="18"/>
+          <rect x="442" y="180" width="22" height="18"/><rect x="476" y="180" width="22" height="18"/>
+          <rect x="376" y="144" width="16" height="18"/><rect x="408" y="144" width="16" height="18"/>
+        </g>
+        <g stroke="#8fdcff" stroke-width="1" opacity=".75">
+          <path d="M307 180 L307 198"/><path d="M341 180 L341 198"/><path d="M447 180 L447 198"/><path d="M481 180 L481 198"/>
+          <path d="M380 144 L380 162"/><path d="M412 144 L412 162"/>
+        </g>
+        <rect x="368" y="160" width="64" height="18" rx="2" fill="#0d3a22" stroke="#8fe0a6" stroke-width="1.5"/>
+        <text x="400" y="173" text-anchor="middle" font-family="monospace" font-size="12" font-weight="700" letter-spacing="2" fill="#d9ffe4">CEPK</text>
+        <rect x="384" y="198" width="32" height="32" fill="#0d3a22" stroke="#16472b" stroke-width="2"/>
+        <rect x="388" y="202" width="11" height="24" fill="#bcecff" opacity=".75"/>
+        <rect x="401" y="202" width="11" height="24" fill="#bcecff" opacity=".75"/>
+        <g fill="#b9b1a0" stroke="#8d8576" stroke-width="1">
+          <rect x="374" y="228" width="52" height="4"/><rect x="368" y="232" width="64" height="4"/><rect x="362" y="236" width="76" height="4"/>
+        </g>
+      </g>
+
+      <!-- casas -->
+      <g>
+        <ellipse cx="110" cy="232" rx="62" ry="8" fill="#2f5d3a" opacity=".24"/>
+        <rect x="58" y="176" width="104" height="56" fill="url(#cepk-house)" stroke="#6a4a30" stroke-width="2"/>
+        <path d="M48 178 L110 136 L172 178 Z" fill="url(#cepk-roof)" stroke="#5a241c" stroke-width="2"/>
+        <rect x="148" y="146" width="10" height="24" fill="#8a5a44" stroke="#5a241c" stroke-width="1"/>
+        <g fill="url(#cepk-window)" stroke="#6a4a30" stroke-width="1.5">
+          <rect x="72" y="190" width="18" height="16"/><rect x="100" y="190" width="18" height="16"/>
+          <rect x="132" y="190" width="16" height="16"/>
+        </g>
+        <rect x="104" y="210" width="18" height="22" fill="#6a4a30"/>
+        <circle cx="118" cy="221" r="1.4" fill="#f0d9a0"/>
+      </g>
+      <g>
+        <ellipse cx="218" cy="232" rx="48" ry="7" fill="#2f5d3a" opacity=".22"/>
+        <rect x="180" y="192" width="78" height="40" fill="url(#cepk-house)" stroke="#6a4a30" stroke-width="2"/>
+        <path d="M172 194 L219 164 L266 194 Z" fill="url(#cepk-roof)" stroke="#5a241c" stroke-width="2"/>
+        <rect x="190" y="202" width="14" height="13" fill="url(#cepk-window)" stroke="#6a4a30" stroke-width="1.2"/>
+        <rect x="212" y="202" width="14" height="13" fill="url(#cepk-window)" stroke="#6a4a30" stroke-width="1.2"/>
+        <rect x="234" y="212" width="14" height="20" fill="#6a4a30"/>
+      </g>
+      <g>
+        <ellipse cx="654" cy="232" rx="64" ry="8" fill="#2f5d3a" opacity=".24"/>
+        <rect x="600" y="178" width="108" height="54" fill="url(#cepk-house)" stroke="#6a4a30" stroke-width="2"/>
+        <path d="M590 180 L654 138 L718 180 Z" fill="url(#cepk-roof)" stroke="#5a241c" stroke-width="2"/>
+        <rect x="700" y="150" width="10" height="22" fill="#8a5a44" stroke="#5a241c" stroke-width="1"/>
+        <g fill="url(#cepk-window)" stroke="#6a4a30" stroke-width="1.5">
+          <rect x="614" y="192" width="18" height="16"/><rect x="642" y="192" width="18" height="16"/>
+          <rect x="674" y="192" width="16" height="16"/>
+        </g>
+        <rect x="646" y="212" width="18" height="20" fill="#6a4a30"/>
+      </g>
+      <g>
+        <ellipse cx="760" cy="232" rx="40" ry="6" fill="#2f5d3a" opacity=".22"/>
+        <rect x="728" y="196" width="66" height="36" fill="url(#cepk-house)" stroke="#6a4a30" stroke-width="2"/>
+        <path d="M720 198 L761 172 L802 198 Z" fill="url(#cepk-roof)" stroke="#5a241c" stroke-width="2"/>
+        <rect x="738" y="206" width="13" height="12" fill="url(#cepk-window)" stroke="#6a4a30" stroke-width="1.2"/>
+        <rect x="760" y="216" width="14" height="16" fill="#6a4a30"/>
+      </g>
+
+      <!-- árvores e detalhes -->
+      <g>
+        <rect x="24" y="212" width="6" height="24" fill="#4a2f18"/><circle cx="27" cy="202" r="18" fill="#2f7a34"/><circle cx="17" cy="208" r="11" fill="#3f8f3e"/><circle cx="37" cy="208" r="11" fill="#2a6630"/>
+        <rect x="544" y="208" width="6" height="28" fill="#4a2f18"/><circle cx="547" cy="196" r="20" fill="#2f7a34"/><circle cx="535" cy="202" r="12" fill="#3f8f3e"/><circle cx="559" cy="202" r="12" fill="#2a6630"/>
+        <rect x="246" y="220" width="5" height="20" fill="#4a2f18"/><circle cx="248" cy="212" r="14" fill="#3f8f3e"/><circle cx="240" cy="217" r="9" fill="#2a6630"/>
+      </g>
+      <g fill="#f0d36a" opacity=".9">
+        <circle cx="86" cy="246" r="2"/><circle cx="166" cy="252" r="1.8"/><circle cx="278" cy="244" r="2"/>
+        <circle cx="520" cy="250" r="1.8"/><circle cx="592" cy="244" r="2"/><circle cx="708" cy="252" r="1.8"/>
+      </g>
+      <path d="M0 0 H800 V360 H0 Z" fill="url(#cepk-warm)" pointer-events="none"/>
+    </svg>`;
+  }
+
+  /* ---- CEPK-14: o portão que leva ao subsolo ---- */
+  function sceneCepkGate() {
+    return `<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="cepk-gdark" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#010604"/><stop offset=".6" stop-color="#06140d"/><stop offset="1" stop-color="#010302"/>
+        </linearGradient>
+        <linearGradient id="cepk-gwall" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#0a1b12"/><stop offset="1" stop-color="#020805"/>
+        </linearGradient>
+        <linearGradient id="cepk-gdoor" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#16452b"/><stop offset=".55" stop-color="#0b2a19"/><stop offset="1" stop-color="#04120b"/>
+        </linearGradient>
+        <radialGradient id="cepk-gglow">
+          <stop offset="0" stop-color="#7dff9a" stop-opacity=".55"/><stop offset=".55" stop-color="#2f9f5c" stop-opacity=".18"/><stop offset="1" stop-color="#2f9f5c" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="cepk-gfloor" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#0a2416"/><stop offset="1" stop-color="#010503"/>
+        </linearGradient>
+        <pattern id="cepk-hazard" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="18" height="18" fill="#0b1a12"/>
+          <rect width="9" height="18" fill="#c8a15a" opacity=".65"/>
+        </pattern>
+      </defs>
+
+      <rect width="800" height="360" fill="url(#cepk-gdark)"/>
+      <circle cx="400" cy="205" r="250" fill="url(#cepk-gglow)"/>
+      <path d="M0 270 L250 205 L550 205 L800 270 L800 360 L0 360 Z" fill="url(#cepk-gfloor)"/>
+      <g stroke="#2f8f55" stroke-width="1" opacity=".3">
+        <path d="M0 292 L276 238 L524 238 L800 292"/><path d="M0 318 L302 264 L498 264 L800 318"/>
+        <path d="M0 344 L326 290 L474 290 L800 344"/>
+      </g>
+      <g fill="#07120c" stroke="#173d28" stroke-width="2">
+        <path d="M0 0 L200 70 L200 290 L0 360 Z"/>
+        <path d="M800 0 L600 70 L600 290 L800 360 Z"/>
+      </g>
+      <g stroke="#2f8f55" stroke-width="3" opacity=".55" stroke-linecap="round">
+        <path d="M48 52 L170 100"/><path d="M752 52 L630 100"/>
+        <path d="M32 110 L170 152"/><path d="M768 110 L630 152"/>
+      </g>
+      <g fill="#7dff9a" opacity=".8">
+        <circle cx="52" cy="54" r="3"/><circle cx="748" cy="54" r="3"/>
+        <circle cx="36" cy="112" r="2.5"/><circle cx="764" cy="112" r="2.5"/>
+      </g>
+
+      <g>
+        <rect x="242" y="64" width="316" height="242" rx="8" fill="#06120b" stroke="#2f8f55" stroke-width="4"/>
+        <rect x="258" y="80" width="284" height="212" rx="4" fill="#020a06" stroke="#57d68b" stroke-width="2"/>
+        <rect x="250" y="58" width="300" height="18" fill="url(#cepk-hazard)" opacity=".8"/>
+        <rect x="250" y="292" width="300" height="12" fill="url(#cepk-hazard)" opacity=".8"/>
+
+        <g class="cepk-door-left">
+          <rect x="266" y="88" width="128" height="196" rx="2" fill="url(#cepk-gdoor)" stroke="#2f8f55" stroke-width="2"/>
+          <rect x="278" y="102" width="104" height="48" rx="2" fill="#0a2014" stroke="#2f8f55" stroke-width="1.5"/>
+          <rect x="278" y="166" width="104" height="48" rx="2" fill="#0a2014" stroke="#2f8f55" stroke-width="1.5"/>
+          <rect x="278" y="230" width="104" height="40" rx="2" fill="#0a2014" stroke="#2f8f55" stroke-width="1.5"/>
+          <g stroke="#57d68b" stroke-width="2" opacity=".7">
+            <path d="M290 118 L368 118"/><path d="M290 182 L368 182"/><path d="M290 246 L368 246"/>
+          </g>
+          <circle cx="382" cy="190" r="4" fill="#9dffb5"/>
+          <path d="M270 92 L390 92" stroke="#9dffb5" stroke-width="1.5" opacity=".55"/>
+        </g>
+        <g class="cepk-door-right">
+          <rect x="406" y="88" width="128" height="196" rx="2" fill="url(#cepk-gdoor)" stroke="#2f8f55" stroke-width="2"/>
+          <rect x="418" y="102" width="104" height="48" rx="2" fill="#0a2014" stroke="#2f8f55" stroke-width="1.5"/>
+          <rect x="418" y="166" width="104" height="48" rx="2" fill="#0a2014" stroke="#2f8f55" stroke-width="1.5"/>
+          <rect x="418" y="230" width="104" height="40" rx="2" fill="#0a2014" stroke="#2f8f55" stroke-width="1.5"/>
+          <g stroke="#57d68b" stroke-width="2" opacity=".7">
+            <path d="M430 118 L508 118"/><path d="M430 182 L508 182"/><path d="M430 246 L508 246"/>
+          </g>
+          <circle cx="418" cy="190" r="4" fill="#9dffb5"/>
+          <path d="M410 92 L530 92" stroke="#9dffb5" stroke-width="1.5" opacity=".55"/>
+        </g>
+        <rect x="394" y="86" width="12" height="200" fill="#020805" opacity=".9"/>
+        <rect x="330" y="26" width="140" height="32" rx="3" fill="#07160e" stroke="#57d68b" stroke-width="2"/>
+        <text x="400" y="49" text-anchor="middle" font-family="monospace" font-size="22" font-weight="700" letter-spacing="5" fill="#9dffb5">CEPK</text>
+        <g fill="#57d68b">
+          <circle cx="268" cy="76" r="3"/><circle cx="532" cy="76" r="3"/>
+          <circle cx="268" cy="304" r="3"/><circle cx="532" cy="304" r="3"/>
+        </g>
+      </g>
+
+      <g transform="translate(590 232)">
+        <rect x="0" y="0" width="54" height="72" rx="4" fill="#07120c" stroke="#2f8f55" stroke-width="2"/>
+        <rect x="7" y="8" width="40" height="24" rx="2" fill="#031008" stroke="#57d68b" stroke-width="1"/>
+        <path d="M12 18 L22 18 M12 24 L34 24" stroke="#57d68b" stroke-width="2" opacity=".7"/>
+        <circle cx="18" cy="50" r="5" fill="#9dffb5"/><rect x="30" y="44" width="14" height="12" rx="2" fill="#0b2a19" stroke="#57d68b"/>
+      </g>
+      <g fill="#9dffb5" opacity=".75">
+        <circle cx="400" cy="218" r="2"/><circle cx="380" cy="238" r="1.4"/><circle cx="424" cy="248" r="1.6"/>
+        <circle cx="360" cy="264" r="1.2"/><circle cx="446" cy="270" r="1.4"/>
+      </g>
+      <path d="M0 0 H800 V360 H0 Z" fill="none" stroke="#000" stroke-width="40" opacity=".35"/>
+    </svg>`;
+  }
+
   /* ---- LUST: metrópole neon roxa/magenta ---- */
   function sceneLust() {
     return `<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
@@ -2973,6 +3276,7 @@ BM.sprites = (function () {
       return fn(accent);
     },
     v1, v2, v1Svg, v2Svg, fallbackV1, fallbackV2, gabriel, motor, mao, portrait, arena, layerArt, actArt,
+    cepkTown: sceneCepk, cepkGate: sceneCepkGate, cepkStudent,
     INIMIGOS,
     armSprite, legSprite, chassisSprite, itemSprite, scrapSprite, coreSprite
   };

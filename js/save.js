@@ -9,6 +9,8 @@ BM.save = (function () {
   const D = BM.DATA;
   const KEY_BASE = 'bloodmach_save_v1';
   const KEY_LAST = 'bloodmach_last_diff';
+  const KEY_LORE = 'bloodmach_lore_seen_v1';
+  const KEY_NAME = 'bloodmach_player_name';
   const DIFFS = ['lenient', 'standard', 'violent'];
 
   let data = null;
@@ -132,6 +134,36 @@ BM.save = (function () {
   }
 
   function hasSave(diff) { return !!readSave(diff || currentDiff); }
+
+  function loreSeen() {
+    try { return localStorage.getItem(KEY_LORE) === '1'; } catch (e) { return false; }
+  }
+
+  function markLoreSeen() {
+    try { localStorage.setItem(KEY_LORE, '1'); } catch (e) { /* ignora */ }
+  }
+
+  function playerName() {
+    try { return (localStorage.getItem(KEY_NAME) || '').trim(); } catch (e) { return ''; }
+  }
+
+  function setPlayerName(name) {
+    try { localStorage.setItem(KEY_NAME, String(name || '').trim().slice(0, 18)); } catch (e) { /* ignora */ }
+  }
+
+  /** Apaga todos os dados do jogo, como se o jogador nunca tivesse aberto o BLOODMACH. */
+  function wipeAll() {
+    try {
+      const keys = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.indexOf('bloodmach_') === 0) keys.push(k);
+      }
+      keys.forEach(function (k) { localStorage.removeItem(k); });
+    } catch (e) { /* ignora */ }
+    data = null;
+    currentDiff = 'standard';
+  }
 
   function wipe(diff) {
     const d = diff || currentDiff;
@@ -383,7 +415,7 @@ BM.save = (function () {
   }
 
   return {
-    load, persist, newGame, hasSave, wipe, get, onChange,
+    load, persist, newGame, hasSave, loreSeen, markLoreSeen, playerName, setPlayerName, wipeAll, wipe, get, onChange,
     readSave, saveInfo, setDifficulty, currentDifficulty, difficulties,
     ownedArm, ownedLeg, ownedChassis, armById, moveById, armOfMove,
     equippedArms, hasPassive, availableArms, loadoutMoves,

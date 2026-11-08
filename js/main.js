@@ -16,11 +16,12 @@ BM.main = (function () {
   function boot() {
     BM.save.load();
     BM.save.applySettings();
-    BM.ui.title();
+    if (BM.save.loreSeen()) BM.ui.title();
+    else BM.ui.prologueMenu();
     document.addEventListener('keydown', ev => {
       if (ev.key === 'Escape') {
         const c = BM.ui.current;
-        if (c === 'options' || c === 'credits') { BM.audio.play('cancel'); backFromOptions(); }
+        if (c === 'options' || c === 'credits') { BM.audio.play('cancel'); BM.ui.backFromAux(); }
       }
     });
   }

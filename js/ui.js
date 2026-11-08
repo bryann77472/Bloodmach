@@ -12,8 +12,25 @@ BM.ui = (function () {
 
   let current = 'title';
   let navStack = [];   // pilha de telas para o botão Voltar
+  let auxReturn = null; // retorno de Opções/Créditos (ex.: prólogo)
   let atoSel = null;   // ato escolhido no lobby
   let dialogueQueue = null;
+
+  const CEPK_CHATTER = [
+    'Olá!',
+    'Vou me esforçar pras aulas!',
+    'Tirei 10!',
+    'Eu gosto de estudar programação!',
+    'Queria um 10...',
+    'Como vai?',
+    'Eu adoro o prof César!',
+    'Que sono!',
+    'Prof César é o cara!',
+    'A prova de hoje foi osso!',
+    'Cadê o intervalo?'
+  ];
+  let cepkChatterBag = [];
+  let cepkChatterLast = -1;
 
   /* ---------------- helpers ---------------- */
   const el = sel => app().querySelector(sel);
@@ -42,6 +59,96 @@ BM.ui = (function () {
     else lobby();
   }
 
+  function backFromAux() {
+    const target = auxReturn;
+    auxReturn = null;
+    if (target === 'prologue') prologueMenu();
+    else BM.main.backFromOptions();
+  }
+
+  function nextCepkChatter() {
+    if (!cepkChatterBag.length) {
+      cepkChatterBag = CEPK_CHATTER.map((_, i) => i);
+      for (let i = cepkChatterBag.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = cepkChatterBag[i];
+        cepkChatterBag[i] = cepkChatterBag[j];
+        cepkChatterBag[j] = tmp;
+      }
+      // Evita repetir a última frase na virada de uma nova rodada.
+      if (cepkChatterBag[0] === cepkChatterLast && cepkChatterBag.length > 1) {
+        const j = 1 + Math.floor(Math.random() * (cepkChatterBag.length - 1));
+        const tmp = cepkChatterBag[0];
+        cepkChatterBag[0] = cepkChatterBag[j];
+        cepkChatterBag[j] = tmp;
+      }
+    }
+    const idx = cepkChatterBag.shift();
+    cepkChatterLast = idx;
+    return CEPK_CHATTER[idx];
+  }
+
+  function resetCepkChatter() {
+    cepkChatterBag = [];
+    cepkChatterLast = -1;
+  }
+
+  function askPlayerName(onDone) {
+    BM.audio.play('select');
+    const wrap = document.createElement('div');
+    wrap.className = 'name-modal';
+    wrap.innerHTML = `
+      <form class="panel name-card" autocomplete="off">
+        <div class="panel-head"><span>IDENTIFICAÇÃO DO OPERADOR</span><span>CEPK-14</span></div>
+        <p class="dim name-intro">O sistema precisa registrar o nome de quem vai descer até o motor.</p>
+        <label class="name-label">Nome do jogador
+          <input id="player-name" maxlength="18" placeholder="Digite seu nome" autocomplete="off" spellcheck="false">
+        </label>
+        <div class="name-hint">Até 18 caracteres.</div>
+        <div class="modal-actions">
+          <button type="button" class="btn" data-a="cancel">Voltar</button>
+          <button type="submit" class="btn primary">Confirmar</button>
+        </div>
+      </form>`;
+    document.body.appendChild(wrap);
+    const form = wrap.querySelector('form');
+    const input = wrap.querySelector('#player-name');
+    let done = false;
+
+    function close(cancelled) {
+      if (done) return;
+      done = true;
+      document.removeEventListener('keydown', onKey);
+      wrap.remove();
+      if (cancelled) BM.audio.play('cancel');
+    }
+    function onKey(ev) {
+      if (ev.key === 'Escape') { ev.preventDefault(); close(true); }
+    }
+    function submit() {
+      const name = input.value.replace(/\s+/g, ' ').trim();
+      if (!name) {
+        input.focus();
+        wrap.classList.remove('shake');
+        void wrap.offsetWidth;
+        wrap.classList.add('shake');
+        return;
+      }
+      BM.save.setPlayerName(name);
+      BM.audio.play('confirm');
+      done = true;
+      document.removeEventListener('keydown', onKey);
+      wrap.remove();
+      if (onDone) onDone(name);
+    }
+
+    form.addEventListener('submit', ev => { ev.preventDefault(); submit(); });
+    wrap.querySelector('[data-a="cancel"]').addEventListener('click', () => close(true));
+    wrap.addEventListener('click', ev => { if (ev.target === wrap) close(true); });
+    document.addEventListener('keydown', onKey);
+    setTimeout(() => input.focus(), 30);
+  }
+
   /* =========================================================
      TÍTULO
      ========================================================= */
@@ -55,6 +162,7 @@ BM.ui = (function () {
   function title() {
     current = 'title';
     navStack = [];
+    auxReturn = null;
     BM.audio.playMusic('titulo');
     const has = BM.save.hasSave();
     const d = has ? BM.save.get() : null;
@@ -90,6 +198,276 @@ BM.ui = (function () {
       if (a === 'options') options();
       if (a === 'credits') credits();
     });
+  }
+
+  /* =========================================================
+     PRÓLOGO — CEPK-14
+     Mostrado apenas no primeiro boot. Depois da cena, o jogador
+     segue para o título normal e para a escolha de dificuldade.
+     ========================================================= */
+  function prologueMenu() {
+    current = 'prologueMenu';
+    navStack = [];
+    auxReturn = null;
+    BM.audio.playMusic('titulo');
+    const savedName = BM.save.playerName();
+    const cepkPeople = [
+      { id: 'a', sprite: 'a', x: 390, y: 245, scale: .42 },
+      { id: 'b', sprite: 'b', x: 422, y: 245, scale: .42 },
+      { id: 'special', sprite: 'special', x: 454, y: 245, scale: .46 },
+      { id: 'c', sprite: 'c', x: 486, y: 245, scale: .42 },
+      { id: 'd', sprite: 'd', x: 518, y: 245, scale: .42 },
+      { id: 'e', sprite: 'a', x: 345, y: 268, scale: .46 },
+      { id: 'f', sprite: 'b', x: 365, y: 232, scale: .34 },
+      { id: 'g', sprite: 'c', x: 550, y: 236, scale: .34 },
+      { id: 'h', sprite: 'd', x: 585, y: 256, scale: .42 },
+      { id: 'i', sprite: 'a', x: 620, y: 242, scale: .36 },
+      { id: 'j', sprite: 'b', x: 655, y: 264, scale: .44 },
+      { id: 'k', sprite: 'c', x: 675, y: 248, scale: .38 }
+    ];
+    const peopleMarkup = cepkPeople.map(p => {
+      const tx = (p.x - 40 * p.scale).toFixed(2);
+      const ty = (p.y - 150 * p.scale).toFixed(2);
+      const label = p.id === 'special'
+        ? 'Conversar com o aluno de óculos e boné'
+        : 'Conversar com um aluno do CEPK';
+      return `<g class="prologue-person" data-person="${p.id}" tabindex="0" focusable="true" role="button" aria-label="${label}" transform="translate(${tx} ${ty}) scale(${p.scale})">
+        <title>${label}</title>
+        ${BM.sprites.cepkStudent(p.sprite)}
+      </g>`;
+    }).join('');
+    mount(`
+      <div class="screen prologue-screen">
+        <div class="prologue-bg">${BM.sprites.cepkTown()}</div>
+        <div class="prologue-shade"></div>
+        <svg class="prologue-people" viewBox="0 0 800 360" preserveAspectRatio="xMidYMid slice" aria-label="Alunos do CEPK">
+          ${peopleMarkup}
+        </svg>
+        <div class="prologue-card">
+          <div class="prologue-kicker">COLÉGIO CEPK-14 // VEYRA</div>
+          <h1 class="prologue-title">BLOODMACH</h1>
+          <div class="prologue-sub">O ÚLTIMO ABRIGO</div>
+          <div class="prologue-menu">
+            <button class="btn primary" data-a="play">Jogar</button>
+            <button class="btn" data-a="credits">Créditos</button>
+            <button class="btn" data-a="options">Config</button>
+          </div>
+          ${savedName ? `<div class="prologue-player">OPERADOR: ${esc(savedName)}</div>` : ''}
+          <div class="prologue-foot">DIA 04.382° DE QUARENTENA · A CIDADE ESTÁ PERDIDA</div>
+        </div>
+      </div>`);
+    els('.prologue-person').forEach(node => {
+      const kind = node.getAttribute('data-person');
+      const talk = () => {
+        BM.audio.play('select');
+        if (kind === 'special') {
+          dialogue([
+            { who: 'ALUNO DO CEPK', text: 'Ei, construí um robô maneiro, ele se chama V1.' },
+            { who: 'ALUNO DO CEPK', text: 'Quer ver?' }
+          ], null, { className: 'lore-dialogue-school' });
+        } else {
+          dialogue([
+            { who: 'ALUNO DO CEPK', text: nextCepkChatter() }
+          ], null, { className: 'lore-dialogue-school' });
+        }
+      };
+      node.addEventListener('click', talk);
+      node.addEventListener('keydown', ev => {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); talk(); }
+      });
+    });
+    on('.prologue-menu .btn', 'click', ev => {
+      const a = ev.currentTarget.getAttribute('data-a');
+      BM.audio.play('select');
+      if (a === 'play') {
+        BM.audio.play('confirm');
+        const start = () => {
+          if (BM.save.loreSeen()) { title(); return; }
+          loreIntro(function () {
+            BM.save.markLoreSeen();
+            title();
+          });
+        };
+        if (BM.save.playerName()) start();
+        else askPlayerName(start);
+      }
+      if (a === 'credits') credits('prologue');
+      if (a === 'options') options('prologue');
+    });
+  }
+
+  function loreIntro(onDone) {
+    current = 'loreIntro';
+    navStack = [];
+    BM.audio.stopMusic();
+    const playerName = BM.save.playerName() || 'Operador';
+    const safeName = esc(playerName);
+
+    let finished = false;
+    function finish() {
+      if (finished) return;
+      finished = true;
+      if (onDone) onDone();
+    }
+
+    /* ---- 1. transferência de consciência ---- */
+    mount(`
+      <div class="screen lore-screen" id="lore-screen">
+        <div class="lore-black"></div>
+        <div class="lore-transfer" id="lore-transfer">
+          <div class="lore-kicker">TRANSFERÊNCIA DE CONSCIÊNCIA</div>
+          <div class="lore-transfer-title">V1 // PROTÓTIPO DE SÉRIE 01</div>
+          <div class="lore-transfer-text">A consciência de ${safeName} foi movida para o V1.</div>
+        </div>
+        <div class="lore-advance" id="lore-advance">CLIQUE / ESPAÇO PARA CONTINUAR</div>
+      </div>`);
+    const first = el('#lore-screen');
+    function firstKey(ev) {
+      if (ev.key === ' ' || ev.key === 'Enter') { ev.preventDefault(); startPeople(); }
+    }
+    function cleanupFirst() {
+      first.removeEventListener('click', startPeople);
+      document.removeEventListener('keydown', firstKey);
+    }
+    function startPeople() {
+      cleanupFirst();
+      const tr = el('#lore-transfer');
+      if (tr) tr.classList.add('out');
+      const adv = el('#lore-advance');
+      if (adv) adv.textContent = '';
+      BM.audio.play('select');
+      dialogue([
+        { who: 'TÉCNICA DO CEPK', text: 'Ele vai ficar bem?' },
+        { who: 'ENGENHEIRO DO CEPK', text: 'O V1 é a única unidade compatível. Se alguém pode descer até o motor, é ele.' },
+        { who: 'TÉCNICA DO CEPK', text: 'A carnemunha já tomou os distritos externos. CEPK-14 é o último abrigo.' },
+        { who: 'ENGENHEIRO DO CEPK', text: 'E se ele não voltar, não sobra mais ninguém.' },
+        { who: 'TÉCNICA DO CEPK', text: 'Ele está ouvindo?' },
+        { who: 'ENGENHEIRO DO CEPK', text: 'Ainda não. A consciência acabou de entrar.' }
+      ], showTerminal, { className: 'lore-dialogue-school' });
+    }
+    first.addEventListener('click', startPeople);
+    document.addEventListener('keydown', firstKey);
+
+    /* ---- 2. terminal CEPK-14 ---- */
+    function showTerminal() {
+      mount(`
+        <div class="screen lore-terminal-screen" id="lore-screen">
+          <div class="lore-scan"></div>
+          <div class="term-window">
+            <div class="term-head">
+              <span><i class="term-dot"></i> TERMINAL CEPK-14</span>
+              <span class="term-live">ONLINE</span>
+            </div>
+            <div class="term-lines" id="term-lines">
+              <div class="term-line"><span class="term-prompt">&gt;</span>DATA: 04.382° DIA DE QUARENTENA</div>
+              <div class="term-line"><span class="term-prompt">&gt;</span>PROTOCOLO: EVASÃO ZERO</div>
+              <div class="term-line"><span class="term-prompt">&gt;</span>UNIDADE DESIGNADA: V1 - PROTÓTIPO DE SÉRIE 01</div>
+              <div class="term-line"><span class="term-prompt">&gt;</span>AUTORIZAÇÃO PRA DESCER: <b class="term-ok">CONCEDIDA</b></div>
+              <div class="term-line"><span class="term-prompt">&gt;</span>AUTORIZAÇÃO PRA SUBIR: <b class="term-warn">EM ANÁLISE</b></div>
+            </div>
+            <div class="term-cursor">█</div>
+            <div class="term-hint" id="term-hint">CLIQUE / ESPAÇO PARA CONTINUAR</div>
+          </div>
+        </div>`);
+      BM.audio.play('select');
+      const screen = el('#lore-screen');
+      const lines = els('#term-lines .term-line');
+      const hint = el('#term-hint');
+      const timers = [];
+      let ready = false;
+      let advanced = false;
+
+      lines.forEach((n, i) => {
+        timers.push(setTimeout(() => n.classList.add('on'), 260 + i * 300));
+      });
+      timers.push(setTimeout(() => {
+        ready = true;
+        if (hint) hint.classList.add('on');
+        BM.audio.play('select');
+      }, 260 + lines.length * 300));
+
+      function revealAll() {
+        lines.forEach(n => n.classList.add('on'));
+        ready = true;
+        if (hint) hint.classList.add('on');
+      }
+      function cleanup() {
+        screen.removeEventListener('click', go);
+        document.removeEventListener('keydown', termKey);
+        timers.forEach(clearTimeout);
+      }
+      function termKey(ev) {
+        if (ev.key === ' ' || ev.key === 'Enter') { ev.preventDefault(); go(); }
+      }
+      function go() {
+        if (advanced) return;
+        if (!ready) { revealAll(); return; }
+        advanced = true;
+        cleanup();
+        if (hint) hint.classList.remove('on');
+        dialogue([
+          { who: 'MOTOR', text: 'A carnemunha tomou a superfície. O motor que a alimenta pulsa lá embaixo.', portrait: 'motor' },
+          { who: 'MOTOR', text: 'Sua autorização para subir ainda está em análise. Não morra antes da resposta.', portrait: 'motor' },
+          { who: 'MOTOR', text: `${playerName}... você está ouvindo?`, portrait: 'motor' },
+          { who: 'V1', text: '[ ... ]', portrait: 'v1' }
+        ], function () {
+          const term = el('#lore-screen');
+          if (term) term.classList.add('out');
+          setTimeout(showGate, 420);
+        }, { className: 'lore-dialogue-terminal' });
+      }
+      screen.addEventListener('click', go);
+      document.addEventListener('keydown', termKey);
+    }
+
+    /* ---- 3. o portão CEPK ---- */
+    function showGate() {
+      mount(`
+        <div class="screen lore-gate-screen" id="lore-screen">
+          <div class="lore-gate-bg">${BM.sprites.cepkGate()}</div>
+          <div class="lore-gate-vignette"></div>
+          <div class="lore-gate-flash"></div>
+          <div class="lore-gate-hint" id="lore-gate-hint">CLIQUE NO PORTÃO PARA ATRAVESSAR</div>
+        </div>`);
+      BM.audio.play('start');
+      const screen = el('#lore-screen');
+      let opened = false;
+      function cleanup() {
+        screen.removeEventListener('click', go);
+        document.removeEventListener('keydown', gateKey);
+      }
+      function gateKey(ev) {
+        if (ev.key === ' ' || ev.key === 'Enter') { ev.preventDefault(); go(); }
+      }
+      function go() {
+        if (opened) return;
+        opened = true;
+        cleanup();
+        screen.classList.add('abrindo');
+        const hint = el('#lore-gate-hint');
+        if (hint) hint.textContent = 'O PORTÃO CEDE.';
+        BM.audio.play('heavy');
+        setTimeout(showChaos, 1500);
+      }
+      screen.addEventListener('click', go);
+      document.addEventListener('keydown', gateKey);
+    }
+
+    /* ---- 4. o caos ---- */
+    function showChaos() {
+      BM.audio.play('warn');
+      BM.audio.play('shutdown');
+      mount(`
+        <div class="screen lore-chaos" id="lore-screen">
+          <div class="lore-chaos-bars"></div>
+          <div class="lore-chaos-inner">
+            <div class="lore-chaos-kicker">CEPK-14 // PROTOCOLO EVASÃO ZERO</div>
+            <div class="lore-chaos-title">A QUARENTENA FALHOU</div>
+            <div class="lore-chaos-sub">O MOTOR DESPERTOU</div>
+          </div>
+        </div>`);
+      setTimeout(finish, 1800);
+    }
   }
 
   /* =========================================================
@@ -686,9 +1064,10 @@ BM.ui = (function () {
   /* =========================================================
      DIÁLOGO
      ========================================================= */
-  function dialogue(lines, onDone) {
+  function dialogue(lines, onDone, opts) {
+    opts = opts || {};
     const box = document.createElement('div');
-    box.className = 'dialogue';
+    box.className = 'dialogue' + (opts.className ? ' ' + opts.className : '');
     box.innerHTML = `
       <div class="dialogue-box">
         <div class="dialogue-portraits" id="dl-portraits"></div>
@@ -1709,13 +2088,16 @@ BM.ui = (function () {
     });
   }
 
-  function options() {
+  function options(returnTo) {
     current = 'options';
+    auxReturn = returnTo || null;
     const s = BM.save.get().settings;
+    const fromPrologue = returnTo === 'prologue';
+    const playerName = BM.save.playerName();
     mount(`
       <div class="screen options">
         <div class="panel options-card">
-          <div class="panel-head"><span>Opções</span><span>BLOODMACH</span></div>
+          <div class="panel-head"><span>${fromPrologue ? 'Config' : 'Opções'}</span><span>${fromPrologue ? 'CEPK-14' : 'BLOODMACH'}</span></div>
           <div class="opt-row">
             <label>Dificuldade<span class="hint">Cada dificuldade tem o seu próprio save. Troque de save na tela de título.</span></label>
             <span class="badge hot" id="opt-diff">${(D.DIFFICULTIES[s.dificuldade] || D.DIFFICULTIES.standard).label || (D.DIFFICULTIES[s.dificuldade] || D.DIFFICULTIES.standard).name}</span>
@@ -1744,6 +2126,14 @@ BM.ui = (function () {
             <label>Texto rápido<span class="hint">Acelera os diálogos.</span></label>
             <div class="switch ${s.textoRápido ? 'on' : ''}" id="opt-texto"><i></i></div>
           </div>
+          ${fromPrologue ? '' : `
+          <div class="opt-row opt-data-row">
+            <label>Dados do jogador<span class="hint">${playerName ? esc(playerName) : 'Nenhum nome registrado.'}</span></label>
+            <div class="data-actions">
+              <button class="btn small" data-a="start-over">Voltar ao início</button>
+              <button class="btn small danger" data-a="wipe-all">Apagar dados</button>
+            </div>
+          </div>`}
           <div class="modal-actions"><button class="btn" data-a="back">Voltar</button></div>
         </div>
       </div>`);
@@ -1769,20 +2159,46 @@ BM.ui = (function () {
       const v = ev.target.value / 100;
       BM.save.setSetting('musica', v); BM.save.applySettings();
     });
-    on('[data-a="back"]', 'click', () => { BM.audio.play('cancel'); BM.main.backFromOptions(); });
+    on('[data-a="back"]', 'click', () => {
+      BM.audio.play('cancel');
+      backFromAux();
+    });
+    if (!fromPrologue) {
+      on('[data-a="start-over"]', 'click', () => {
+        BM.audio.play('confirm');
+        prologueMenu();
+      });
+      on('[data-a="wipe-all"]', 'click', () => {
+        BM.audio.play('warn');
+        modal('APAGAR DADOS', 'Todos os saves, o nome do jogador e o progresso do prólogo serão apagados. Isso não pode ser desfeito.', [
+          { texto: 'CANCELAR' },
+          {
+            texto: 'APAGAR TUDO', classe: 'danger', acao: function () {
+              BM.save.wipeAll();
+              BM.save.applySettings();
+              resetCepkChatter();
+              BM.audio.play('cancel');
+              prologueMenu();
+            }
+          }
+        ]);
+      });
+    }
   }
 
   /* =========================================================
      CRÉDITOS / FINAL
      ========================================================= */
-  function credits() {
+  function credits(returnTo) {
     current = 'credits';
+    auxReturn = returnTo || null;
+    const fromPrologue = returnTo === 'prologue';
     BM.audio.playMusic('creditos');
     mount(`
       <div class="screen credits">
         <div class="credits-inner">
           <h2>BLOODMACH</h2>
-          <div class="credit-line">GLUTTONY // HERESY</div>
+          <div class="credit-line">${fromPrologue ? 'CEPK-14 // O ÚLTIMO ABRIGO' : 'GLUTTONY // HERESY'}</div>
           <div class="sep"></div>
           <p>Jogo de batalhas por turnos inspirado em Ultrakill e Pokémon.</p>
           <p>V1 • V2 • Gabriel — nomes e personagens de Ultrakill, de <b>Arsenic Games</b>.</p>
@@ -1794,7 +2210,10 @@ BM.ui = (function () {
           </div>
         </div>
       </div>`);
-    on('[data-a="back"]', 'click', () => { BM.audio.play('cancel'); BM.main.backFromOptions(); });
+    on('[data-a="back"]', 'click', () => {
+      BM.audio.play('cancel');
+      backFromAux();
+    });
   }
 
   function ending() {
@@ -1903,8 +2322,9 @@ BM.ui = (function () {
 
   /* ---------------- export ---------------- */
   return {
-    mount, el, els, toast,
+    mount, el, els, toast, backFromAux,
     get current() { return current; },
+    prologueMenu, loreIntro,
     title, shop, loadout, lobby, layerMap, dialogue, battle, battleUpdate,
     battleLog, floatText, shake, flashTurn, promptParry, result, layerResult, gabrielBleed, v2Death, maoFall,
     heresyGate, blackScreen, heresyGabrielDeath,

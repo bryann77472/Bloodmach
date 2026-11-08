@@ -128,6 +128,37 @@ mapa da camada e no card da Oficina:
   desistir, tudo se perde; se terminar a camada, o total é entregue com o rank.
 - **Final:** depois de Gabriel, V1 pode **se desligar**. Um final escolhido, não uma fuga.
 
+### Prólogo CEPK-14 (primeiro boot)
+Na primeira vez que o jogo abre, antes do título normal, aparece um menu próprio do
+**Colégio CEPK-14**, o último abrigo de Veyra, sobre um cenário ensolarado com casas,
+rua e o colégio verde. Esse menu tem **Jogar**, **Créditos** e **Config**; Config e
+Créditos voltam para o próprio prólogo.
+
+Pelo cenário ficam **12 alunos** de uniforme preto com faixas verdes nas laterais,
+espalhados em frente ao colégio, na calçada e perto das casas. Todos são clicáveis: os
+alunos comuns falam uma das 11 frases de intervalo em ordem aleatória, sem repetir até
+todas serem ditas (depois a rodada reinicia). No meio do grupo, o aluno de óculos e boné
+preto/verde conta que construiu um robô maneiro chamado **V1** e pergunta **“Quer ver?”**.
+
+Ao clicar em **Jogar**, o sistema pede o **nome do jogador** (até 18 caracteres), salvo
+em `bloodmach_player_name`; o nome aparece na transferência de consciência e na fala do
+**MOTOR**. Depois começa a cutscene: tela preta, vozes da **Técnica do CEPK** e do
+**Engenheiro do CEPK**, o terminal verde `TERMINAL CEPK-14` com o protocolo **EVASÃO ZERO**,
+a conversa com o **MOTOR** e a resposta de V1 (`[ ... ]`). Depois o terminal some, o
+jogador abre os olhos diante do portão verde **CEPK** e, ao atravessá-lo, o caos começa.
+
+A cena termina no **título normal do BLOODMACH**; a partir daí o fluxo continua como
+antes: **Jogar** → escolha de dificuldade/save → introdução existente → jogo. O prólogo
+é controlado pela chave `bloodmach_lore_seen_v1` no `localStorage` e só é marcado como
+visto depois que a cutscene inteira termina, então recarregar no meio dela o mostra de novo.
+Se o jogador voltar ao início com os dados preservados, **Jogar** leva direto ao título
+normal, sem repetir a cutscene.
+
+Nas **Opções** do título normal também ficam duas ações de dados: **Voltar ao início**
+(retorna ao menu do CEPK preservando saves, nome e prólogo visto) e **Apagar dados**
+(remove todas as chaves `bloodmach_*`, apaga saves e nome, e volta como se o jogo nunca
+tivesse sido aberto).
+
 ### Dificuldade e saves
 Cada dificuldade tem o **seu próprio save** (Lenient, Standard e Violent são três
 progressos independentes). Ao clicar em **Jogar** na tela de título você escolhe em
@@ -352,4 +383,4 @@ arquivos MP3. Nenhuma dependência, nenhum build.
 - Projeto de fã. V1, V2, Gabriel e as camadas vêm de *Ultrakill* (Arsenic Games).
   Sem fins lucrativos.
 - Dificuldade, volume, tremor de tela e **assistência de parry** ficam em *Opções*.
-- O save é apagado com o botão *Apagar Save* no lobby.
+- O save pode ser apagado pelo botão *Apagar Save* no lobby ou por *Apagar dados* nas Opções do título.
