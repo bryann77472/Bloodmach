@@ -356,6 +356,18 @@ Ascensão** em Greed. As **Pernas de Fibra** e a **Carcaça de Fibra** também e
 Os itens de **núcleo** (✷) só podem ser comprados com os núcleos ganhos ao concluir
 uma camada — e ainda exigem nível mínimo.
 
+## Interface moderna
+
+O jogo abre por padrão com uma **interface moderna**: tipografia nova, painéis em vidro
+(glass), cantos suaves, brilho vermelho, microanimações e uma luz sutil que acompanha o
+ponteiro. **O layout é exatamente o mesmo** — título, oficina, mapa, loja, loadout,
+batalha, diálogos e resultados continuam nas mesmas posições e com os mesmos fluxos.
+
+Em **Opções → Interface moderna** dá para desligar o visual novo e voltar ao **modo
+clássico** a qualquer momento; a escolha fica salva junto das preferências. A interface
+moderna respeita `prefers-reduced-motion` (desliga animações e ripple) e o ripple só
+aparece nos controles clicáveis.
+
 ## Estrutura
 
 ```
@@ -363,15 +375,21 @@ index.html
 assets/
   music/      → faixas .mp3
   sprites/    → v1.webp / v2.webp (referência da arte original)
-css/    base.css  title.css  battle.css  shop.css
+css/    base.css  title.css  battle.css  shop.css  modern.css
 js/     data.js     braços, pernas, carcaças, itens, inimigos, camadas, história, rank
         sprites.js  V1/V2 (arte real) + inimigos e cenários vetoriais
         audio.js    efeitos WebAudio + música MP3 com crossfade
         save.js     saves por dificuldade, inventário, progressão e preferências
         battle.js   combate, parry, reflexo, esquiva, itens e IA inimiga
         ui.js       todas as telas
+        ui-modern.js  microinterações da interface (luz do ponteiro e ripple)
         main.js     fluxo do jogo
 ```
+
+`css/modern.css` só age quando `<html data-ui="modern">`. Ao escolher o modo clássico,
+o atributo vira `classic` e nenhuma regra moderna é aplicada, então o visual original
+continua exatamente como era.
+
 
 Todo o jogo é **vetorial**: V1, V2, Gabriel, inimigos, cenários e os itens da
 loja são desenhados em SVG no mesmo estilo (os PNGs do V1/V2 serviram de
@@ -386,5 +404,5 @@ arquivos MP3. Nenhuma dependência, nenhum build.
 
 - Projeto de fã. V1, V2, Gabriel e as camadas vêm de *Ultrakill* (Arsenic Games).
   Sem fins lucrativos.
-- Dificuldade, volume, tremor de tela e **assistência de parry** ficam em *Opções*.
+- Dificuldade, volume, tremor de tela, **interface moderna/clássica** e **assistência de parry** ficam em *Opções*.
 - O save pode ser apagado pelo botão *Apagar Save* no lobby ou por *Apagar dados* nas Opções do título.

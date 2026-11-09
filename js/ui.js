@@ -2138,6 +2138,10 @@ BM.ui = (function () {
             <label>Texto rápido<span class="hint">Acelera os diálogos.</span></label>
             <div class="switch ${s.textoRápido ? 'on' : ''}" id="opt-texto"><i></i></div>
           </div>
+          <div class="opt-row">
+            <label>Interface moderna<span class="hint">Visual em vidro, tipografia nova e microanimações. Desligue para voltar ao visual clássico.</span></label>
+            <div class="switch ${s.uiModern !== false ? 'on' : ''}" id="opt-ui"><i></i></div>
+          </div>
           ${fromPrologue ? '' : `
           <div class="opt-row opt-data-row">
             <label>Dados do jogador<span class="hint">${playerName ? esc(playerName) : 'Nenhum nome registrado.'}</span></label>
@@ -2163,6 +2167,7 @@ BM.ui = (function () {
     bindSwitch('#opt-tremor', 'tremor');
     bindSwitch('#opt-assist', 'parryAssist');
     bindSwitch('#opt-texto', 'textoRápido');
+    bindSwitch('#opt-ui', 'uiModern');
     el('#opt-vol').addEventListener('input', ev => {
       const v = ev.target.value / 100;
       BM.save.setSetting('volume', v); BM.save.applySettings();

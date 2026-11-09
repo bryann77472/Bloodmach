@@ -39,7 +39,8 @@ BM.save = (function () {
       flags: { tutorial: false, v2Dead: false, nucleo_v2: false, gabrielDead: false, greedV2Dead: false, hellwhipUnlocked: false, ferrymanDead: false, heresyGabrielDead: false, ending: false, ngPlus: false },
       settings: {
         som: true, volume: 0.7, musica: 0.4, tremor: true,
-        dificuldade: 'standard', parryAssist: false, textoRápido: false
+        dificuldade: 'standard', parryAssist: false, textoRápido: false,
+        uiModern: true
       },
       stats: { batalhas: 0, vitorias: 0, mortes: 0, parries: 0, execucoes: 0, estiloMax: 0, fugas: 0 }
     };
@@ -459,6 +460,9 @@ BM.save = (function () {
     BM.audio.setEnabled(s.som);
     BM.audio.setVolume(s.volume);
     BM.audio.setMusicVolume(s.musica);
+    // Interface: moderna por padrão; 'uiModern: false' devolve o visual clássico.
+    const moderno = s.uiModern !== false;
+    document.documentElement.setAttribute('data-ui', moderno ? 'modern' : 'classic');
   }
 
   return {
