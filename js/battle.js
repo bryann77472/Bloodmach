@@ -17,7 +17,6 @@ BM.battle = (function () {
   const chance = p => Math.random() < p;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const sleep = ms => new Promise(r => setTimeout(r, ms));
-  const MELEE_TYPES = ['corte', 'impacto', 'sangue'];
   // escala global: o V1 causes menos dano, os inimigos causam mais
   const ESCALA_JOGADOR = 0.40;
   const ESCALA_INIMIGO = 1.00;
@@ -46,9 +45,15 @@ BM.battle = (function () {
     return 1;
   }
 
+  function isExplosiveMove(move) {
+    return move.kind === 'explosive' || move.type === 'explosao' || move.type === 'fogo';
+  }
+
   function distMod(type, kind) {
     // retorna multiplicador de dano pela distância
-    if (kind === 'explosive' || type === 'explosao' || type === 'fogo') return 1;
+    if (kind === 'explosive' || type === 'explosao' || type === 'fogo') {
+      return S.dist === 2 ? 1.25 : (S.dist === 0 ? 0.85 : 1);
+    }
     if (kind === 'ranged') return S.dist === 0 ? 1.2 : (S.dist === 2 ? 0.8 : 1);
     // melee
     return S.dist === 2 ? 1.2 : (S.dist === 0 ? 0.8 : 1);
@@ -175,6 +180,8 @@ BM.battle = (function () {
       const mult = Math.min(1.75, 0.6 + 0.4 * ratio);
       const base = move.power * mult * (1 + lvl / 25) * ESCALA_JOGADOR;
       let d = base * eff * (isCrit ? 1.5 : 1) * rand(0.9, 1.1);
+      // Explosões: perto 125%, médio 100%, longe 85%.
+      if (isExplosiveMove(move)) d *= distMod(move.type, move.kind);
       // foco: os próximos golpes do V1 batem mais forte
       if (isPlayer && S.player.focus > 0) { d *= 1.5; S.player.focus--; }
       // bônus de ATQ por item (Tônico de Combustão)
@@ -505,8 +512,7 @@ BM.battle = (function () {
     const eff = effVs(p.faction || 'casca', move.type);
     const base = move.power * (0.6 + 0.4 * (enemy.atk / Math.max(1, defOf(p)))) * (1 + enemy.level / 25) * ESCALA_INIMIGO;
     let d = base * eff * rand(0.9, 1.1) * (S.diff.dmgEnemy || 1);
-    if (move.kind === 'ranged') d *= (S.dist === 0 ? 1.2 : (S.dist === 2 ? 0.8 : 1));
-    else if (MELEE_TYPES.indexOf(move.type) >= 0) d *= (S.dist === 2 ? 1.2 : (S.dist === 0 ? 0.8 : 1));
+    d *= distMod(move.type, move.kind);
     let final = Math.max(1, Math.round(d));
     // Soulreaver: o inimigo bate mais fraco a cada golpe acumulado
     if (S.player.soulReduce) final = Math.round(final * (1 - S.player.soulReduce));
@@ -574,7 +580,13 @@ BM.battle = (function () {
       return { m, s: s * rand(0.75, 1.25) };
     });
     scored.sort((a, b) => b.s - a.s);
-    const pick = scored[0].m;
+    let pick = scored[0].m;
+    // A Mão do Rei Minos: parte dos golpes sem parry vira uma abertura de parry.
+    // O Dedo do Rei continua inevitável.
+    if (e.hand && pick.parryable === false && !pick.unavoidable && Math.random() < 0.35) {
+      const aberturas = list.filter(m => m.parryable !== false && !m.unavoidable);
+      if (aberturas.length) pick = aberturas[Math.floor(Math.random() * aberturas.length)];
+    }
     e.intent = pick;
     e.buffed = false;
     return pick;

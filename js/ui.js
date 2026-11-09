@@ -1001,7 +1001,7 @@ BM.ui = (function () {
     const isBoss = node >= L.encounters.length;
     const enemyId = isBoss ? L.boss : L.encounters[node];
     const en = D.ENEMIES[enemyId];
-    const cp = L.checkpoints.indexOf(node) >= 0;
+    const cp = isBoss || L.checkpoints.indexOf(node) >= 0;
     mount(`
       <div class="screen" style="overflow:auto">
         <div class="hub-top">
@@ -1036,7 +1036,7 @@ BM.ui = (function () {
                 <span class="dim">CHEFE</span>
               </button>
             </div>
-            ${cp ? '<div class="badge ok" style="margin-top:10px">CHECKPOINT — integridade restaurada parcialmente</div>' : ''}
+            ${cp ? '<div class="badge ok" style="margin-top:10px">' + (isBoss ? 'CHECKPOINT DO CHEFE' : 'CHECKPOINT') + ' — itens preservados</div>' : ''}
           </div>
           <div class="panel flat" style="margin-top:12px">
             <div class="panel-head"><span>Próximo</span><span>${en.faction ? D.FACTIONS[en.faction].name : ''}</span></div>
@@ -1156,7 +1156,7 @@ BM.ui = (function () {
     const arms = BM.save.equippedArms().map(id => D.ARMS.find(a => a.id === id)).filter(Boolean);
     const accent = arms.length ? arms[0].corHex : '#4aa8ff';
     mount(`
-      <div class="screen battle" id="battle-root">
+      <div class="screen battle${S.enemy.hand ? ' mao-boss' : ''}" id="battle-root">
         <div class="arena" id="arena" data-layer="${layer.id}" data-variant="${variant}">
           <div class="arena-bg">${BM.sprites.arena(layer.id, bossFx)}</div>
           <div class="arena-floor"></div>
@@ -2018,12 +2018,16 @@ BM.ui = (function () {
   function gameOver(info) {
     current = 'gameover';
     const d = BM.save.get();
+    const checkpoint = !!info.checkpoint;
+    const desc = checkpoint
+      ? 'Checkpoint alcançado. Integridade e itens foram restaurados à contagem exata de quando você passou por ele.'
+      : 'Sem checkpoint. <b>' + info.layerName + '</b> recomeça do primeiro inimigo — todos precisam cair de novo.';
     mount(
       '<div class="screen result">' +
       '<div class="panel result-card">' +
       '<div class="title-sm">V1 DESTRUÍDO</div>' +
       '<div class="gameover-title">GAME OVER</div>' +
-      '<div class="dim" style="margin:6px 0 12px">Sem checkpoint. <b>' + info.layerName + '</b> recomeça do primeiro inimigo — todos precisam cair de novo.</div>' +
+      '<div class="dim" style="margin:6px 0 12px">' + desc + '</div>' +
       '<div class="result-lines">' +
       '<div class="rline"><span>Camada</span><span>' + info.layerName + '</span></div>' +
       '<div class="rline"><span>Vitórias na camada</span><span>' + (info.wins || 0) + '</span></div>' +
@@ -2031,7 +2035,8 @@ BM.ui = (function () {
       '</div>' +
       '<div class="row" style="justify-content:center;flex-wrap:wrap">' +
       (info.kit ? '<button class="btn" data-a="kit">Usar Kit de Reparo</button>' : '') +
-      '<button class="btn primary" data-a="retry">Recomeçar a camada</button>' +
+      '<button class="btn primary" data-a="retry">' + (checkpoint ? 'Voltar ao checkpoint' : 'Recomeçar a camada') + '</button>' +
+      (checkpoint ? '<button class="btn" data-a="restart">Recomeçar a camada</button>' : '') +
       '<button class="btn" data-a="lobby">Oficina</button>' +
       '</div>' +
       '</div></div>');
@@ -2042,8 +2047,15 @@ BM.ui = (function () {
     });
     on('[data-a="retry"]', 'click', () => {
       BM.audio.play('confirm');
-      BM.main.restartLayer(info.layerIndex);
+      if (checkpoint) BM.main.retryCheckpoint(info.layerIndex);
+      else BM.main.restartLayer(info.layerIndex);
     });
+    if (checkpoint) {
+      on('[data-a="restart"]', 'click', () => {
+        BM.audio.play('confirm');
+        BM.main.restartLayer(info.layerIndex);
+      });
+    }
     on('[data-a="lobby"]', 'click', () => {
       BM.audio.play('cancel');
       BM.main.abandonLayer(info.layerIndex);
@@ -2166,6 +2178,7 @@ BM.ui = (function () {
     if (!fromPrologue) {
       on('[data-a="start-over"]', 'click', () => {
         BM.audio.play('confirm');
+        BM.save.resetLoreSeen();
         prologueMenu();
       });
       on('[data-a="wipe-all"]', 'click', () => {

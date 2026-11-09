@@ -133,6 +133,49 @@ BM.save = (function () {
     return data;
   }
 
+  /** Guarda o estado exato do checkpoint: posição, HP e contagem de todos os itens. */
+  function setCheckpoint(layerIndex, node, hp) {
+    const d = get();
+    d.progress.checkpoint = {
+      layer: layerIndex,
+      node: node,
+      hp: hp == null ? null : hp,
+      items: Object.assign({}, d.items || {})
+    };
+    persist();
+    return d.progress.checkpoint;
+  }
+
+  function getCheckpoint(layerIndex) {
+    const cp = get().progress.checkpoint;
+    if (!cp) return null;
+    if (layerIndex != null && cp.layer !== layerIndex) return null;
+    return cp;
+  }
+
+  /** Restaura a contagem exata de itens do checkpoint e volta ao nó salvo. */
+  function restoreCheckpoint(layerIndex) {
+    const d = get();
+    const cp = getCheckpoint(layerIndex);
+    if (!cp) return null;
+    d.items = Object.assign({}, cp.items || {});
+    d.progress.node = cp.node;
+    persist();
+    return {
+      layer: cp.layer,
+      node: cp.node,
+      hp: cp.hp == null ? null : cp.hp,
+      items: Object.assign({}, cp.items || {})
+    };
+  }
+
+  function clearCheckpoint() {
+    const d = get();
+    if (!d.progress.checkpoint) return;
+    d.progress.checkpoint = null;
+    persist();
+  }
+
   function hasSave(diff) { return !!readSave(diff || currentDiff); }
 
   function loreSeen() {
@@ -141,6 +184,10 @@ BM.save = (function () {
 
   function markLoreSeen() {
     try { localStorage.setItem(KEY_LORE, '1'); } catch (e) { /* ignora */ }
+  }
+
+  function resetLoreSeen() {
+    try { localStorage.removeItem(KEY_LORE); } catch (e) { /* ignora */ }
   }
 
   function playerName() {
@@ -415,7 +462,8 @@ BM.save = (function () {
   }
 
   return {
-    load, persist, newGame, hasSave, loreSeen, markLoreSeen, playerName, setPlayerName, wipeAll, wipe, get, onChange,
+    load, persist, newGame, hasSave, loreSeen, markLoreSeen, resetLoreSeen, playerName, setPlayerName, wipeAll, wipe, get, onChange,
+    setCheckpoint, getCheckpoint, restoreCheckpoint, clearCheckpoint,
     readSave, saveInfo, setDifficulty, currentDifficulty, difficulties,
     ownedArm, ownedLeg, ownedChassis, armById, moveById, armOfMove,
     equippedArms, hasPassive, availableArms, loadoutMoves,

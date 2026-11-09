@@ -1262,12 +1262,11 @@ BM.sprites = (function () {
           <stop offset=".7" stop-color="#8a2ac0"/>
           <stop offset="1" stop-color="#3a0a50"/>
         </radialGradient>
-        <filter id="g-mao-soft" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="3"/>
-        </filter>
-        <filter id="g-mao-soft2" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="1.4"/>
-        </filter>
+        <radialGradient id="g-mao-gem-glow" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#d88cff" stop-opacity=".38"/>
+          <stop offset=".55" stop-color="#8a2ac0" stop-opacity=".16"/>
+          <stop offset="1" stop-color="#3a0a50" stop-opacity="0"/>
+        </radialGradient>
       </defs>
 
       <!-- aura violeta -->
@@ -1368,7 +1367,8 @@ BM.sprites = (function () {
       <g transform="rotate(7 154 162)">
         <path d="M134 142 L164 148 L160 182 L130 176 Z" fill="url(#g-mao-stone)" stroke="#050208" stroke-width="2"/>
         <path d="M134 142 L164 148 L162 157 L132 151 Z" fill="#4a2a5a" opacity=".8"/>
-        <circle cx="150" cy="163" r="13" fill="#8a2ac0" opacity=".45" filter="url(#g-mao-soft2)"/>
+        <circle cx="150" cy="163" r="22" fill="url(#g-mao-gem-glow)"/>
+        <circle cx="150" cy="163" r="13" fill="#8a2ac0" opacity=".28"/>
         <path d="M147 153 L159 157 L155 173 L143 169 Z" fill="url(#g-mao-gem)" stroke="#e0a0ff" stroke-width=".9"/>
         <path d="M149 157 L155 159 L153 168 L147 166 Z" fill="#f4dcff" opacity=".9"/>
       </g>
@@ -1394,7 +1394,7 @@ BM.sprites = (function () {
         <path d="M110 96 L104 110 L110 122"/>
         <path d="M100 160 L94 174 L100 186"/>
       </g>
-      <g fill="none" stroke="#b45cff" stroke-width="2.2" opacity=".34" filter="url(#g-mao-soft)">
+      <g fill="none" stroke="#b45cff" stroke-width="5" opacity=".16">
         <path d="M350 100 L330 116 L336 132 L318 146 L324 164"/>
         <path d="M300 86 L292 110 L300 126"/>
         <path d="M250 100 L244 124 L252 142"/>
@@ -1429,7 +1429,7 @@ BM.sprites = (function () {
       </g>
 
       <!-- luz de contorno violeta -->
-      <g fill="none" stroke="#b45cff" stroke-width="4" opacity=".24" filter="url(#g-mao-soft)">
+      <g fill="none" stroke="#b45cff" stroke-width="7" opacity=".14">
         <path d="M206 70 C166 52 112 40 58 40 C40 40 28 44 24 52"/>
         <path d="M210 98 C166 86 108 80 50 82 C34 82 20 86 14 94"/>
         <path d="M208 134 C168 136 118 144 68 158 C54 162 42 168 38 176"/>

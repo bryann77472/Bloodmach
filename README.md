@@ -116,10 +116,13 @@ mapa da camada e no card da Oficina:
   e as **peças de Fibra** liberados para compra na loja.
 - **Dentro da camada não há saída**: ao entrar, só se avança para o próximo inimigo.
   A saída e a troca de loadout só existem na **Oficina**, antes de começar.
-- **Sem checkpoint.** Se o V1 morre, tem uma cutscene dele **desligando e caindo**
-  (com a música *power off v1*), depois **GAME OVER**: a camada recomeça do primeiro inimigo
-  e todos precisam cair de novo. Só o **Kit de Reparto** (item) salva: revive o V1 com 30%
-  de HP e a luta continua.
+- **Checkpoints.** Ao entrar em um nó de checkpoint — incluindo o nó do chefe — o jogo
+  guarda a posição, o HP e a **contagem exata de todos os itens**. Se o V1 morre, tem uma
+  cutscene dele **desligando e caindo** (com a música *power off v1*) e depois **GAME OVER**:
+  **Voltar ao checkpoint** restaura a contagem exata de itens de quando ele foi cruzado
+  (se você tinha 1 Moeda, volta com 1, tenha usado ou não). **Recomeçar a camada** ignora
+  o checkpoint e volta ao primeiro inimigo. O **Kit de Reparo** (item) também revive o V1
+  com 30% de HP e a luta continua.
 - **Cortar a camada:** o botão **DESISTIR** no mapa abre uma confirmação. Os recursos
   coletados na camada são perdidos e o V1 volta à oficina com a mesma quantidade de
   Sucata e XP que tinha antes de entrar.
@@ -151,13 +154,13 @@ A cena termina no **título normal do BLOODMACH**; a partir daí o fluxo continu
 antes: **Jogar** → escolha de dificuldade/save → introdução existente → jogo. O prólogo
 é controlado pela chave `bloodmach_lore_seen_v1` no `localStorage` e só é marcado como
 visto depois que a cutscene inteira termina, então recarregar no meio dela o mostra de novo.
-Se o jogador voltar ao início com os dados preservados, **Jogar** leva direto ao título
-normal, sem repetir a cutscene.
+Se o jogador voltar ao início com os dados preservados, **Jogar** mostra a primeira
+cutscene de novo; saves, nome e progresso continuam intactos.
 
 Nas **Opções** do título normal também ficam duas ações de dados: **Voltar ao início**
-(retorna ao menu do CEPK preservando saves, nome e prólogo visto) e **Apagar dados**
-(remove todas as chaves `bloodmach_*`, apaga saves e nome, e volta como se o jogo nunca
-tivesse sido aberto).
+(retorna ao menu do CEPK, preserva saves e nome e desmarca a cutscene para que **Jogar**
+a mostre novamente) e **Apagar dados** (remove todas as chaves `bloodmach_*`, apaga saves
+e nome, e volta como se o jogo nunca tivesse sido aberto).
 
 ### Dificuldade e saves
 Cada dificuldade tem o **seu próprio save** (Lenient, Standard e Violent são três
@@ -205,6 +208,7 @@ Sucata e um Núcleo.
 - **Reflexo 50%** contra ataques **imparáveis**, ajustado pelo **peso total**
   (pernas + carcaça): leve 70% → médio 50% → pesado 30%.
 - **Distância** Perto / Médio / Longe muda dano de corpo a corpo e de projétil.
+  **Explosões** (e ataques de fogo) causam **125% perto**, **100% no médio** e **85% longe**.
 - **Estilo** D → SSS durante a luta.
 - Status: Sangramento, Derretido, Ferrugem, Coágulo, Atordoado, Exposto, Postura.
 

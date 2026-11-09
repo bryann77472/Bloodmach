@@ -575,7 +575,7 @@ BM.DATA = (function () {
     },
     mao: {
       id: 'mao', name: 'A Mão do Rei Minos', faction: 'carne', sprite: 'mao',
-      hp: 1350, atk: 29, def: 32, vel: 5, exp: 700, scrap: 420, boss: true, hand: true,
+      hp: 945, atk: 23, def: 32, vel: 5, exp: 700, scrap: 420, boss: true, hand: true,
       moves: [
         { name: 'Esmagamento', type: 'impacto', power: 31, acc: 94, kind: 'melee', range: 'perto', parryable: true, text: 'VAI ESMAGAR' },
         { name: 'Dedos', type: 'corte', power: 27, acc: 92, kind: 'melee', range: 'perto', parryable: true, effect: 'bleed', text: 'VAI ESGARRA' },

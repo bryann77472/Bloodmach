@@ -146,18 +146,29 @@
    O painel de vida continua no lugar normal de qualquer inimigo
    (à esquerda do lutador), mas acima da camada da mão. */
 .fighter.enemy.mao{ overflow:visible; }
+.fighter.enemy.mao::before{
+  background:radial-gradient(closest-side, rgba(198,76,255,.22), transparent 76%);
+}
 .fighter.enemy.mao .f-sprite{
   position:absolute; right:-8%; bottom:-8%; width:195%; height:142%;
   z-index:1; display:flex; align-items:flex-end; justify-content:flex-end;
-  pointer-events:none;
+  pointer-events:none; will-change:transform;
+}
+.fighter.enemy.mao .f-sprite::before{
+  content:""; position:absolute; inset:8% 2% 4% 12%; pointer-events:none;
+  background:radial-gradient(ellipse at 58% 52%,
+    rgba(198,76,255,.20), rgba(90,20,130,.06) 54%, transparent 74%);
 }
 .fighter.enemy.mao .f-sprite svg{
+  position:relative; z-index:1;
   width:100%; height:100%; max-width:none; object-fit:contain;
-  filter:drop-shadow(0 0 50px rgba(198,76,255,.26)) drop-shadow(0 18px 32px rgba(0,0,0,.78));
+  filter:none;
 }
 .fighter.enemy.mao .f-panel{
   position:absolute; left:0; bottom:0; z-index:6;
 }
+/* O blur de fundo do parry sobre a mão gigante custa caro em GPUs fracas. */
+.battle.mao-boss .parry-layer{ backdrop-filter:none; }
 .fighter.enemy.fugindo .f-sprite{ animation:fugirEnemigo 1.2s ease-in forwards; }
 @keyframes fugirEnemigo{
   0%{ transform:translateX(0) scale(1); opacity:1; }

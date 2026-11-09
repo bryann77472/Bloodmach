@@ -64,6 +64,7 @@ BM.main = (function () {
     d.progress.layer = index;
     d.progress.node = 0;
     currentHp = null;
+    BM.save.clearCheckpoint();
     BM.save.resetLayerStats();
     BM.save.persist();
     BM.audio.play('confirm');
@@ -86,6 +87,10 @@ BM.main = (function () {
     const L = D.LAYERS[layerIndex];
     const node = d.progress.node;
     if (currentHp == null) currentHp = st.maxHp;
+    // Checkpoints: nós marcados na camada e o próprio chefe.
+    // O snapshot guarda a contagem exata de itens para restaurar em caso de morte.
+    const checkpointNode = node >= L.encounters.length || L.checkpoints.indexOf(node) >= 0;
+    if (checkpointNode) BM.save.setCheckpoint(layerIndex, node, currentHp);
     pending = { type: 'layer', layerIndex: layerIndex, enemyId: enemyId };
     const enemyDef = D.ENEMIES[enemyId];
     function comecar() {
@@ -135,9 +140,11 @@ BM.main = (function () {
       });
     } else if (result === 'lose') {
       d.stats.mortes++;
-      BM.save.persist();
-      currentHp = null;
       const li = pending && pending.type === 'layer' ? pending.layerIndex : d.progress.layer;
+      // Checkpoint: restaura a contagem exata de itens de quando ele foi cruzado.
+      const cp = BM.save.restoreCheckpoint(li);
+      currentHp = cp && cp.hp != null ? cp.hp : null;
+      BM.save.persist();
       // música de desligamento do V1 + cutscene: ele desliga e cai, depois game over
       BM.audio.playMusic('desligamento');
       BM.ui.deathScene(function () {
@@ -145,7 +152,9 @@ BM.main = (function () {
           layerIndex: li,
           layerName: D.LAYERS[li].name,
           wins: d.progress.node,
-          kit: BM.save.itemCount('kit_reparo') > 0
+          kit: BM.save.itemCount('kit_reparo') > 0,
+          checkpoint: !!cp,
+          checkpointNode: cp ? cp.node : null
         });
       });
     } else if (result === 'fugiu') {
@@ -189,6 +198,7 @@ BM.main = (function () {
       BM.battle.end();
       const layerIndexF = pending && pending.type === 'layer' ? pending.layerIndex : d.progress.layer;
       if (pending && pending.bossFugiu) {
+        BM.save.clearCheckpoint();
         d.flags['camada' + layerIndexF + 'Feita'] = true;
         // o V2 foge em vez de morrer, mas o progresso conta: libera o Knuckleblaster
         if (pending.bossId === 'v2' || D.LAYERS[layerIndexF].boss === 'v2') {
@@ -234,9 +244,25 @@ BM.main = (function () {
     d.progress.layer = index;
     d.progress.node = 0;
     currentHp = null;
+    BM.save.clearCheckpoint();
     BM.save.resetLayerStats();
     BM.save.persist();
     BM.ui.layerMap(index);
+  }
+
+  function retryCheckpoint(index) {
+    const cp = BM.save.getCheckpoint(index);
+    if (!cp) { restartLayer(index); return; }
+    const d = BM.save.get();
+    BM.save.restoreCheckpoint(index);
+    currentHp = cp.hp != null ? cp.hp : null;
+    d.progress.node = cp.node;
+    BM.save.persist();
+    const L = D.LAYERS[index];
+    const enemyId = cp.node >= L.encounters.length ? L.boss : L.encounters[cp.node];
+    BM.audio.play('confirm');
+    BM.battle.end();
+    startBattle(enemyId, index);
   }
 
   function abandonLayer(index) {
@@ -244,6 +270,7 @@ BM.main = (function () {
     d.progress.layer = index;
     d.progress.node = 0;
     currentHp = null;
+    BM.save.clearCheckpoint();
     // recursos coletados na camada são perdidos
     BM.save.discardPending();
     BM.save.resetLayerStats();
@@ -282,6 +309,7 @@ BM.main = (function () {
 
   function onBossDefeated(layerIndex, bossId) {
     const d = BM.save.get();
+    BM.save.clearCheckpoint();
     if (bossId === 'v2') {
       d.flags.v2Dead = true;
       d.flags.nucleo_v2 = true;
@@ -402,7 +430,7 @@ BM.main = (function () {
 
   return {
     boot, playPressed, newGame, continueGame, beginTutorial,
-    startLayer, startBattle, onBattleOver, afterBattle, afterLayer, useRepairKit, restartLayer, abandonLayer,
+    startLayer, startBattle, onBattleOver, afterBattle, afterLayer, useRepairKit, restartLayer, retryCheckpoint, abandonLayer,
     finishGame, openLoadout, backFromOptions
   };
 })();
