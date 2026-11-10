@@ -31,6 +31,9 @@ com **número, status, nome, arte, descrição e botão de entrada** — igual a
 camada. O **Ato I — Infinity Hyperdeath** está liberado. O **Ato II — Imperfect
 Hatred** abre depois que as **3 camadas do Ato I** forem concluídas; o Ato III mostra
 *WORK IN PROGRESS*. O Ato II tem **3 camadas jogáveis: Greed, Wrath e Heresy**.
+Cada card de ato tem uma **arte vetorial própria e caótica**: o Ato I mistura sol,
+metrópole neon e carne; o Ato II junta pirâmide, mar afogado e catedral em chamas;
+o Ato III traz o julgamento cósmico com olho, halo quebrado e balança.
 
 **Ato I** tem **3 camadas**, com **6 inimigos + 1 chefe** cada:
 
@@ -344,6 +347,10 @@ Ascensão** em Greed. As **Pernas de Fibra** e a **Carcaça de Fibra** também e
 
 **Carcaças** (1 slot): *V1* (equilibrada) · *de Fibra* (vida baixa, rápida) ·
 *de Forja* (vida alta, lenta).
+
+**Visual do V1:** o equipamento aparece no sprite em batalha, no lobby, na loja e na
+cutscene de morte. Trocar a **carcaça** muda o tronco (placas, núcleo e detalhes) e
+trocar as **pernas** muda a perna direita (blindagem, molas, emissor ou lâmina).
 
 ### Loja e itens
 - No **título**, logo abaixo do botão **Jogar**.

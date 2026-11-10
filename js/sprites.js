@@ -69,7 +69,148 @@ BM.sprites = (function () {
     sombra: 'rgba(0,0,0,.5)'
   };
 
-  function mechSvg(c) {
+  /* --- peças visuais do V1 conforme o equipamento --- */
+  function leftLegSvg(c) {
+    return `
+      <path d="M80 158 L98 158 L94 196 L78 196 Z" fill="${c.armDark}" stroke="${c.armEdge}" stroke-width="2"/>
+      <rect x="80" y="192" width="14" height="10" rx="3" fill="${c.armEdge}"/>
+      <path d="M76 200 L96 200 L92 228 L74 228 Z" fill="${c.arm}" stroke="${c.armEdge}" stroke-width="2"/>
+      <path d="M72 226 L96 226 L100 244 L64 244 Z" fill="${c.arm}" stroke="${c.armEdge}" stroke-width="2"/>
+      <rect x="66" y="242" width="32" height="6" rx="2" fill="${c.armEdge}"/>`;
+  }
+
+  function rightLegSvg(id, c) {
+    if (id === 'ignicao') {
+      return `
+        <path d="M102 156 L122 156 L126 196 L108 196 Z" fill="#3a3f46" stroke="#12161a" stroke-width="2"/>
+        <rect x="106" y="192" width="18" height="10" rx="3" fill="#1a1e22"/>
+        <path d="M102 200 L126 200 L130 230 L106 230 Z" fill="#4a5058" stroke="#12161a" stroke-width="2"/>
+        <rect x="123" y="204" width="7" height="20" rx="3" fill="#ff6b1a"/>
+        <path d="M121 216 L134 216 L134 225 L121 225 Z" fill="#ff9d2e" opacity=".9"/>
+        <path d="M104 228 L130 228 L136 246 L98 246 Z" fill="#2b3138" stroke="#12161a" stroke-width="2"/>
+        <path d="M106 242 L136 242 L136 248 L100 248 Z" fill="#ff6b4a"/>
+        <path d="M100 230 L108 230 L106 240 L98 240 Z" fill="#ffb01f" opacity=".8"/>`;
+    }
+    if (id === 'fibra') {
+      return `
+        <path d="M106 158 L120 158 L120 196 L108 196 Z" fill="#cfd8e2" stroke="#12161a" stroke-width="2"/>
+        <rect x="109" y="192" width="10" height="8" rx="2" fill="#3a4048"/>
+        <path d="M108 200 L120 200 L124 228 L108 228 Z" fill="#9aa8b6" stroke="#12161a" stroke-width="2"/>
+        <path d="M110 204 L118 204 L119 224 L111 224 Z" fill="#3fd8d8" opacity=".7"/>
+        <path d="M106 226 L126 226 L130 242 L102 242 Z" fill="#e6eef5" stroke="#12161a" stroke-width="2"/>
+        <path d="M104 240 L130 240 L130 246 L102 246 Z" fill="#3fd8d8"/>
+        <path d="M122 204 q8 -6 12 0" stroke="#8b8b96" stroke-width="2" fill="none"/>`;
+    }
+    if (id === 'shadow') {
+      return `
+        <path d="M104 156 L122 156 L124 196 L108 196 Z" fill="#12151c" stroke="#05070a" stroke-width="2"/>
+        <rect x="108" y="192" width="16" height="9" rx="2" fill="#3a4050"/>
+        <path d="M106 200 L124 200 L126 228 L106 228 Z" fill="#e8eef5" stroke="#12151c" stroke-width="2"/>
+        <path d="M108 204 L120 204 L120 224 L108 224 Z" fill="#3a4050"/>
+        <path d="M102 226 L130 226 L140 240 L106 240 Z" fill="#12151c" stroke="#05070a" stroke-width="2"/>
+        <path d="M104 240 L138 240 L140 246 L104 246 Z" fill="#8a6cff" opacity=".8"/>
+        <g stroke="#8a6cff" stroke-width="2" fill="none" opacity=".55">
+          <path d="M128 198 q16 6 14 18"/><path d="M130 214 q12 6 8 16"/>
+        </g>`;
+    }
+    if (id === 'berserk') {
+      return `
+        <path d="M102 156 L122 156 L126 196 L108 196 Z" fill="#2f5220" stroke="#12151a" stroke-width="2"/>
+        <rect x="106" y="192" width="18" height="10" rx="3" fill="#1a2412"/>
+        <path d="M102 200 L126 200 L130 230 L106 230 Z" fill="#3f6a24" stroke="#12151a" stroke-width="2"/>
+        <g stroke="#7bd93a" stroke-width="4" fill="none" stroke-linecap="round">
+          <path d="M108 204 q12 -6 20 0 q-12 6 -20 0"/>
+          <path d="M108 212 q12 -6 20 0 q-12 6 -20 0"/>
+          <path d="M108 220 q12 -6 20 0 q-12 6 -20 0"/>
+        </g>
+        <path d="M104 228 L130 228 L136 246 L98 246 Z" fill="#2b3138" stroke="#12151a" stroke-width="2"/>
+        <path d="M106 242 L136 242 L136 248 L100 248 Z" fill="#7bd93a"/>
+        <circle cx="126" cy="198" r="5" fill="#b8f05a"/>`;
+    }
+    return `
+      <path d="M102 158 L120 158 L122 196 L106 196 Z" fill="${c.armDark}" stroke="${c.armEdge}" stroke-width="2"/>
+      <rect x="106" y="192" width="14" height="10" rx="3" fill="${c.armEdge}"/>
+      <path d="M104 200 L124 200 L126 228 L108 228 Z" fill="${c.arm}" stroke="${c.armEdge}" stroke-width="2"/>
+      <path d="M106 226 L130 226 L136 244 L100 244 Z" fill="${c.arm}" stroke="${c.armEdge}" stroke-width="2"/>
+      <rect x="102" y="242" width="32" height="6" rx="2" fill="${c.armEdge}"/>`;
+  }
+
+  function chassisTorsoSvg(id, c) {
+    if (id === 'fibra') {
+      return `
+        <path d="M78 92 L122 92 L128 116 L124 150 L76 150 L72 116 Z" fill="#dfe7ef" stroke="#161c24" stroke-width="3"/>
+        <path d="M82 98 L118 98 L120 116 L80 116 Z" fill="#b3c0cd"/>
+        <path d="M80 122 L120 122 L118 140 L82 140 Z" fill="#3fd8d8" opacity=".35"/>
+        <g stroke="#161c24" stroke-width="2" opacity=".8">
+          <path d="M86 98 L84 148"/><path d="M100 98 L100 148"/><path d="M114 98 L116 148"/>
+        </g>
+        <rect x="92" y="104" width="16" height="5" rx="2" fill="#3fd8d8"/>
+        <circle cx="100" cy="132" r="6" fill="#161c24"/><circle cx="100" cy="132" r="3" fill="#3fd8d8"/>`;
+    }
+    if (id === 'forja') {
+      return `
+        <path d="M68 86 L132 86 L140 114 L134 152 L66 152 L60 114 Z" fill="#3a4048" stroke="#12161a" stroke-width="3"/>
+        <path d="M78 94 L122 94 L124 112 L76 112 Z" fill="#22262c"/>
+        <rect x="84" y="100" width="32" height="7" rx="3" fill="#ff6b1a"/>
+        <path d="M72 118 L128 118 L126 146 L74 146 Z" fill="#2b3138"/>
+        <rect x="90" y="124" width="20" height="14" rx="2" fill="#12161a"/>
+        <path d="M94 128 L106 128 L106 134 L94 134 Z" fill="#ff9d2e"/>
+        <g fill="#8b8b96">
+          <circle cx="72" cy="96" r="2.5"/><circle cx="128" cy="96" r="2.5"/>
+          <circle cx="68" cy="128" r="2.5"/><circle cx="132" cy="128" r="2.5"/>
+        </g>
+        <path d="M64 110 L76 110 L74 118 L62 118 Z" fill="#ff6b4a" opacity=".5"/>`;
+    }
+    if (id === 'titan') {
+      return `
+        <path d="M64 84 L136 84 L144 112 L138 154 L62 154 L56 112 Z" fill="#5a6068" stroke="#12161a" stroke-width="3"/>
+        <path d="M76 90 L124 90 L130 108 L120 120 L80 120 L70 108 Z" fill="#8b8b96"/>
+        <path d="M80 122 L120 122 L116 148 L84 148 Z" fill="#3a4048"/>
+        <circle cx="100" cy="134" r="10" fill="#12161a"/><circle cx="100" cy="134" r="5" fill="#ffb01f"/>
+        <g fill="#efe7d6" opacity=".85">
+          <path d="M70 86 L80 86 L74 98 L66 94 Z"/><path d="M130 86 L120 86 L126 98 L134 94 Z"/>
+          <path d="M62 122 L72 122 L66 134 L58 128 Z"/><path d="M138 122 L128 122 L134 134 L142 128 Z"/>
+        </g>
+        <g stroke="#c8a15a" stroke-width="2" opacity=".6">
+          <path d="M84 96 L112 96"/><path d="M86 128 L114 128"/>
+        </g>`;
+    }
+    if (id === 'bloodforge') {
+      return `
+        <path d="M70 88 L130 88 L138 116 L132 152 L68 152 L62 116 Z" fill="#5a0c14" stroke="#1a0306" stroke-width="3"/>
+        <path d="M82 94 L118 94 L122 112 L78 112 Z" fill="#2a0408"/>
+        <circle cx="100" cy="112" r="10" fill="url(#g-blood)"/>
+        <path d="M74 120 L126 120 L124 146 L76 146 Z" fill="#3a0810"/>
+        <g stroke="#ff3b5c" stroke-width="2.2" fill="none" opacity=".8">
+          <path d="M78 98 q8 10 4 20 q-4 10 4 26"/>
+          <path d="M122 98 q-8 10 -4 20 q4 10 -4 26"/>
+          <path d="M88 132 q12 -8 24 0"/>
+        </g>
+        <circle cx="100" cy="132" r="5" fill="#ff3b5c" opacity=".9"/>`;
+    }
+    return `
+      <path d="M72 90 L128 90 L136 116 L130 150 L70 150 L64 116 Z" fill="${c.arm}" stroke="${c.armEdge}" stroke-width="3"/>
+      <path d="M84 96 L116 96 L118 118 L82 118 Z" fill="${c.armDark}"/>
+      <rect x="88" y="102" width="24" height="6" rx="2" fill="${c.core}"/>
+      <path d="M70 120 L130 120 L126 140 L74 140 Z" fill="${c.armDark}" opacity=".7"/>
+      <circle cx="100" cy="130" r="7" fill="${c.armEdge}"/>
+      <circle cx="100" cy="130" r="3.4" fill="${c.core}"/>`;
+  }
+
+  function currentEquip() {
+    try {
+      if (BM.save && BM.save.get) {
+        const d = BM.save.get();
+        if (d && d.equip) return { chassis: d.equip.chassis, legs: d.equip.legs };
+      }
+    } catch (e) { }
+    return {};
+  }
+
+  function mechSvg(c, equip) {
+    const eq = equip || {};
+    const chassis = eq.chassis || 'v1';
+    const legs = eq.legs || 'servico';
     return svg(defs + `
       <ellipse cx="100" cy="252" rx="44" ry="8" fill="${c.sombra}"/>
 
@@ -83,31 +224,18 @@ BM.sprites = (function () {
         <path d="M130 128 L196 96 L174 96 L194 74 L140 100 Z" fill="url(#g-wing)"/>
       </g>
 
-      <!-- pernas -->
+      <!-- pernas: esquerda fixa, direita muda com o equipamento -->
       <g>
-        <path d="M80 158 L98 158 L94 196 L78 196 Z" fill="${c.armDark}" stroke="${c.armEdge}" stroke-width="2"/>
-        <path d="M102 158 L120 158 L122 196 L106 196 Z" fill="${c.armDark}" stroke="${c.armEdge}" stroke-width="2"/>
-        <rect x="80" y="192" width="14" height="10" rx="3" fill="${c.armEdge}"/>
-        <rect x="106" y="192" width="14" height="10" rx="3" fill="${c.armEdge}"/>
-        <path d="M76 200 L96 200 L92 228 L74 228 Z" fill="${c.arm}" stroke="${c.armEdge}" stroke-width="2"/>
-        <path d="M104 200 L124 200 L126 228 L108 228 Z" fill="${c.arm}" stroke="${c.armEdge}" stroke-width="2"/>
-        <path d="M72 226 L96 226 L100 244 L64 244 Z" fill="${c.arm}" stroke="${c.armEdge}" stroke-width="2"/>
-        <path d="M106 226 L130 226 L136 244 L100 244 Z" fill="${c.arm}" stroke="${c.armEdge}" stroke-width="2"/>
-        <rect x="66" y="242" width="32" height="6" rx="2" fill="${c.armEdge}"/>
-        <rect x="102" y="242" width="32" height="6" rx="2" fill="${c.armEdge}"/>
+        ${leftLegSvg(c)}
+        ${rightLegSvg(legs, c)}
       </g>
 
       <!-- cinto / quadril -->
       <path d="M76 146 L124 146 L120 162 L80 162 Z" fill="${c.armEdge}"/>
       <rect x="88" y="148" width="24" height="10" rx="2" fill="${c.core}" opacity=".9"/>
 
-      <!-- torso -->
-      <path d="M72 90 L128 90 L136 116 L130 150 L70 150 L64 116 Z" fill="${c.arm}" stroke="${c.armEdge}" stroke-width="3"/>
-      <path d="M84 96 L116 96 L118 118 L82 118 Z" fill="${c.armDark}"/>
-      <rect x="88" y="102" width="24" height="6" rx="2" fill="${c.core}"/>
-      <path d="M70 120 L130 120 L126 140 L74 140 Z" fill="${c.armDark}" opacity=".7"/>
-      <circle cx="100" cy="130" r="7" fill="${c.armEdge}"/>
-      <circle cx="100" cy="130" r="3.4" fill="${c.core}"/>
+      <!-- torso: muda de acordo com a carcaça equipada -->
+      ${chassisTorsoSvg(chassis, c)}
 
       <!-- ombreiras -->
       <path d="M62 88 L80 84 L84 106 L58 108 Z" fill="${c.arm}" stroke="${c.armEdge}" stroke-width="3"/>
@@ -134,8 +262,10 @@ BM.sprites = (function () {
     `);
   }
 
-  function v1Svg() { return mechSvg(V1_CORES); }
-  function v2Svg() { return mechSvg(V2_CORES); }
+  function v1Svg(accent, equip) {
+    return mechSvg(V1_CORES, Object.assign(currentEquip(), equip || {}));
+  }
+  function v2Svg() { return mechSvg(V2_CORES, { chassis: 'v1', legs: 'servico' }); }
 
   function fallbackV1() { return v1Svg(); }
   function fallbackV2() { return v2Svg(); }
@@ -444,7 +574,7 @@ BM.sprites = (function () {
     `);
   }
 
-  function v1() { return v1Svg(); }
+  function v1(accent, equip) { return v1Svg(accent, equip); }
   function v2() { return v2Svg(); }
 
   /* ============================================================
@@ -3399,30 +3529,196 @@ BM.sprites = (function () {
   /* ---------------- ARTES DOS ATOS ---------------- */
   function actArt(id) {
     if (id === 'act1') {
-      return '<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">' +
-        '<rect width="240" height="120" fill="#170a10"/>' +
-        '<g stroke="#4a1018" stroke-width="10" opacity=".85"><path d="M120 60 L0 -6"/><path d="M120 60 L240 -6"/><path d="M120 60 L0 126"/><path d="M120 60 L240 126"/></g>' +
-        '<circle cx="95" cy="58" r="30" fill="none" stroke="#d81f3a" stroke-width="6" opacity=".95"/>' +
-        '<circle cx="145" cy="58" r="30" fill="none" stroke="#d81f3a" stroke-width="6" opacity=".95"/>' +
-        '<g fill="#e8dcc8"><circle cx="120" cy="46" r="17"/><rect x="111" y="56" width="18" height="11" rx="3"/></g>' +
-        '<g fill="#170a10"><circle cx="113" cy="44" r="4.5"/><circle cx="127" cy="44" r="4.5"/></g>' +
-        '<g fill="#7a1424" opacity=".7"><circle cx="30" cy="24" r="3"/><circle cx="212" cy="30" r="3"/><circle cx="196" cy="96" r="2.5"/></g>' +
-        '</svg>';
+      return `<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="a1-sky" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#25104f"/><stop offset=".45" stop-color="#0e6a8a"/>
+            <stop offset=".72" stop-color="#8a3a5a"/><stop offset="1" stop-color="#ff8a2a"/>
+          </linearGradient>
+          <radialGradient id="a1-sun" cx=".4" cy=".38" r=".7">
+            <stop offset="0" stop-color="#fffbd0"/><stop offset=".45" stop-color="#ffd23f"/>
+            <stop offset=".78" stop-color="#ff7a1a"/><stop offset="1" stop-color="#ff3b5c"/>
+          </radialGradient>
+          <linearGradient id="a1-flesh" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ff6a7a"/><stop offset=".5" stop-color="#a01530"/><stop offset="1" stop-color="#3a0410"/>
+          </linearGradient>
+          <pattern id="a1-grid" width="8" height="8" patternUnits="userSpaceOnUse">
+            <path d="M0 0H8M0 0V8" stroke="#9ff5ff" stroke-width=".6" opacity=".22"/>
+          </pattern>
+        </defs>
+        <rect width="240" height="120" fill="url(#a1-sky)"/>
+        <rect width="240" height="120" fill="url(#a1-grid)"/>
+        <g opacity=".85">
+          <circle cx="46" cy="40" r="30" fill="url(#a1-sun)"/>
+          <circle cx="46" cy="40" r="38" fill="none" stroke="#fff3b0" stroke-width="1.5" opacity=".6"/>
+          <circle cx="46" cy="40" r="47" fill="none" stroke="#ff3b5c" stroke-width="1" stroke-dasharray="3 6" opacity=".6"/>
+          <g stroke="#fff3b0" stroke-width="2" opacity=".65">
+            <path d="M46 2v8M46 70v8M8 40h8M76 40h8M19 13l6 6M67 61l6 6M73 13l-6 6M25 61l-6 6"/>
+          </g>
+        </g>
+        <g fill="#10061f">
+          <path d="M146 82V42h12v18h10V28h14v34h10V40h12v42h16v22h-74Z"/>
+          <path d="M156 42v-8h4v8ZM178 28v-10h4v10Z"/>
+        </g>
+        <g fill="#ff4fd8" opacity=".9">
+          <rect x="151" y="50" width="4" height="7"/><rect x="160" y="50" width="4" height="7"/>
+          <rect x="171" y="38" width="4" height="9"/><rect x="181" y="38" width="4" height="9"/>
+          <rect x="193" y="48" width="4" height="7"/><rect x="202" y="48" width="4" height="7"/>
+        </g>
+        <g stroke="#3fd8d8" stroke-width="1.5" opacity=".8">
+          <path d="M146 86h94M146 96h94"/><path d="M188 28v54" stroke-dasharray="4 4"/>
+        </g>
+        <path d="M0 84C38 72 70 94 108 84c38-10 70 10 132-2v38H0Z" fill="url(#a1-flesh)"/>
+        <g fill="#f4ead4">
+          <path d="M10 92l10 13 10-13Z"/><path d="M40 90l9 13 10-13Z"/>
+          <path d="M76 94l10 13 10-13Z"/><path d="M112 90l10 14 10-14Z"/>
+          <path d="M148 94l10 13 10-13Z"/><path d="M184 90l10 14 10-14Z"/>
+          <path d="M216 94l8 12 9-12Z"/>
+        </g>
+        <g transform="translate(120,55)">
+          <circle r="31" fill="#12040c" stroke="#ff3b5c" stroke-width="3"/>
+          <circle r="23" fill="#f4e8d0"/>
+          <circle cx="-5" cy="-2" r="11" fill="#ff9d2e"/>
+          <circle cx="-7" cy="-2" r="5.5" fill="#12040c"/>
+          <circle cx="-10" cy="-6" r="2.4" fill="#fff"/>
+          <path d="M-22 13Q0 26 22 13" fill="none" stroke="#12040c" stroke-width="4"/>
+          <g stroke="#ff3b5c" stroke-width="2" fill="none" opacity=".85">
+            <path d="M-31 0L-46-8M-29 10L-42 20M31 0L46-8M29 10L42 20"/>
+          </g>
+          <g fill="#ff3b5c"><circle cx="-20" cy="-17" r="2"/><circle cx="21" cy="-15" r="1.7"/><circle cx="18" cy="17" r="2"/></g>
+        </g>
+        <g opacity=".9">
+          <rect x="0" y="50" width="68" height="3" fill="#ff3b5c" opacity=".55"/>
+          <rect x="190" y="62" width="50" height="2" fill="#3fd8d8" opacity=".7"/>
+          <path d="M92 7l22 18-12 4 20 15" fill="none" stroke="#3fd8d8" stroke-width="3"/>
+          <path d="M178 66l18-16-9-4 20-18" fill="none" stroke="#ff4fd8" stroke-width="3"/>
+          <path d="M64 16l9-12 3 14Z" fill="#f4e8d0" opacity=".75"/>
+          <path d="M206 14l8 12-14-3Z" fill="#ff3b5c" opacity=".7"/>
+        </g>
+      </svg>`;
     }
     if (id === 'act2') {
-      return '<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">' +
-        '<rect width="240" height="120" fill="#0d1418"/>' +
-        '<circle cx="95" cy="58" r="30" fill="none" stroke="#37505c" stroke-width="6" stroke-dasharray="52 34"/>' +
-        '<circle cx="145" cy="58" r="30" fill="none" stroke="#37505c" stroke-width="6" stroke-dasharray="30 56"/>' +
-        '<g fill="#37505c" opacity=".45"><circle cx="120" cy="46" r="17"/></g>' +
-        '</svg>';
+      return `<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="a2-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#05060a"/><stop offset=".45" stop-color="#24050c"/><stop offset="1" stop-color="#7a1018"/>
+          </linearGradient>
+          <linearGradient id="a2-sand" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#f0b45a"/><stop offset=".55" stop-color="#b86a22"/><stop offset="1" stop-color="#4a2008"/>
+          </linearGradient>
+          <linearGradient id="a2-sea" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#123a4a"/><stop offset="1" stop-color="#02060a"/>
+          </linearGradient>
+          <pattern id="a2-scan" width="6" height="6" patternUnits="userSpaceOnUse">
+            <path d="M0 3H6" stroke="#ff6a4a" stroke-width=".7" opacity=".2"/>
+          </pattern>
+        </defs>
+        <rect width="240" height="120" fill="url(#a2-sky)"/>
+        <rect width="240" height="120" fill="url(#a2-scan)"/>
+        <circle cx="178" cy="26" r="24" fill="#ff5a3a" opacity=".9"/>
+        <circle cx="178" cy="26" r="32" fill="none" stroke="#ffb01f" stroke-width="1.5" stroke-dasharray="10 7" opacity=".7"/>
+        <g fill="#16080f" stroke="#ff3b5c" stroke-width="1.4">
+          <path d="M154 94V52l9-16 9 16v13l8-18 10 18v29Z"/>
+          <path d="M158 36l5-12 5 12-5-5Z"/>
+          <path d="M172 31l6-15 7 15-7-6Z"/>
+          <path d="M186 36l5-11 5 11-5-4Z"/>
+        </g>
+        <g fill="#ffb01f" opacity=".8">
+          <rect x="161" y="56" width="5" height="9"/><rect x="176" y="60" width="5" height="9"/>
+          <rect x="188" y="54" width="5" height="9"/>
+        </g>
+        <path d="M28 94L80 24l52 70Z" fill="url(#a2-sand)" stroke="#1a0804" stroke-width="2"/>
+        <path d="M80 24v70M28 94l52-30 52 30" fill="none" stroke="#6a2a08" stroke-width="1.2" opacity=".7"/>
+        <path d="M54 94l26-42 26 42Z" fill="#6a2a08" opacity=".65"/>
+        <circle cx="80" cy="65" r="7" fill="#1a0804"/><circle cx="80" cy="65" r="3.5" fill="#ffd23f"/>
+        <path d="M0 86c30-8 54 6 84-2 30-8 58 8 92-2 22-6 42 2 64-2v40H0Z" fill="url(#a2-sea)"/>
+        <g fill="none" stroke="#4ab0c8" stroke-width="2" opacity=".55">
+          <path d="M0 94q18-8 36 0t36 0 36 0 36 0 36 0 36 0 24 0"/>
+          <path d="M0 104q18-8 36 0t36 0 36 0 36 0 36 0 36 0 24 0"/>
+        </g>
+        <g stroke="#9aa3b0" stroke-width="2" fill="none" opacity=".75">
+          <path d="M0 70c28 12 44-8 68 0s40 16 66 4 44-12 66 0 26 4 40 0"/>
+          <path d="M8 70l4 6 4-6 4 6 4-6M96 80l4 6 4-6 4 6 4-6M180 76l4 6 4-6 4 6 4-6"/>
+        </g>
+        <g fill="#ff6a1a" opacity=".85">
+          <path d="M162 92q-6-14 4-20-2 10 6 8-4 10 4 12Z"/>
+          <path d="M192 94q-4-12 4-18-2 8 5 8-3 8 3 10Z"/>
+          <path d="M138 94q-3-9 3-14-1 7 4 7-2 6 3 7Z"/>
+        </g>
+        <g transform="translate(120,52)">
+          <circle r="24" fill="none" stroke="#ffb01f" stroke-width="3" stroke-dasharray="9 7"/>
+          <path d="M-12-7L0-26 12-7 6 20H-6Z" fill="#e8dcc8" stroke="#12040c" stroke-width="2"/>
+          <path d="M-12-7-34-28-22-8-32 8-8 6Z" fill="#e8dcc8" opacity=".75"/>
+          <path d="M12-7 34-28 22-8 32 8 8 6Z" fill="#e8dcc8" opacity=".75"/>
+          <g fill="#12040c"><rect x="-7" y="-7" width="5" height="3"/><rect x="2" y="-7" width="5" height="3"/></g>
+          <path d="M-5 10h10l-5 7Z" fill="#12040c"/>
+          <path d="M0-26V-40" stroke="#ff3b5c" stroke-width="2"/>
+        </g>
+        <g fill="#f4e8d0" opacity=".85">
+          <path d="M6 80l5 9 5-9Z"/><path d="M210 84l5 9 5-9Z"/><path d="M102 96l4 8 4-8Z"/>
+        </g>
+        <g fill="#ff3b5c" opacity=".7">
+          <circle cx="30" cy="22" r="2.5"/><circle cx="212" cy="16" r="2"/><circle cx="226" cy="50" r="3"/>
+          <circle cx="10" cy="50" r="1.8"/><circle cx="140" cy="14" r="2.2"/>
+        </g>
+      </svg>`;
     }
-    return '<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">' +
-      '<rect width="240" height="120" fill="#12100f"/>' +
-      '<circle cx="95" cy="58" r="30" fill="none" stroke="#3b3630" stroke-width="6" stroke-dasharray="20 30"/>' +
-      '<circle cx="145" cy="58" r="30" fill="none" stroke="#3b3630" stroke-width="6" stroke-dasharray="14 36"/>' +
-      '<text x="120" y="70" text-anchor="middle" font-size="40" fill="#3b3630">?</text>' +
-      '</svg>';
+    return `<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="a3-void" cx=".5" cy=".45" r=".7">
+          <stop offset="0" stop-color="#2a0814"/><stop offset=".55" stop-color="#0a0308"/><stop offset="1" stop-color="#000"/>
+        </radialGradient>
+        <linearGradient id="a3-gold" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#fff6cf"/><stop offset=".5" stop-color="#ffd36a"/><stop offset="1" stop-color="#8a5a10"/>
+        </linearGradient>
+        <linearGradient id="a3-red" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ff6a7a"/><stop offset="1" stop-color="#6a0410"/>
+        </linearGradient>
+        <pattern id="a3-stars" width="12" height="12" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r=".9" fill="#fff6cf" opacity=".5"/><circle cx="8" cy="8" r=".6" fill="#ff6a7a" opacity=".4"/>
+        </pattern>
+      </defs>
+      <rect width="240" height="120" fill="url(#a3-void)"/>
+      <rect width="240" height="120" fill="url(#a3-stars)"/>
+      <g transform="translate(120,54)">
+        <circle r="48" fill="none" stroke="#ffd36a" stroke-width="1.2" opacity=".35"/>
+        <circle r="38" fill="none" stroke="#ff3b5c" stroke-width="2.5" stroke-dasharray="16 10" opacity=".8"/>
+        <circle r="24" fill="url(#a3-red)" opacity=".8"/>
+        <circle r="24" fill="none" stroke="#ffd36a" stroke-width="1.5" opacity=".6"/>
+        <circle r="14" fill="#f4e8d0"/>
+        <circle cx="-3" cy="-2" r="6" fill="#ffd23f"/><circle cx="-4" cy="-2" r="2.8" fill="#12040c"/>
+        <path d="M-11 8Q0 15 11 8" fill="none" stroke="#12040c" stroke-width="2.5"/>
+        <g stroke="#ffd36a" stroke-width="2" fill="none">
+          <path d="M0-48V-64"/><path d="M0 48V64"/>
+          <path d="M-48 0H-64"/><path d="M48 0H64"/>
+          <path d="M-34-34l-12-12"/><path d="M34-34l12-12"/><path d="M-34 34l-12 12"/><path d="M34 34l12 12"/>
+        </g>
+      </g>
+      <g stroke="url(#a3-gold)" stroke-width="3" fill="none" stroke-linecap="round">
+        <path d="M120 12v96"/><path d="M68 34H172"/><path d="M68 34v14M172 34v14"/>
+      </g>
+      <g stroke="#ffd36a" stroke-width="1.5" fill="none" opacity=".8">
+        <path d="M68 48l-12 8h24Z"/><path d="M172 48l-12 8h24Z"/>
+        <path d="M68 56l4 10 4-10 4 10 4-10 4 10" opacity=".6"/>
+        <path d="M172 56l4 10 4-10 4 10 4-10 4 10" opacity=".6"/>
+      </g>
+      <g fill="#f4e8d0" opacity=".9">
+        <path d="M8 78l9 18 9-18-9 6Z"/><path d="M214 78l9 18 9-18-9 6Z"/>
+        <path d="M34 22l6 12 6-12-6 4Z" opacity=".65"/><path d="M192 20l6 12 6-12-6 4Z" opacity=".65"/>
+      </g>
+      <g fill="#ff3b5c" opacity=".8">
+        <ellipse cx="28" cy="58" rx="7" ry="4"/><ellipse cx="210" cy="58" rx="7" ry="4"/>
+        <ellipse cx="56" cy="100" rx="5" ry="3"/><ellipse cx="184" cy="100" rx="5" ry="3"/>
+        <circle cx="64" cy="100" r="1.5" fill="#12040c"/><circle cx="184" cy="100" r="1.5" fill="#12040c"/>
+      </g>
+      <g stroke="#ff3b5c" stroke-width="3" fill="none" opacity=".7">
+        <path d="M0 112c24-14 40 8 64-4s40 6 64-4 40 8 64-4 32 2 48-2"/>
+        <path d="M12 88c10 8 18-4 28 4M200 88c10 8 18-4 28 4" stroke-width="2"/>
+      </g>
+      <g fill="#12040c" opacity=".8">
+        <path d="M0 112c18-20 34 4 52-10 10-8 14 4 24 2 14-4 12-18 24-16 10 2 8 14 18 16 12 2 18-16 30-12 10 4 8 18 20 20 14 2 22-20 34-12 10 6 4 20 18 22 8 1 14-4 20-10v18H0Z"/>
+      </g>
+    </svg>`;
   }
 
   /* ---------------- ARTES DAS CAMADAS ---------------- */
