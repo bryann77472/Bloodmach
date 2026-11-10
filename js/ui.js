@@ -32,6 +32,29 @@ BM.ui = (function () {
   let cepkChatterBag = [];
   let cepkChatterLast = -1;
 
+  const HUB_TIPS = [
+    'O peso das pernas e da carcaça altera o Reflexo contra ataques imparáveis.',
+    'Parry perfeito devolve o dano e ainda atordoa o inimigo.',
+    'Explosões causam 125% de dano de perto, 100% no médio e 85% de longe.',
+    'Sangramento ignora parte da defesa e dura alguns turnos.',
+    'Misture braços no loadout para liberar passivas diferentes na mesma luta.',
+    'O Kit de Reparo revive o V1 com 30% da integridade.',
+    'Checkpoints restauram a contagem exata de itens de quando você passou por eles.',
+    'Fugir encerra a luta sem recompensa, mas mantém o progresso da camada.',
+    'Parries e golpes certeiros sobem o estilo mais rápido.',
+    'A recarga de um golpe conta turnos: planeje antes de usar.',
+    'Contra-Golpe causa dano dobrado em alvos Atordoados ou Expostos.',
+    'Distância Longe favorece projéteis; Perto favorece corpo a corpo.',
+    'Os recursos coletados só entram na mochila ao concluir a camada.',
+    'Cada dificuldade tem o seu próprio save independente.',
+    'Derretido e Ferrugem se acumulam e podem virar a luta.',
+    'Use o Dash para desviar completamente de um golpe parável.'
+  ];
+
+  function randomTip() {
+    return HUB_TIPS[Math.floor(Math.random() * HUB_TIPS.length)];
+  }
+
   /* ---------------- helpers ---------------- */
   const el = sel => app().querySelector(sel);
   const els = sel => Array.prototype.slice.call(app().querySelectorAll(sel));
@@ -508,8 +531,8 @@ BM.ui = (function () {
           </div>
         </div>
         <div class="shop-foot">
-          <span>TECLADO: 1-4 seleciona · ESC volta</span>
-          <span class="dim">Dica: o peso das pernas e da carcaça altera o REFLEXO contra ataques imparáveis.</span>
+          <span class="key-hint"><b>ESC</b> volta</span>
+          <span class="dim tip-line">Dica: ${randomTip()}</span>
         </div>
       </div>`);
 
@@ -962,7 +985,8 @@ BM.ui = (function () {
           </div>
         </div>
         <div class="hub-foot">
-          <span class="dim">Dica: legs pesadas aumentam HP efetivo mas reduzem o Reflexo contra ataques imparáveis.</span>
+          <span class="key-hint"><b>ESC</b> volta ao título</span>
+          <span class="dim tip-line">Dica: ${randomTip()}</span>
           <button class="btn small" data-a="title">Título</button>
         </div>
       </div>`);
@@ -1140,7 +1164,7 @@ BM.ui = (function () {
   /* =========================================================
      BATALHA
      ========================================================= */
-  function battle() {
+  function battle(opts) {
     current = 'battle';
     battleKeys();
     BM.audio.playMusic(musicFor(BM.battle.state.layerIndex, BM.battle.state.isBoss));
@@ -1150,9 +1174,17 @@ BM.ui = (function () {
       night: S.isBoss && S.enemy.id === 'v2',
       noAcid: S.isBoss && S.enemy.id === 'gabriel',
       ship: S.isBoss && S.enemy.id === 'ferryman',
-      heresy: S.isBoss && S.enemy.id === 'gabriel_heresy'
+      heresy: S.isBoss && S.enemy.id === 'gabriel_heresy',
+      cathedral: S.isBoss && S.enemy.id === 'gabriel_heresy',
+      greedV2: S.isBoss && S.enemy.id === 'v2_greed',
+      gluttonyGabriel: S.isBoss && S.enemy.id === 'gabriel'
     };
-    const variant = bossFx.night ? 'night' : (bossFx.noAcid ? 'noacid' : (bossFx.ship ? 'ship' : (bossFx.heresy ? 'heresy' : '')));
+    const variant = bossFx.night ? 'night'
+      : bossFx.ship ? 'ship'
+        : bossFx.heresy ? (bossFx.cathedral ? 'heresycathedral' : 'heresy')
+          : bossFx.greedV2 ? 'greedv2'
+            : bossFx.gluttonyGabriel ? 'gluttonyvoid'
+              : '';
     const arms = BM.save.equippedArms().map(id => D.ARMS.find(a => a.id === id)).filter(Boolean);
     const accent = arms.length ? arms[0].corHex : '#4aa8ff';
     mount(`
@@ -1210,6 +1242,181 @@ BM.ui = (function () {
       else if (a === 'dash') BM.battle.runTurn({ type:'dash' });
       else if (a === 'arranque') BM.battle.runTurn({ type:'arranque' });
     });
+    if (opts && opts.tutorial) startBattleTutorial();
+  }
+
+  /* =========================================================
+     TUTORIAL INTERATIVO DA BATALHA
+     Um destaque iluminado aponta o elemento explicado. O tutorial
+     só avança quando o jogador clica exatamente no destaque.
+     ========================================================= */
+  const TUT_STEPS = [
+    {
+      target: '#f-enemy .f-panel',
+      title: 'Seu inimigo',
+      text: 'O objetivo é zerar a integridade dele. A barra mostra a vida restante. Quando ela chega a zero, você vence a batalha.',
+      cta: 'Clique no painel do inimigo'
+    },
+    {
+      target: '#intent',
+      title: 'Intenção',
+      text: 'O inimigo anuncia o próximo golpe. PARÁVEL pode ser defendido com parry. IMPARÁVEL não aceita parry, mas pode ser esquivado ou refletido. INEVITÁVEL não tem como evitar.',
+      cta: 'Clique na intenção'
+    },
+    {
+      target: '#dist',
+      title: 'Distância',
+      text: 'PERTO favorece golpes corpo a corpo. LONGE favorece projéteis. Explosões causam mais dano perto e menos longe.',
+      cta: 'Clique na distância'
+    },
+    {
+      target: '#f-player .f-panel',
+      title: 'Sua integridade',
+      text: 'A barra azul é a vida do V1. Os ícones abaixo mostram status como sangramento, ferrugem e atordoamento.',
+      cta: 'Clique na sua barra'
+    },
+    {
+      target: '.style-meter',
+      title: 'Estilo',
+      text: 'Ações estilosas enchem o medidor e sobem o rank de D até SSS. Quanto maior o rank, maior o multiplicador de recompensa no fim da luta.',
+      cta: 'Clique no medidor de estilo'
+    },
+    {
+      target: '#moves',
+      title: 'Seus golpes',
+      text: 'Cada card é um ataque do seu loadout. O poder e o tipo aparecem no card; a recarga impede usá-lo por alguns turnos. As teclas 1 a 4 também escolhem golpes.',
+      cta: 'Clique nos golpes'
+    },
+    {
+      target: '#aux',
+      title: 'Itens e ações',
+      text: 'Item abre a mochila. Dash e Arranque dependem das pernas equipadas. Fugir tenta encerrar a luta, mas não rende recompensa.',
+      cta: 'Clique nos botões auxiliares'
+    },
+    {
+      target: '#blog',
+      title: 'Registro de combate',
+      text: 'O log mostra o que acabou de acontecer: dano, status, parry e falhas. A última linha é sempre a mais recente.',
+      cta: 'Clique no registro'
+    },
+    {
+      target: '#moves .mv:not(:disabled)',
+      title: 'Sua vez',
+      text: 'Agora ataque. Clique no golpe destacado para usá-lo; depois o inimigo responde. É nesse contra-ataque que você vai aprender o parry.',
+      cta: 'Clique no golpe destacado para atacar',
+      action: 'attack'
+    }
+  ];
+
+  let tutState = null;
+
+  function startBattleTutorial() {
+    if (tutState) return;
+    const root = el('#battle-root');
+    if (!root) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'battle-tutorial';
+    wrap.id = 'battle-tutorial';
+    wrap.innerHTML =
+      '<div class="tut-shade"></div>' +
+      '<div class="tut-spot" id="tut-spot"></div>' +
+      '<div class="tut-hotspot" id="tut-hotspot" role="button" tabindex="0"></div>' +
+      '<div class="tut-tip" id="tut-tip">' +
+        '<div class="tut-head"><span class="tut-count" id="tut-count"></span><span class="tut-title" id="tut-title"></span></div>' +
+        '<div class="tut-text" id="tut-text"></div>' +
+        '<div class="tut-cta" id="tut-cta"></div>' +
+      '</div>';
+    root.appendChild(wrap);
+    tutState = { step: 0, target: null, wrap: wrap, onResize: null };
+    const hotspot = wrap.querySelector('#tut-hotspot');
+    hotspot.addEventListener('click', tutAdvance);
+    hotspot.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); tutAdvance(); }
+    });
+    wrap.querySelector('.tut-shade').addEventListener('click', tutNudge);
+    tutState.onResize = tutReposition;
+    window.addEventListener('resize', tutState.onResize);
+    tutShow(0);
+  }
+
+  function tutShow(i) {
+    if (!tutState) return;
+    const step = TUT_STEPS[i];
+    if (!step) { tutFinish(); return; }
+    const target = document.querySelector(step.target);
+    const rect = target ? target.getBoundingClientRect() : null;
+    // elementos escondidos (ex.: medidor no mobile) são pulados
+    if (!target || !rect || !rect.width || !rect.height) { tutShow(i + 1); return; }
+    tutState.step = i;
+    tutState.target = target;
+    tutState.wrap.querySelector('#tut-count').textContent = 'TUTORIAL ' + (i + 1) + ' / ' + TUT_STEPS.length;
+    tutState.wrap.querySelector('#tut-title').textContent = step.title;
+    tutState.wrap.querySelector('#tut-text').textContent = step.text;
+    tutState.wrap.querySelector('#tut-cta').textContent = step.cta;
+    const tip = tutState.wrap.querySelector('#tut-tip');
+    tip.classList.remove('nudge');
+    tutReposition();
+  }
+
+  function tutReposition() {
+    if (!tutState || !tutState.target || !tutState.target.isConnected) return;
+    const wrap = tutState.wrap;
+    const spot = wrap.querySelector('#tut-spot');
+    const hot = wrap.querySelector('#tut-hotspot');
+    const tip = wrap.querySelector('#tut-tip');
+    const r = tutState.target.getBoundingClientRect();
+    const pad = 7;
+    const x = Math.max(4, r.left - pad);
+    const y = Math.max(4, r.top - pad);
+    const w = Math.min(window.innerWidth - 8, r.width + pad * 2);
+    const h = Math.min(window.innerHeight - 8, r.height + pad * 2);
+    [spot, hot].forEach(n => {
+      n.style.left = x + 'px';
+      n.style.top = y + 'px';
+      n.style.width = w + 'px';
+      n.style.height = h + 'px';
+    });
+    const tw = Math.min(360, window.innerWidth - 32);
+    tip.style.width = tw + 'px';
+    const th = tip.offsetHeight || 160;
+    let top = r.top > th + 40 ? r.top - th - 18 : r.bottom + 18;
+    top = clamp(top, 12, Math.max(12, window.innerHeight - th - 12));
+    const left = clamp(r.left + r.width / 2 - tw / 2, 12, Math.max(12, window.innerWidth - tw - 12));
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
+  function tutAdvance() {
+    if (!tutState) return;
+    const step = TUT_STEPS[tutState.step];
+    BM.audio.play('select');
+    if (step && step.action === 'attack') {
+      tutFinish();
+      const S = BM.battle.state;
+      const btn = document.querySelector('#moves .mv:not(:disabled)');
+      const id = btn && btn.getAttribute('data-move');
+      if (S && !S.busy && !S.over && id) BM.battle.runTurn({ type: 'move', id });
+      return;
+    }
+    tutShow(tutState.step + 1);
+  }
+
+  function tutNudge() {
+    if (!tutState) return;
+    const spot = tutState.wrap.querySelector('#tut-spot');
+    const tip = tutState.wrap.querySelector('#tut-tip');
+    [spot, tip].forEach(n => {
+      n.classList.remove('nudge');
+      void n.offsetWidth;
+      n.classList.add('nudge');
+    });
+  }
+
+  function tutFinish() {
+    if (!tutState) return;
+    if (tutState.onResize) window.removeEventListener('resize', tutState.onResize);
+    if (tutState.wrap && tutState.wrap.parentNode) tutState.wrap.parentNode.removeChild(tutState.wrap);
+    tutState = null;
   }
 
   function battleKeys() {
@@ -1217,6 +1424,7 @@ BM.ui = (function () {
     battleKeys.on = true;
     document.addEventListener('keydown', function (ev) {
       if (BM.ui.current !== 'battle') return;
+      if (tutState) return;
       const S = BM.battle.state;
       if (!S || S.busy || S.over) return;
       if (ev.key === '1' || ev.key === '2' || ev.key === '3' || ev.key === '4') {
@@ -1391,6 +1599,22 @@ BM.ui = (function () {
     const layer = el('#parry-layer');
     if (!layer) return Promise.resolve('miss');
     parryActive = true;
+    const parryState = BM.battle.state;
+    const tut = !!(parryState && parryState.tutorial && !parryState.tutorialParryDone);
+    let tutTip = null;
+    if (tut) {
+      // Dica do tutorial durante o primeiro parry da batalha de teste.
+      // Fica fora da parry-layer para continuar visível depois do resultado.
+      const root = el('#battle-root');
+      if (root) {
+        tutTip = document.createElement('div');
+        tutTip.className = 'tut-parry-tip';
+        tutTip.innerHTML = '<div class="tut-parry-label">PARRY</div>' +
+          '<div class="tut-parry-title">Clique dentro do círculo quando ele fechar</div>' +
+          '<div class="tut-parry-sub">Perfeito devolve o golpe · Bom reduz o dano pela metade</div>';
+        root.appendChild(tutTip);
+      }
+    }
     return new Promise(resolve => {
       const result = el('#parry-result');
       const hint = el('#parry-hint');
@@ -1414,7 +1638,7 @@ BM.ui = (function () {
       const R1 = Math.round(R0 * 0.32);
 
       const circle = document.createElement('div');
-      circle.className = 'parry-circle';
+      circle.className = 'parry-circle' + (tut ? ' tut-target' : '');
       circle.style.left = cx + 'px';
       circle.style.top = cy + 'px';
       layer.appendChild(circle);
@@ -1433,9 +1657,10 @@ BM.ui = (function () {
         circle.style.height = (r * 2) + 'px';
         circle.style.marginLeft = (-r) + 'px';
         circle.style.marginTop = (-r) + 'px';
-        if (t >= 1 - pctPerfect) circle.className = 'parry-circle zona-perfeita';
-        else if (t >= 1 - pctPerfect - pctGood) circle.className = 'parry-circle zona-boa';
-        else circle.className = 'parry-circle';
+        const zonaPerfeita = t >= 1 - pctPerfect;
+        const zonaBoa = !zonaPerfeita && t >= 1 - pctPerfect - pctGood;
+        circle.classList.toggle('zona-perfeita', zonaPerfeita);
+        circle.classList.toggle('zona-boa', zonaBoa);
         if (t >= 1) { finish('miss'); return; }
         raf = requestAnimationFrame(desenhar);
       }
@@ -1448,6 +1673,20 @@ BM.ui = (function () {
         if (result) {
           result.className = 'parry-result parry-result-float ' + res;
           result.textContent = res === 'perfect' ? 'PERFEITO!' : (res === 'good' ? 'BOM' : 'FALHOU');
+        }
+        if (tut) {
+          if (parryState) parryState.tutorialParryDone = true;
+          if (tutTip) {
+            tutTip.classList.add(res);
+            const titulo = tutTip.querySelector('.tut-parry-title');
+            const sub = tutTip.querySelector('.tut-parry-sub');
+            if (titulo) {
+              titulo.textContent = res === 'perfect' ? 'PERFEITO! O golpe foi devolvido.'
+                : (res === 'good' ? 'BOM! Dano reduzido pela metade.' : 'FALHOU. Duas falhas seguidas quebram o Feedbacker.');
+            }
+            if (sub) sub.textContent = 'Tutorial de parry concluído.';
+            setTimeout(() => { if (tutTip && tutTip.parentNode) tutTip.parentNode.removeChild(tutTip); }, 2400);
+          }
         }
         BM.audio.play(res === 'miss' ? 'parryMiss' : 'parry');
         setTimeout(() => {
@@ -1840,10 +2079,101 @@ BM.ui = (function () {
    * INTRODUÇÃO DE CHEFE — cutscene antes da luta de chefe
    * Somente os chefes têm cutscene; inimigos comuns entram direto.
    * ========================================================= */
+  /* =========================================================
+   * GREED — cutscene do V2 no trono da pirâmide
+   * V2 sentado → se ergue → tochas verdes acendem → estala os dedos.
+   * ========================================================= */
+  function greedV2Intro(layerIndex, onDone) {
+    current = 'greedV2Intro';
+    BM.audio.stopMusic();
+    const v2 = BM.sprites.get('v2');
+    mount(`
+      <div class="screen greed-v2-intro" id="greed-v2-intro">
+        <div class="gv-bg">${BM.sprites.arena('greed', { greedV2: true })}</div>
+        <div class="gv-vignette"></div>
+        <div class="gv-hall-glow"></div>
+        <div class="gv-v2" id="gv-v2">${v2}</div>
+        <div class="gv-seat"></div>
+        <div class="gv-torches">
+          <div class="gv-torch" style="--x:6%;--d:.00s"><i class="gv-flame"></i><i class="gv-flame-core"></i><b class="gv-torch-glow"></b></div>
+          <div class="gv-torch" style="--x:24%;--d:.14s"><i class="gv-flame"></i><i class="gv-flame-core"></i><b class="gv-torch-glow"></b></div>
+          <div class="gv-torch" style="--x:76%;--d:.07s"><i class="gv-flame"></i><i class="gv-flame-core"></i><b class="gv-torch-glow"></b></div>
+          <div class="gv-torch" style="--x:94%;--d:.20s"><i class="gv-flame"></i><i class="gv-flame-core"></i><b class="gv-torch-glow"></b></div>
+        </div>
+        <div class="gv-title">V2 <span>— ASCENSÃO</span></div>
+        <div class="gv-sub">SENHOR DA PIRÂMIDE · CHEFE</div>
+        <div class="gv-snap"></div>
+        <div class="gv-hint" id="gv-hint">CLIQUE / ESPAÇO PARA PULAR</div>
+      </div>`);
+    const scene = el('#greed-v2-intro');
+    const hint = el('#gv-hint');
+    const timers = [];
+    let finished = false;
+
+    function cleanup() {
+      timers.forEach(function (t) { clearTimeout(t); });
+      scene.removeEventListener('click', skip);
+      document.removeEventListener('keydown', onKey);
+    }
+
+    function finish(skip) {
+      if (finished) return;
+      finished = true;
+      cleanup();
+      if (skip) {
+        scene.classList.add('estala');
+        BM.audio.play('parry');
+      }
+      BM.audio.playMusic(musicFor(layerIndex, true));
+      setTimeout(function () {
+        blackScreen(function () { if (onDone) onDone(); });
+      }, skip ? 260 : 360);
+    }
+
+    function skip(ev) {
+      if (ev) ev.preventDefault();
+      finish(true);
+    }
+
+    function onKey(ev) {
+      if (ev.key === ' ' || ev.key === 'Enter' || ev.key === 'Escape') {
+        ev.preventDefault();
+        finish(true);
+      }
+    }
+
+    scene.addEventListener('click', skip);
+    document.addEventListener('keydown', onKey);
+
+    timers.push(setTimeout(function () {
+      scene.classList.add('levanta');
+      BM.audio.play('heavy');
+      if (hint) hint.textContent = 'V2 SE ERGUE';
+    }, 1000));
+
+    timers.push(setTimeout(function () {
+      scene.classList.add('aceso');
+      BM.audio.play('blood');
+      BM.audio.playMusic(musicFor(layerIndex, true));
+      if (hint) hint.textContent = 'AS TOCHAS VERDES DESPERTAM';
+    }, 1750));
+
+    timers.push(setTimeout(function () {
+      scene.classList.add('estala');
+      BM.audio.play('parry');
+      if (hint) hint.textContent = 'ELE ESTALA OS DEDOS';
+    }, 2700));
+
+    timers.push(setTimeout(function () {
+      finish(false);
+    }, 3450));
+  }
+
   function enemyIntro(enemyId, layerIndex, onDone) {
     const enemy = D.ENEMIES[enemyId];
     if (!enemy) { if (onDone) onDone(); return; }
     if (!enemy.boss) { if (onDone) onDone(); return; }
+    if (enemyId === 'v2_greed') { greedV2Intro(layerIndex, onDone); return; }
     current = 'enemyIntro';
     const lines = [];               // chefes não falam: só a imagem e o nome
     const gigante = !!enemy.giant;
@@ -2339,6 +2669,21 @@ BM.ui = (function () {
   }
 
   /* ---------------- export ---------------- */
+  // ESC volta da loja e da oficina. Ignora quando há um modal aberto.
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key !== 'Escape' || ev.defaultPrevented) return;
+    if (document.querySelector('.modal')) return;
+    if (current === 'shop') {
+      ev.preventDefault();
+      BM.audio.play('cancel');
+      goBack();
+    } else if (current === 'lobby') {
+      ev.preventDefault();
+      BM.audio.play('cancel');
+      title();
+    }
+  });
+
   return {
     mount, el, els, toast, backFromAux,
     get current() { return current; },

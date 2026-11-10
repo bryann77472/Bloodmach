@@ -893,6 +893,8 @@ BM.battle = (function () {
       layer: layer,
       layerMod: layer.modifier,
       isBoss: isBoss,
+      tutorial: !!opts.tutorial,
+      tutorialParryDone: false,
       diff: diff,
       passives: passives,
       player: {
@@ -932,7 +934,15 @@ BM.battle = (function () {
     };
 
     enemy.canParry = !!passives.parry && isBoss;
-    chooseIntent();
+    if (S.tutorial) {
+      // Batalha de teste: o primeiro golpe do inimigo é sempre parável
+      // e não erra, para o tutorial conseguir ensinar o parry de verdade.
+      const primeiro = enemy.moves.find(m => m.parryable !== false && !m.unavoidable && m.kind !== 'buff' && m.kind !== 'heal');
+      if (primeiro) enemy.intent = Object.assign({}, primeiro, { acc: 100 });
+      else chooseIntent();
+    } else {
+      chooseIntent();
+    }
     log('>>> ' + enemy.name + ' aparece! <<<', 'warn');
     if (isBoss) log('O V1 treme. Este não é um husk comum.', 'warn');
     if (enemyDef.copies) log('V2 copiou o seu build.', 'hl');

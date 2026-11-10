@@ -67,25 +67,34 @@ mapa da camada e no card da Oficina:
   cabos e faixas de perigo.
 - **Gluttony — O Estômago do Mundo:** paredes, teto e chão de músculo vermelho exposto,
   apenas **algumas poças pequenas de ácido**, tudo iluminado fracamente pelo brilho
-  amarelado da bile. **Contra o Gabriel não há ácido algum** no cenário.
+  amarelado da bile. **Contra o Gabriel não há ácido algum**: a arena vira uma
+  **plataforma-boca circular** cercada de dentes, com um **olho gigante no chão** e um
+  **coração humano colossal** pulsando ao fundo, com veias e artérias — tudo flutuando
+  num void preto infinito.
 - **Greed — O Deserto dos Reis:** céu incandescente, sol colossal, pirâmides gigantes,
   templo egípcio, obelisco, estátua quebrada, colunata greco-romana e dunas de areia.
-  A luta acontece num terraço de arenito, com o deserto ao fundo.
+  A luta acontece num terraço de arenito, com o deserto ao fundo. **Contra o V2 —
+  Ascensão**, a batalha acontece **dentro de uma pirâmide**: uma câmara enorme com
+  trono, tochas verdes nos cantos e paredes cobertas de **hieroglifos de Cerberus**.
 - **Wrath — O Mar dos Afogados:** água escura e cinzenta, céu de tempestade cortado por
   relâmpagos, pontes de ferro, torres góticas submersas e cascos de navios abandonados.
   Contra o **Ferryman**, a arena vira o **convés de um navio**, com mastro, cordas e
   lanterna.
 - **Heresy — A Cidade de Dis:** catedrais góticas em ruínas, sepulcros de ferro
   incandescente, brasas no ar e abismos de lava e sangue fervente. A paleta é dominada
-  por **vermelho-sangue, carvão e amarelo-fogo**.
+  por **vermelho-sangue, carvão e brasas avermelhadas**. **Contra Gabriel — Heresia**,
+  a arena vira uma **catedral de ossos**, com caveiras espalhadas pelo chão, caveiras
+  em estacas, vitral vermelho e iluminação de sangue.
 - Modificadores de camada: *Maré Morta* (dano +10%), *Luxúria* (inimigos +18% ATQ),
   *Digestão Ácida* (cura −30%), *Sol Impiedoso* (dano recebido +15%), *Maré de Ferro*
   (dano recebido +12%) e *Fogo Eterno* (inimigos +20% ATQ).
 - **V2** é o chefe de Limbo: copia seus 2 braços e seus 4 movimentos, usa parry… e **foge**
   quando é derrotado — a fuga conta como derrota, conclui a camada e libera o **Whiplash**.
 - **V2 — Ascensão** é o chefe de Greed: uma versão **mais forte**, dourada, com mais HP,
-  cópias do seu arsenal e a técnica inevitável `ASCENSÃO`. **Ele não foge**: quando cai,
-  a camada termina e uma cutscene mostra o corpo desligando no deserto.
+  cópias do seu arsenal e a técnica inevitável `ASCENSÃO`. Antes da luta, uma cutscene
+  mostra V2 **sentado no trono da pirâmide**; ele se ergue, as **tochas verdes acendem**
+  e ele **estala os dedos** para começar o combate. **Ele não foge**: quando cai, a
+  camada termina e uma cutscene mostra o corpo desligando no deserto.
 - **Ferryman** é o chefe de Wrath: um barqueiro gigante com remo, lanterna e correntes
   de almas, enfrentado no convés de um navio. Ele usa a inevitável `SENTENÇA DO
   BARQUEIRO`; ao cair, o navio afunda e as águas se aquietam.
@@ -108,7 +117,8 @@ mapa da camada e no card da Oficina:
   tomando conta dela e a mão se desintegrando em cacos e pó antes do diálogo final.
 - **Cutscene só dos chefes**: antes de encarar um chefe, ele aparece em tela cheia com
   o nome e a facção (sem falar, como no original) e a luta começa quando você clica.
-  Os **inimigos comuns entram direto na luta**, sem cutscene.
+  A exceção é **V2 — Ascensão em Greed**, que tem uma cutscene própria no trono da
+  pirâmide. Os **inimigos comuns entram direto na luta**, sem cutscene.
 - Chefe final de Gluttony: **Gabriel** — 2 fases, com `SENTENÇA` inevitável.
 - Depois de derrotá-lo, **Gabriel sangra**, **foge** em brasa e só então aparece a tela de desligamento do V1.
 - **Morte de V2 em Greed:** a luta não tem fuga. Depois do resultado da camada, uma
@@ -176,6 +186,14 @@ qual dos três quer jogar — o cartão mostra se já existe save e até onde vo
 Além da vida e do dano, os inimigos ficam **mais imprecisos no Lenient** e mais
 certeiros no Violent. O **Lenient dá 1 núcleo por camada concluída**; Standard e
 Violent dão **2 núcleos**.
+
+Todo **novo save** começa com a introdução e uma **batalha de teste contra um Husk**.
+Nela aparece um **tutorial interativo na tela**: cada elemento da interface é destacado
+e explicado (vida, intenção do inimigo, distância, estilo, golpes, itens, registro) e o
+tutorial só avança quando você clica no elemento iluminado. A primeira resposta do Husk
+é sempre um golpe parável: o tutorial mostra como clicar dentro do círculo do parry,
+o que é um parry perfeito e o que acontece quando ele falha. Depois disso a luta segue
+normal até a vitória, que libera a Oficina.
 
 ### Rank da camada
 No fim de cada camada o jogo avalia três categorias:
@@ -334,6 +352,9 @@ Ascensão** em Greed. As **Pernas de Fibra** e a **Carcaça de Fibra** também e
   O saldo da carteira é atualizado a cada compra.
 - A tela de **ajustar movimentos** tem botão para **abrir a loja** e **voltar à
   oficina** — e usa a mesma trilha da loja (trocar entre as duas não reinicia a música).
+- O rodapé da **loja** e da **oficina** mostra uma **dica aleatória** a cada entrada,
+  sorteada de uma lista de dicas de combate e progressão. **ESC** volta da loja para a
+  oficina e da oficina para o título.
 
 **Consumíveis iniciais** (disponíveis desde o começo): *Bolsa de Sangue* e
 *Adrenalina*. *Moeda*, *Bomba* e *Kit de Reparo* exigem **nível**.

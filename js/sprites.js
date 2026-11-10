@@ -2829,12 +2829,12 @@ BM.sprites = (function () {
     return `<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
       <defs>
         <linearGradient id="he-sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#080202"/><stop offset=".34" stop-color="#2a0806"/>
-          <stop offset=".64" stop-color="#8a1a12"/><stop offset=".86" stop-color="#d84a18"/><stop offset="1" stop-color="#ffb01f"/>
+          <stop offset="0" stop-color="#050101"/><stop offset=".34" stop-color="#1a0306"/>
+          <stop offset=".64" stop-color="#5a0610"/><stop offset=".86" stop-color="#a80a1c"/><stop offset="1" stop-color="#d41430"/>
         </linearGradient>
         <radialGradient id="he-glow">
-          <stop offset="0" stop-color="#ffd27a" stop-opacity=".9"/><stop offset=".35" stop-color="#ff7a1a" stop-opacity=".4"/>
-          <stop offset="1" stop-color="#d82a10" stop-opacity="0"/>
+          <stop offset="0" stop-color="#ff8a9a" stop-opacity=".9"/><stop offset=".35" stop-color="#c8102e" stop-opacity=".4"/>
+          <stop offset="1" stop-color="#6a0412" stop-opacity="0"/>
         </radialGradient>
         <linearGradient id="he-stone" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stop-color="#4a2a22"/><stop offset=".55" stop-color="#24100c"/><stop offset="1" stop-color="#0a0302"/>
@@ -2843,10 +2843,10 @@ BM.sprites = (function () {
           <stop offset="0" stop-color="#120a08"/><stop offset=".5" stop-color="#5a2a1a"/><stop offset="1" stop-color="#120a08"/>
         </linearGradient>
         <linearGradient id="he-lava" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#ffd27a"/><stop offset=".35" stop-color="#ff7a1a"/><stop offset="1" stop-color="#8a1208"/>
+          <stop offset="0" stop-color="#ff8a9a"/><stop offset=".35" stop-color="#d41430"/><stop offset="1" stop-color="#4a0008"/>
         </linearGradient>
         <radialGradient id="he-window">
-          <stop offset="0" stop-color="#fff3c4"/><stop offset=".45" stop-color="#ffb01f"/><stop offset="1" stop-color="#d82a10" stop-opacity=".2"/>
+          <stop offset="0" stop-color="#ffc2c8"/><stop offset=".45" stop-color="#d41430"/><stop offset="1" stop-color="#6a0412" stop-opacity=".2"/>
         </radialGradient>
       </defs>
       <rect width="800" height="360" fill="url(#he-sky)"/>
@@ -2888,14 +2888,14 @@ BM.sprites = (function () {
         <rect x="0" y="250" width="800" height="52"/>
         <path d="M0 250 L60 210 L120 250 L180 218 L240 250 L300 224 L360 250 L420 214 L480 250 L540 226 L600 250 L660 216 L720 250 L780 224 L800 250 Z"/>
       </g>
-      <g fill="#ff7a1a" opacity=".8">
+      <g fill="#d41430" opacity=".8">
         <path d="M54 250 C44 230 48 214 58 200 C62 218 70 228 66 250 Z"/>
         <path d="M128 250 C118 232 122 216 132 204 C136 220 144 232 140 250 Z"/>
         <path d="M252 250 C242 230 246 214 256 202 C260 218 268 230 264 250 Z"/>
         <path d="M676 250 C666 230 670 214 680 202 C684 218 692 230 688 250 Z"/>
         <path d="M744 250 C734 232 738 216 748 204 C752 220 760 232 756 250 Z"/>
       </g>
-      <g fill="none" stroke="#ffb01f" stroke-width="2" opacity=".6">
+      <g fill="none" stroke="#ff5a6e" stroke-width="2" opacity=".6">
         <path d="M58 202 C52 218 58 232 54 246"/><path d="M132 206 C126 222 132 236 128 248"/>
         <path d="M256 204 C250 220 256 234 252 246"/><path d="M680 204 C674 220 680 234 676 246"/>
       </g>
@@ -2903,11 +2903,11 @@ BM.sprites = (function () {
         <path d="M0 300 C80 286 150 304 220 296 C300 286 370 306 450 298 C530 290 600 306 680 298 C740 292 780 300 800 296 L800 360 L0 360 Z" fill="#120604"/>
         <path d="M0 306 C90 292 160 310 240 302 C330 292 400 312 490 304 C580 296 650 312 730 304 C770 300 790 304 800 302 L800 332 C740 338 680 326 610 334 C540 342 470 326 390 334 C310 342 230 326 150 334 C90 340 40 334 0 338 Z"
               fill="url(#he-lava)"/>
-        <g stroke="#ffd27a" stroke-width="2" opacity=".7" fill="none">
+        <g stroke="#ff8a9a" stroke-width="2" opacity=".7" fill="none">
           <path d="M0 310 Q90 296 160 310 T320 310 T480 306 T640 312 T800 308"/>
           <path d="M40 324 Q120 312 200 324 T360 324 T520 320 T680 326"/>
         </g>
-        <g fill="#ffb01f" opacity=".75">
+        <g fill="#ff5a6e" opacity=".75">
           <circle cx="90" cy="316" r="2.2"/><circle cx="250" cy="320" r="1.8"/><circle cx="410" cy="314" r="2"/>
           <circle cx="570" cy="322" r="1.6"/><circle cx="720" cy="316" r="2.1"/>
         </g>
@@ -2915,12 +2915,12 @@ BM.sprites = (function () {
       <g>
         <rect x="42" y="286" width="86" height="34" rx="3" fill="url(#he-iron)" stroke="#050101" stroke-width="3"/>
         <rect x="50" y="294" width="70" height="18" rx="2" fill="#0a0302"/>
-        <g stroke="#ff7a1a" stroke-width="2" opacity=".9">
+        <g stroke="#d41430" stroke-width="2" opacity=".9">
           <path d="M54 300 H116"/><path d="M54 306 H116"/><path d="M54 312 H100"/>
         </g>
         <rect x="660" y="282" width="98" height="38" rx="3" fill="url(#he-iron)" stroke="#050101" stroke-width="3"/>
         <rect x="670" y="290" width="78" height="20" rx="2" fill="#0a0302"/>
-        <g stroke="#ffb01f" stroke-width="2" opacity=".8">
+        <g stroke="#ff5a6e" stroke-width="2" opacity=".8">
           <path d="M674 296 H744"/><path d="M674 302 H744"/><path d="M674 308 H724"/>
         </g>
       </g>
@@ -2928,16 +2928,440 @@ BM.sprites = (function () {
         <path d="M300 302 Q280 260 300 220"/><path d="M500 302 Q520 260 500 220"/>
         <path d="M220 302 Q200 250 220 200"/><path d="M580 302 Q600 250 580 200"/>
       </g>
-      <g fill="#ffb01f" opacity=".7">
+      <g fill="#ff5a6e" opacity=".7">
         <circle cx="160" cy="180" r="2"/><circle cx="340" cy="120" r="1.6"/><circle cx="480" cy="150" r="2.2"/>
         <circle cx="620" cy="100" r="1.8"/><circle cx="700" cy="190" r="1.5"/><circle cx="240" cy="90" r="1.7"/>
         <circle cx="560" cy="220" r="2"/><circle cx="100" cy="240" r="1.6"/>
       </g>
-      <g fill="#ff7a1a" opacity=".35">
+      <g fill="#d41430" opacity=".35">
         <circle cx="300" cy="200" r="40"/><circle cx="500" cy="210" r="46"/><circle cx="400" cy="250" r="60"/>
       </g>
-      <g fill="none" stroke="#ffd27a" stroke-width="1.6" opacity=".45" stroke-linecap="round">
+      <g fill="none" stroke="#ff8a9a" stroke-width="1.6" opacity=".45" stroke-linecap="round">
         <path d="M120 150 q20 -18 40 0"/><path d="M640 140 q20 -18 40 0"/><path d="M380 60 q20 -18 40 0"/>
+      </g>
+    </svg>`;
+  }
+
+  /* ============================================================
+     HERESY — catedral de ossos para o chefe Gabriel
+     ============================================================ */
+  function sceneHeresyCathedral() {
+    return `<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="hc-sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#050101"/><stop offset=".38" stop-color="#24040a"/>
+          <stop offset=".72" stop-color="#4a0610"/><stop offset="1" stop-color="#120204"/>
+        </linearGradient>
+        <radialGradient id="hc-glow">
+          <stop offset="0" stop-color="#ff3048" stop-opacity=".55"/>
+          <stop offset=".45" stop-color="#a80a1c" stop-opacity=".22"/>
+          <stop offset="1" stop-color="#4a0008" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="hc-stone" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3a1a1e"/><stop offset=".55" stop-color="#1c0a0d"/><stop offset="1" stop-color="#080203"/>
+        </linearGradient>
+        <linearGradient id="hc-floor" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#241012"/><stop offset="1" stop-color="#070203"/>
+        </linearGradient>
+        <linearGradient id="hc-bone" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#efe4cc"/><stop offset="1" stop-color="#b8a586"/>
+        </linearGradient>
+        <radialGradient id="hc-window">
+          <stop offset="0" stop-color="#ffd6da"/><stop offset=".45" stop-color="#d41430"/>
+          <stop offset=".82" stop-color="#7a0614"/><stop offset="1" stop-color="#2a0206"/>
+        </radialGradient>
+        <g id="hc-skull">
+          <path d="M-9 -5 C-9 -15 9 -15 9 -5 L8 5 L4 5 L4 11 L-4 11 L-4 5 L-8 5 Z"
+                fill="url(#hc-bone)" stroke="#5a4032" stroke-width=".8"/>
+          <circle cx="-4" cy="-4" r="2.6" fill="#160507"/><circle cx="4" cy="-4" r="2.6" fill="#160507"/>
+          <path d="M0 1 L-1.6 4 H1.6 Z" fill="#160507"/>
+          <path d="M-3 7 V10 M0 7 V10 M3 7 V10" stroke="#5a4032" stroke-width=".7"/>
+        </g>
+        <g id="hc-bone-shape">
+          <path d="M-12 0 Q-5 -4 0 0 Q5 4 12 0" fill="none" stroke="url(#hc-bone)" stroke-width="3.2" stroke-linecap="round"/>
+          <circle cx="-12" cy="0" r="2.4" fill="#d8c8ac"/><circle cx="12" cy="0" r="2.4" fill="#d8c8ac"/>
+        </g>
+      </defs>
+
+      <rect width="800" height="360" fill="url(#hc-sky)"/>
+      <circle cx="400" cy="120" r="240" fill="url(#hc-glow)"/>
+
+      <!-- nave central: arcos góticos e pilares -->
+      <g fill="#080203" stroke="#3a1418" stroke-width="2">
+        <path d="M40 330 V96 Q40 52 92 40 V330 Z"/>
+        <path d="M708 330 V96 Q708 52 760 40 V330 Z"/>
+        <path d="M120 330 V120 Q120 82 166 72 V330 Z"/>
+        <path d="M634 330 V120 Q634 82 680 72 V330 Z"/>
+        <path d="M190 330 V164 Q190 132 232 122 V330 Z"/>
+        <path d="M568 330 V164 Q568 132 610 122 V330 Z"/>
+      </g>
+      <g fill="none" stroke="#5a1a22" stroke-width="2" opacity=".65">
+        <path d="M58 322 V102 Q58 68 92 58"/><path d="M742 322 V102 Q742 68 708 58"/>
+        <path d="M136 322 V126 Q136 96 166 86"/><path d="M664 322 V126 Q664 96 634 86"/>
+      </g>
+
+      <!-- rosácea de vitral vermelho -->
+      <circle cx="400" cy="88" r="58" fill="url(#hc-window)" stroke="#5a1018" stroke-width="4"/>
+      <circle cx="400" cy="88" r="44" fill="none" stroke="#2a0206" stroke-width="2" opacity=".8"/>
+      <g stroke="#2a0206" stroke-width="2.4" opacity=".85">
+        <path d="M400 30 V146"/><path d="M342 88 H458"/>
+        <path d="M360 48 L440 128"/><path d="M440 48 L360 128"/>
+      </g>
+      <circle cx="400" cy="88" r="12" fill="#ff8a9a" opacity=".55"/>
+
+      <!-- altar e velas vermelhas -->
+      <g>
+        <path d="M350 330 V252 H450 V330 Z" fill="url(#hc-stone)" stroke="#4a1018" stroke-width="2"/>
+        <path d="M338 252 H462 L452 240 H348 Z" fill="#4a1a20" stroke="#6a2028" stroke-width="2"/>
+        <g fill="#d41430">
+          <path d="M372 240 C366 226 370 216 376 208 C379 220 384 228 381 240 Z"/>
+          <path d="M424 240 C418 226 422 216 428 208 C431 220 436 228 433 240 Z"/>
+        </g>
+        <g fill="none" stroke="#ff8a9a" stroke-width="1.4" opacity=".7">
+          <path d="M376 210 C372 222 377 230 374 238"/><path d="M428 210 C424 222 429 230 426 238"/>
+        </g>
+      </g>
+
+      <!-- piso de pedra -->
+      <path d="M0 294 C120 282 220 300 330 292 C450 282 560 302 680 292 C740 288 780 294 800 290 L800 360 L0 360 Z" fill="url(#hc-floor)"/>
+      <g stroke="#3a1418" stroke-width="1.5" opacity=".55" fill="none">
+        <path d="M0 312 H800 M0 332 H800 M0 350 H800"/>
+        <path d="M90 294 L60 360 M220 294 L210 360 M390 292 L400 360 M570 296 L590 360 M720 294 L750 360"/>
+      </g>
+
+      <!-- caveiras espalhadas pelo chão -->
+      <g>
+        <use href="#hc-skull" transform="translate(120,318) scale(1.15)"/>
+        <use href="#hc-skull" transform="translate(212,340) scale(.9) rotate(18)"/>
+        <use href="#hc-skull" transform="translate(300,326) scale(1.05) rotate(-14)"/>
+        <use href="#hc-skull" transform="translate(492,338) scale(.85) rotate(26)"/>
+        <use href="#hc-skull" transform="translate(578,322) scale(1.2) rotate(-8)"/>
+        <use href="#hc-skull" transform="translate(688,342) scale(.95) rotate(12)"/>
+        <use href="#hc-skull" transform="translate(748,314) scale(1.05) rotate(-20)"/>
+        <use href="#hc-skull" transform="translate(58,344) scale(.8) rotate(30)"/>
+        <use href="#hc-skull" transform="translate(392,346) scale(.78) rotate(-30)"/>
+      </g>
+      <g>
+        <use href="#hc-bone-shape" transform="translate(170,330) rotate(22)"/>
+        <use href="#hc-bone-shape" transform="translate(258,348) rotate(-12) scale(.85)"/>
+        <use href="#hc-bone-shape" transform="translate(530,332) rotate(35)"/>
+        <use href="#hc-bone-shape" transform="translate(640,350) rotate(-24) scale(.9)"/>
+        <use href="#hc-bone-shape" transform="translate(726,330) rotate(10) scale(.8)"/>
+        <use href="#hc-bone-shape" transform="translate(92,338) rotate(-38) scale(.8)"/>
+      </g>
+
+      <!-- caveiras em estacas -->
+      <g>
+        <g transform="translate(76,256)">
+          <rect x="-3" y="0" width="6" height="92" fill="#2a1012" stroke="#4a1a20" stroke-width="1"/>
+          <use href="#hc-skull" transform="translate(0,-4) scale(1.35)"/>
+          <path d="M-16 -12 H16" stroke="#4a1a20" stroke-width="3"/>
+        </g>
+        <g transform="translate(168,238)">
+          <rect x="-3" y="0" width="6" height="110" fill="#2a1012" stroke="#4a1a20" stroke-width="1"/>
+          <use href="#hc-skull" transform="translate(0,-4) scale(1.2) rotate(-8)"/>
+          <path d="M-15 -12 H15" stroke="#4a1a20" stroke-width="3"/>
+        </g>
+        <g transform="translate(632,238)">
+          <rect x="-3" y="0" width="6" height="110" fill="#2a1012" stroke="#4a1a20" stroke-width="1"/>
+          <use href="#hc-skull" transform="translate(0,-4) scale(1.25) rotate(7)"/>
+          <path d="M-15 -12 H15" stroke="#4a1a20" stroke-width="3"/>
+        </g>
+        <g transform="translate(724,256)">
+          <rect x="-3" y="0" width="6" height="92" fill="#2a1012" stroke="#4a1a20" stroke-width="1"/>
+          <use href="#hc-skull" transform="translate(0,-4) scale(1.4)"/>
+          <path d="M-16 -12 H16" stroke="#4a1a20" stroke-width="3"/>
+        </g>
+      </g>
+
+      <!-- luz vermelha e brasas -->
+      <g fill="#ff5a6e" opacity=".65">
+        <circle cx="160" cy="180" r="2"/><circle cx="300" cy="140" r="1.6"/><circle cx="500" cy="156" r="2.1"/>
+        <circle cx="640" cy="190" r="1.7"/><circle cx="700" cy="120" r="1.5"/><circle cx="250" cy="96" r="1.8"/>
+      </g>
+      <g fill="none" stroke="#ff8a9a" stroke-width="1.4" opacity=".4" stroke-linecap="round">
+        <path d="M140 210 q20 -16 40 0"/><path d="M620 200 q20 -16 40 0"/><path d="M380 56 q20 -16 40 0"/>
+      </g>
+    </svg>`;
+  }
+
+  /* ============================================================
+     GREED — câmara interna da pirâmide, trono e hieroglifos
+     ============================================================ */
+  function sceneGreedPyramid() {
+    return `<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="gp-bg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#050403"/><stop offset=".55" stop-color="#1a1208"/><stop offset="1" stop-color="#090603"/>
+        </linearGradient>
+        <radialGradient id="gp-green">
+          <stop offset="0" stop-color="#5dff9a" stop-opacity=".6"/>
+          <stop offset=".45" stop-color="#1a8a46" stop-opacity=".22"/>
+          <stop offset="1" stop-color="#063a1c" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="gp-gold" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#f2d27a"/><stop offset=".5" stop-color="#c8942a"/><stop offset="1" stop-color="#6a4210"/>
+        </linearGradient>
+        <linearGradient id="gp-stone" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4a3a24"/><stop offset=".55" stop-color="#241a0e"/><stop offset="1" stop-color="#0d0904"/>
+        </linearGradient>
+        <linearGradient id="gp-floor" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3a2a14"/><stop offset="1" stop-color="#120b04"/>
+        </linearGradient>
+        <g id="gp-cerb">
+          <path d="M-13 5 L-11 -4 L-6 -7 L-3 -2 L0 -8 L3 -2 L6 -7 L11 -4 L13 5 L7 8 L0 6 L-7 8 Z"
+                fill="none" stroke="#d8b05a" stroke-width="1.4"/>
+          <path d="M-9 -1 L-5 1 M9 -1 L5 1 M0 1 V4" stroke="#d8b05a" stroke-width="1.1"/>
+          <circle cx="-6" cy="0" r="1.1" fill="#d8b05a"/><circle cx="6" cy="0" r="1.1" fill="#d8b05a"/>
+          <circle cx="0" cy="2" r="1.1" fill="#d8b05a"/>
+        </g>
+      </defs>
+
+      <rect width="800" height="360" fill="url(#gp-bg)"/>
+
+      <!-- paredes inclinadas da pirâmide convergindo ao topo -->
+      <path d="M0 0 L400 46 L800 0 L800 330 L0 330 Z" fill="url(#gp-stone)"/>
+      <g stroke="#6a4a1a" stroke-width="1.4" opacity=".45" fill="none">
+        <path d="M0 42 L400 82 L800 42 M0 84 L400 120 L800 84 M0 126 L400 158 L800 126"/>
+        <path d="M100 0 L96 330 M220 22 L214 330 M340 40 L338 330 M460 40 L462 330 M580 22 L586 330 M700 0 L704 330"/>
+      </g>
+      <path d="M0 0 L400 46 L800 0" fill="none" stroke="#c8942a" stroke-width="3" opacity=".6"/>
+
+      <!-- corredor central e hieroglifos de Cerberus -->
+      <g>
+        <rect x="58" y="126" width="116" height="150" fill="#1a1208" stroke="#6a4a1a" stroke-width="2"/>
+        <rect x="626" y="126" width="116" height="150" fill="#1a1208" stroke="#6a4a1a" stroke-width="2"/>
+        <g opacity=".85">
+          <use href="#gp-cerb" transform="translate(116,164) scale(1.15)"/>
+          <use href="#gp-cerb" transform="translate(116,200) scale(1.15)"/>
+          <use href="#gp-cerb" transform="translate(116,236) scale(1.15)"/>
+          <use href="#gp-cerb" transform="translate(684,164) scale(1.15)"/>
+          <use href="#gp-cerb" transform="translate(684,200) scale(1.15)"/>
+          <use href="#gp-cerb" transform="translate(684,236) scale(1.15)"/>
+        </g>
+        <g stroke="#c8942a" stroke-width="1.5" opacity=".45">
+          <path d="M58 146 H174 M58 182 H174 M58 218 H174 M58 254 H174"/>
+          <path d="M626 146 H742 M626 182 H742 M626 218 H742 M626 254 H742"/>
+        </g>
+      </g>
+
+      <!-- trono no fundo -->
+      <g transform="translate(400,248)">
+        <path d="M-54 0 V-96 Q-54 -118 -32 -122 L-24 -156 H24 L32 -122 Q54 -118 54 -96 V0 Z"
+              fill="#1a1208" stroke="url(#gp-gold)" stroke-width="3"/>
+        <path d="M-40 -104 Q-40 -120 -20 -122 L-14 -144 H14 L20 -122 Q40 -120 40 -104 V-16 H-40 Z"
+              fill="#2a1c0c" stroke="#c8942a" stroke-width="1.5" opacity=".8"/>
+        <path d="M-54 -58 H-76 V-20 H-54 M54 -58 H76 V-20 H54" fill="#241a0e" stroke="url(#gp-gold)" stroke-width="2"/>
+        <rect x="-50" y="-34" width="100" height="20" rx="3" fill="#3a2810" stroke="url(#gp-gold)" stroke-width="2"/>
+        <path d="M-18 -150 L0 -166 L18 -150" fill="url(#gp-gold)"/>
+        <circle cx="0" cy="-108" r="10" fill="#5dff9a" opacity=".5"/>
+        <path d="M0 -118 V-98 M-10 -108 H10" stroke="#5dff9a" stroke-width="2" opacity=".8"/>
+      </g>
+
+      <!-- tochas verdes nos cantos -->
+      <g>
+        <g transform="translate(34,286)">
+          <rect x="-4" y="0" width="8" height="50" fill="#241a0e" stroke="#6a4a1a" stroke-width="1.5"/>
+          <path d="M-14 0 H14 L9 -14 H-9 Z" fill="#3a2810" stroke="#c8942a" stroke-width="1.5"/>
+          <path d="M0 -18 C-10 -34 -4 -48 0 -58 C4 -46 10 -34 4 -18 Z" fill="#5dff9a" opacity=".9"/>
+          <path d="M0 -24 C-5 -34 -2 -42 0 -48 C2 -40 5 -34 3 -24 Z" fill="#d8ffe6" opacity=".8"/>
+          <circle cx="0" cy="-32" r="30" fill="url(#gp-green)" opacity=".65"/>
+        </g>
+        <g transform="translate(766,286)">
+          <rect x="-4" y="0" width="8" height="50" fill="#241a0e" stroke="#6a4a1a" stroke-width="1.5"/>
+          <path d="M-14 0 H14 L9 -14 H-9 Z" fill="#3a2810" stroke="#c8942a" stroke-width="1.5"/>
+          <path d="M0 -18 C-10 -34 -4 -48 0 -58 C4 -46 10 -34 4 -18 Z" fill="#5dff9a" opacity=".9"/>
+          <path d="M0 -24 C-5 -34 -2 -42 0 -48 C2 -40 5 -34 3 -24 Z" fill="#d8ffe6" opacity=".8"/>
+          <circle cx="0" cy="-32" r="30" fill="url(#gp-green)" opacity=".65"/>
+        </g>
+        <g transform="translate(190,268)">
+          <rect x="-3" y="0" width="6" height="34" fill="#241a0e" stroke="#6a4a1a" stroke-width="1.2"/>
+          <path d="M-10 0 H10 L6 -10 H-6 Z" fill="#3a2810" stroke="#c8942a" stroke-width="1.2"/>
+          <path d="M0 -12 C-7 -24 -3 -34 0 -40 C3 -32 7 -24 3 -12 Z" fill="#5dff9a" opacity=".8"/>
+          <circle cx="0" cy="-20" r="22" fill="url(#gp-green)" opacity=".55"/>
+        </g>
+        <g transform="translate(610,268)">
+          <rect x="-3" y="0" width="6" height="34" fill="#241a0e" stroke="#6a4a1a" stroke-width="1.2"/>
+          <path d="M-10 0 H10 L6 -10 H-6 Z" fill="#3a2810" stroke="#c8942a" stroke-width="1.2"/>
+          <path d="M0 -12 C-7 -24 -3 -34 0 -40 C3 -32 7 -24 3 -12 Z" fill="#5dff9a" opacity=".8"/>
+          <circle cx="0" cy="-20" r="22" fill="url(#gp-green)" opacity=".55"/>
+        </g>
+      </g>
+
+      <!-- piso de arenito e veios de ouro -->
+      <path d="M0 300 C120 288 220 306 330 298 C450 288 560 308 680 298 C740 294 780 300 800 296 L800 360 L0 360 Z" fill="url(#gp-floor)"/>
+      <g stroke="#c8942a" stroke-width="1.4" opacity=".35" fill="none">
+        <path d="M0 320 H800 M0 340 H800"/>
+        <path d="M80 300 L50 360 M240 298 L230 360 M400 298 L400 360 M560 300 L580 360 M720 298 L750 360"/>
+      </g>
+      <g fill="#5dff9a" opacity=".55">
+        <circle cx="120" cy="240" r="1.8"/><circle cx="300" cy="210" r="1.4"/><circle cx="500" cy="228" r="1.7"/>
+        <circle cx="680" cy="244" r="1.5"/><circle cx="400" cy="196" r="1.6"/>
+      </g>
+      <g fill="url(#gp-green)" opacity=".25">
+        <ellipse cx="400" cy="270" rx="220" ry="60"/>
+      </g>
+    </svg>`;
+  }
+
+  /* ============================================================
+     GLUTTONY — plataforma-boca no void, olho e coração gigantes
+     ============================================================ */
+  function sceneGluttonyGabriel() {
+    /* Dentes gerados em anel: a raiz de cada um invade a carne da
+       plataforma, então eles ficam conectados em vez de flutuar. */
+    const teeth = [];
+    const toothCount = 36;
+    for (let i = 0; i < toothCount; i++) {
+      const phi = (i / toothCount) * Math.PI * 2; // 0 = topo, cresce no sentido horário
+      const x = 400 + 310 * Math.sin(phi);
+      const y = 302 - 46 * Math.cos(phi);
+      const rot = 180 + (i / toothCount) * 360;
+      const front = Math.cos(phi) < 0;
+      const s = (front ? 1.08 : 0.96) + (i % 3) * 0.02;
+      const tooth = `<use href="#gv-tooth-shape" transform="translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${rot.toFixed(1)}) scale(${s.toFixed(2)})"/>`;
+      teeth.push({ front: front, tooth: tooth });
+    }
+    const backTeeth = teeth.filter(function (t) { return !t.front; }).map(function (t) { return t.tooth; }).join('');
+    const frontTeeth = teeth.filter(function (t) { return t.front; }).map(function (t) { return t.tooth; }).join('');
+
+    return `<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <radialGradient id="gv-void" cx=".5" cy=".48" r=".72">
+          <stop offset="0" stop-color="#140406"/><stop offset=".55" stop-color="#060102"/><stop offset="1" stop-color="#000"/>
+        </radialGradient>
+        <radialGradient id="gv-heart" cx=".38" cy=".3" r=".82">
+          <stop offset="0" stop-color="#e06a78"/><stop offset=".38" stop-color="#a81a2e"/>
+          <stop offset=".72" stop-color="#6a0814"/><stop offset="1" stop-color="#2a0206"/>
+        </radialGradient>
+        <linearGradient id="gv-heart-dark" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#8a1020"/><stop offset="1" stop-color="#3a040c"/>
+        </linearGradient>
+        <radialGradient id="gv-eye" cx=".34" cy=".28" r=".84">
+          <stop offset="0" stop-color="#fff4cf"/><stop offset=".32" stop-color="#f0d896"/>
+          <stop offset=".68" stop-color="#c89a4a"/><stop offset="1" stop-color="#6a3a10"/>
+        </radialGradient>
+        <radialGradient id="gv-iris" cx=".4" cy=".34" r=".8">
+          <stop offset="0" stop-color="#2a0a04"/><stop offset=".45" stop-color="#8a4a08"/>
+          <stop offset=".78" stop-color="#d89a18"/><stop offset="1" stop-color="#f2c04a"/>
+        </radialGradient>
+        <linearGradient id="gv-flesh" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#b83a44"/><stop offset=".55" stop-color="#7a1824"/><stop offset="1" stop-color="#3a0810"/>
+        </linearGradient>
+        <linearGradient id="gv-tooth" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#f4ead4"/><stop offset="1" stop-color="#b8a888"/>
+        </linearGradient>
+        <g id="gv-tooth-shape">
+          <path d="M-15 8 Q-17 0 -11 -5 L0 -34 L11 -5 Q17 0 15 8 Q0 12 -15 8 Z"
+                fill="url(#gv-tooth)" stroke="#5a4032" stroke-width="1"/>
+          <path d="M-5 -4 Q0 -22 5 -4" fill="#fff" opacity=".28"/>
+        </g>
+      </defs>
+
+      <rect width="800" height="360" fill="url(#gv-void)"/>
+
+      <!-- artérias e veias espalhadas pelo void (atrás do coração) -->
+      <g fill="none" stroke="#8a1020" stroke-width="7" opacity=".75" stroke-linecap="round">
+        <path d="M400 74 C360 44 320 34 276 20 C236 8 200 18 168 6"/>
+        <path d="M400 74 C440 44 480 34 524 20 C564 8 600 18 632 6"/>
+        <path d="M356 132 C300 144 254 170 206 184 C170 194 140 188 108 204"/>
+        <path d="M444 132 C500 144 546 170 594 184 C630 194 660 188 692 204"/>
+      </g>
+      <g fill="none" stroke="#c8102e" stroke-width="3" opacity=".6" stroke-linecap="round">
+        <path d="M276 20 C250 40 236 58 214 68 M524 20 C550 40 564 58 586 68"/>
+        <path d="M206 184 C196 208 204 230 190 250 M594 184 C604 208 596 230 610 250"/>
+        <path d="M168 6 C148 22 132 28 116 40 M632 6 C652 22 668 28 684 40"/>
+      </g>
+
+      <!-- coração humano gigante no fundo -->
+      <g transform="translate(400,158) scale(.92)">
+        <!-- aorta: arco visível acima do corpo -->
+        <path d="M0 -30 C-22 -70 -8 -120 24 -120 C56 -120 74 -96 70 -68 C68 -54 62 -42 52 -34"
+              fill="none" stroke="url(#gv-heart-dark)" stroke-width="28" stroke-linecap="round"/>
+        <path d="M0 -30 C-22 -70 -8 -120 24 -120 C56 -120 74 -96 70 -68 C68 -54 62 -42 52 -34"
+              fill="none" stroke="#c03044" stroke-width="12" stroke-linecap="round" opacity=".45"/>
+        <!-- veia cava superior -->
+        <path d="M44 -34 C56 -70 48 -100 30 -112"
+              fill="none" stroke="#4a040c" stroke-width="15" stroke-linecap="round"/>
+        <!-- veias pulmonares esquerdas -->
+        <path d="M-38 -36 C-58 -52 -72 -74 -74 -96"
+              fill="none" stroke="#5a0610" stroke-width="10" stroke-linecap="round"/>
+        <path d="M-26 -40 C-44 -54 -52 -72 -50 -90"
+              fill="none" stroke="#4a040c" stroke-width="7" stroke-linecap="round"/>
+
+        <!-- corpo principal: órgão assimétrico, ápice deslocado -->
+        <path d="M-56 -26
+                 C-88 -44 -100 -8 -86 20
+                 C-72 48 -40 68 -8 77
+                 C20 86 46 70 64 42
+                 C84 12 84 -22 66 -42
+                 C50 -60 24 -66 4 -56
+                 C-16 -46 -36 -42 -56 -26 Z"
+              fill="url(#gv-heart)" stroke="#2a0206" stroke-width="3"/>
+        <!-- átrio direito saliente -->
+        <path d="M22 -48 C34 -70 62 -70 74 -48 C84 -28 76 -8 60 0 C52 -20 38 -38 22 -48 Z"
+              fill="#6a0814" opacity=".7"/>
+        <!-- aurícula esquerda -->
+        <path d="M-42 -38 C-58 -54 -80 -50 -86 -34 C-92 -18 -78 -4 -62 -12 C-62 -24 -54 -34 -42 -38 Z"
+              fill="#7a0a14" opacity=".75"/>
+        <!-- tronco pulmonar, cruzando à frente da aorta -->
+        <path d="M8 -34 C2 -72 18 -102 44 -108"
+              fill="none" stroke="#5a0610" stroke-width="21" stroke-linecap="round"/>
+        <path d="M8 -34 C2 -72 18 -102 44 -108"
+              fill="none" stroke="#b8283c" stroke-width="8" stroke-linecap="round" opacity=".45"/>
+
+        <!-- ventrículo direito e sombra -->
+        <path d="M22 -50 C48 -42 70 -26 76 0 C82 28 60 54 34 68 C50 46 60 18 54 -8 C50 -30 36 -44 22 -50 Z"
+              fill="#4a0610" opacity=".5"/>
+        <!-- sulco interventricular -->
+        <path d="M2 -26 C-2 4 6 34 18 64" fill="none" stroke="#4a0610" stroke-width="4" opacity=".8"/>
+        <!-- coronárias -->
+        <path d="M-46 -30 C-22 -38 0 -16 8 8 C12 26 20 44 32 58" fill="none" stroke="#d84a58" stroke-width="3" opacity=".65"/>
+        <path d="M-24 -46 C-10 -28 -8 -4 -2 20" fill="none" stroke="#e86a78" stroke-width="2" opacity=".5"/>
+        <path d="M-62 -34 C-68 -16 -62 4 -50 24" fill="none" stroke="#ff9aa4" stroke-width="3" opacity=".35"/>
+        <path d="M40 -40 C52 -26 58 -6 54 14" fill="none" stroke="#ff8a96" stroke-width="2" opacity=".3"/>
+        <path d="M-38 22 C-18 10 4 14 22 30" fill="none" stroke="#ff7a86" stroke-width="2" opacity=".25"/>
+        <!-- brilho do miocárdio -->
+        <path d="M-78 -22 C-84 -4 -80 14 -68 32" fill="none" stroke="#ff9aa4" stroke-width="4" opacity=".28"/>
+      </g>
+
+      <!-- plataforma de carne, agora maior -->
+      <ellipse cx="400" cy="310" rx="360" ry="62" fill="#1a0408" opacity=".8"/>
+      <ellipse cx="400" cy="302" rx="344" ry="56" fill="url(#gv-flesh)" stroke="#2a0206" stroke-width="4"/>
+      <ellipse cx="400" cy="302" rx="326" ry="50" fill="none" stroke="#ff7a86" stroke-width="2" opacity=".28"/>
+      <!-- gengiva: faixa de carne que prende a raiz dos dentes -->
+      <ellipse cx="400" cy="302" rx="310" ry="46" fill="none" stroke="#4a0810" stroke-width="13" opacity=".6"/>
+
+      <!-- dentes do fundo da boca -->
+      <g>${backTeeth}</g>
+
+      <!-- órbita e esfera do olho saltado; metade enterrada na carne -->
+      <ellipse cx="400" cy="310" rx="92" ry="25" fill="#2a0408" opacity=".85"/>
+      <g transform="translate(400,292)">
+        <circle r="64" fill="url(#gv-eye)" stroke="#4a2208" stroke-width="2.5"/>
+        <path d="M-52 -18 Q-34 -30 -16 -24 M-46 12 Q-28 6 -10 14 M38 -22 Q24 -32 10 -28"
+              fill="none" stroke="#b86a28" stroke-width="1.2" opacity=".45"/>
+        <circle cx="-20" cy="-4" r="31" fill="url(#gv-iris)" stroke="#6a3a08" stroke-width="2"/>
+        <circle cx="-27" cy="-4" r="15" fill="#060101"/>
+        <circle cx="-32" cy="-12" r="6" fill="#fff" opacity=".55"/>
+        <ellipse cx="-16" cy="-34" rx="18" ry="8" fill="#fff" opacity=".22"/>
+      </g>
+      <!-- carne cobrindo a metade inferior da esfera -->
+      <path d="M332 294 Q400 352 468 294 L500 330 Q400 376 300 330 Z" fill="url(#gv-flesh)"/>
+      <path d="M332 294 Q400 352 468 294" fill="none" stroke="#ff7a86" stroke-width="2" opacity=".35"/>
+
+      <!-- dentes da frente, na borda da carne -->
+      <g>${frontTeeth}</g>
+
+      <!-- carne e veias na borda da plataforma -->
+      <g fill="none" stroke="#ff7a86" stroke-width="2" opacity=".35" stroke-linecap="round">
+        <path d="M150 330 C190 320 220 326 252 316"/>
+        <path d="M548 316 C580 326 610 320 650 330"/>
+        <path d="M330 342 C360 350 440 350 470 342"/>
+      </g>
+      <g fill="#ff5a6e" opacity=".4">
+        <circle cx="180" cy="250" r="1.7"/><circle cx="300" cy="236" r="1.4"/><circle cx="500" cy="238" r="1.6"/>
+        <circle cx="620" cy="252" r="1.5"/><circle cx="400" cy="220" r="1.8"/>
       </g>
     </svg>`;
   }
@@ -2946,10 +3370,10 @@ BM.sprites = (function () {
     opts = opts || {};
     if (theme === 'limbo') return sceneLimbo(!!opts.night);
     if (theme === 'lust') return sceneLust();
-    if (theme === 'gluttony') return sceneGluttony(!!opts.noAcid);
-    if (theme === 'greed') return sceneGreed();
+    if (theme === 'gluttony') return opts.gluttonyGabriel ? sceneGluttonyGabriel() : sceneGluttony(!!opts.noAcid);
+    if (theme === 'greed') return opts.greedV2 ? sceneGreedPyramid() : sceneGreed();
     if (theme === 'wrath') return opts.ship ? sceneWrathShip() : sceneWrath();
-    if (theme === 'heresy') return sceneHeresy();
+    if (theme === 'heresy') return opts.cathedral ? sceneHeresyCathedral() : sceneHeresy();
     const a = theme.a, b = theme.b, c = theme.c;
     return '<svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
       `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
@@ -3221,14 +3645,14 @@ BM.sprites = (function () {
       return `<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="lhe-sky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#080202"/><stop offset=".5" stop-color="#8a1a12"/><stop offset="1" stop-color="#ffb01f"/>
+            <stop offset="0" stop-color="#050101"/><stop offset=".5" stop-color="#5a0610"/><stop offset="1" stop-color="#d41430"/>
           </linearGradient>
           <linearGradient id="lhe-lava" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#ffd27a"/><stop offset=".45" stop-color="#ff7a1a"/><stop offset="1" stop-color="#8a1208"/>
+            <stop offset="0" stop-color="#ff8a9a"/><stop offset=".45" stop-color="#d41430"/><stop offset="1" stop-color="#4a0008"/>
           </linearGradient>
         </defs>
         <rect width="240" height="120" fill="url(#lhe-sky)"/>
-        <circle cx="120" cy="106" r="70" fill="#ff7a1a" opacity=".28"/>
+        <circle cx="120" cy="106" r="70" fill="#d41430" opacity=".28"/>
         <g fill="#1a0806">
           <path d="M12 100 V46 L22 28 L32 46 V100 Z"/><path d="M22 28 L12 6 L22 16 L32 4 L32 24 Z"/>
           <path d="M208 100 V42 L220 24 L232 42 V100 Z"/><path d="M220 24 L208 2 L220 12 L232 0 L232 20 Z"/>
@@ -3238,7 +3662,7 @@ BM.sprites = (function () {
           <path d="M164 100 V40 L188 12 L212 40 V100 Z"/>
           <path d="M124 40 L144 100 L96 100 Z"/>
         </g>
-        <g fill="#ffb01f" opacity=".8">
+        <g fill="#ff5a6e" opacity=".8">
           <circle cx="100" cy="42" r="7"/><rect x="96" y="56" width="8" height="18" rx="4"/>
           <path d="M36 100 C30 86 34 76 40 68 C44 78 50 88 46 100 Z"/>
           <path d="M196 100 C190 86 194 76 200 68 C204 78 210 88 206 100 Z"/>
@@ -3246,7 +3670,7 @@ BM.sprites = (function () {
         <path d="M0 94 C40 86 80 100 120 92 C160 84 200 98 240 90 L240 120 L0 120 Z" fill="#120604"/>
         <path d="M0 100 C40 92 80 106 120 98 C160 90 200 104 240 96 L240 114 C200 120 160 108 120 114 C80 120 40 110 0 116 Z"
               fill="url(#lhe-lava)"/>
-        <g fill="#ffb01f" opacity=".7"><circle cx="40" cy="108" r="1.3"/><circle cx="120" cy="110" r="1.1"/><circle cx="200" cy="106" r="1.2"/></g>
+        <g fill="#ff5a6e" opacity=".7"><circle cx="40" cy="108" r="1.3"/><circle cx="120" cy="110" r="1.1"/><circle cx="200" cy="106" r="1.2"/></g>
       </svg>`;
     }
     return '<svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="120" fill="#1a1013"/></svg>';

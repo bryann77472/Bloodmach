@@ -54,8 +54,8 @@ BM.main = (function () {
   function beginTutorial() {
     battleHandled = false;
     pending = { type: 'tutorial' };
-    BM.battle.start({ enemyId: 'husk', layerIndex: 0 });
-    BM.ui.battle();
+    BM.battle.start({ enemyId: 'husk', layerIndex: 0, tutorial: true });
+    BM.ui.battle({ tutorial: true });
   }
 
   /* ---------------- camadas ---------------- */
@@ -223,8 +223,8 @@ BM.main = (function () {
           { who: 'MOTOR', text: 'SISTEMA CRÍTICO. O V1 foi consertado de novo. Tente outra vez.', portrait: 'motor' }
         ], function () {
           pending = { type: 'tutorial' };
-          BM.battle.start({ enemyId: 'husk', layerIndex: 0 });
-          BM.ui.battle();
+          BM.battle.start({ enemyId: 'husk', layerIndex: 0, tutorial: true });
+          BM.ui.battle({ tutorial: true });
         });
         return;
       }
@@ -290,8 +290,8 @@ BM.main = (function () {
     const layerIndex = pending && pending.type === 'layer' ? pending.layerIndex : d.progress.layer;
     if (pending && pending.type === 'tutorial') {
       pending = { type: 'tutorial' };
-      BM.battle.start({ enemyId: 'husk', layerIndex: 0, hp: currentHp });
-      BM.ui.battle();
+      BM.battle.start({ enemyId: 'husk', layerIndex: 0, hp: currentHp, tutorial: true });
+      BM.ui.battle({ tutorial: true });
       return;
     }
     BM.battle.start({ enemyId: pending ? pending.enemyId : D.LAYERS[layerIndex].encounters[0], layerIndex: layerIndex, hp: currentHp });
