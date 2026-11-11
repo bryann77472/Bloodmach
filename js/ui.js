@@ -175,11 +175,13 @@ BM.ui = (function () {
   /* =========================================================
      TÍTULO
      ========================================================= */
-  function musicFor(layerIndex, isBoss) {
-    // a música reveza entre as camadas: music1/music1boss, music2/music2boss, music1…
-    const par = (layerIndex || 0) % 2;
-    if (par === 0) return isBoss ? 'music1boss' : 'music1';
-    return isBoss ? 'music2boss' : 'music2';
+  function musicFor(layerIndex, isBoss, opts) {
+    // A trilha é escolhida pelo ato/camada da fase e pela flag de chefe.
+    // Tipo 1 = inimigos normais; tipo 2 = chefe. O tutorial tem faixa própria.
+    if (opts && opts.tutorial) return '0-0-1';
+    const L = D.LAYERS[layerIndex || 0];
+    if (!L) return '1-1-1';
+    return L.act + '-' + L.order + '-' + (isBoss ? 2 : 1);
   }
 
   function title() {
@@ -1167,8 +1169,8 @@ BM.ui = (function () {
   function battle(opts) {
     current = 'battle';
     battleKeys();
-    BM.audio.playMusic(musicFor(BM.battle.state.layerIndex, BM.battle.state.isBoss));
     const S = BM.battle.state;
+    BM.audio.playMusic(musicFor(S.layerIndex, S.isBoss, { tutorial: S.tutorial }));
     const layer = S.layer;
     const bossFx = {
       night: S.isBoss && S.enemy.id === 'v2',
@@ -1977,7 +1979,8 @@ BM.ui = (function () {
 
   function heresyGabrielDeath(onDone) {
     current = 'heresyGabrielDeath';
-    BM.audio.playMusic('desligamento');
+    // cutscene de Gabriel em Heresy: mantém a faixa exclusiva durante a morte e as últimas palavras
+    BM.audio.playMusic('2-3-1.5');
     const lines = (D.STORY && D.STORY.gabrielHeresyDeath) || [];
     const embers = [];
     for (let i = 0; i < 34; i++) {

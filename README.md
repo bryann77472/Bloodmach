@@ -108,8 +108,8 @@ mapa da camada e no card da Oficina:
 - **Morte de Gabriel em Heresy:** depois da vitória, uma cutscene mostra o anjo
   queimando e desintegrando. As falas da cutscene avançam com **clique ou Espaço**.
   Em seguida, a tela preta mostra as últimas palavras e só então aparece o resultado
-  da camada. A **música de desligamento continua tocando na tela de rank** de Heresy,
-  sem trocar para a música de chefe da fase.
+  da camada. A **faixa exclusiva da cutscene de Gabriel (2-3-1.5) continua tocando**
+  na morte, nas últimas palavras e na tela de rank de Heresy.
 - **A Mão do Rei Minos** é o chefe de Lust: uma mão colossal de pedra e carne que
   entra pela direita da tela, aberta, com os dedos apontando para V1. Ela tem veios
   violetas, placas de pedra, um anel de pedra e arame farpado no pulso.
@@ -260,32 +260,35 @@ removidos (Vulture, Crawler, Glutton, Bloated Husk, Glutton Arm, Plagueborn).
   cura da Lust foi trocado por um de ataque.
 
 ### Música
-São **duas trilhas de camada** que se revezam entre as camadas e duas de chefe:
+Cada camada e cada chefe têm uma faixa própria. O **nome do arquivo é ignorado**:
+só os números importam, no formato `ato-camada-tipo`, com **tipo 1 = inimigos
+normais** e **tipo 2 = chefe**.
 
-| Camada | Trilha | Chefe |
-|---|---|---|
-| **1. Limbo** | music 1 | music 1 boss |
-| **2. Lust** | music 2 | music 2 boss |
-| **3. Gluttony** | music 1 | music 1 boss |
-| **4. Greed** | music 2 | music 2 boss |
-| **5. Wrath** | music 1 | music 1 boss |
-| **6. Heresy** | music 2 | music 2 boss |
+| Ato | Camada | Inimigos normais | Chefe |
+|---|---|---|---|
+| **Ato I** | 1. Limbo | `1-1-1` — Castle Vein | `1-1-2` — Versus |
+| **Ato I** | 2. Lust | `1-2-1` — Requiem | `1-2-2` — Panic Betrayer |
+| **Ato I** | 3. Gluttony | `1-3-1` — Glory | `1-3-2` — Divine intervention |
+| **Ato II** | 1. Greed | `2-1-1` — Sands of tide | `2-1-2` — Duel |
+| **Ato II** | 2. Wrath | `2-2-1` — Death Odyssey | `2-2-2` — He is the light of my darkness |
+| **Ato II** | 3. Heresy | `2-3-1` — Altars of Apostasy | `2-3-2` — The Death of gods will |
 
-A regra é a alternância por número da camada: ímpar → *music 1*, par → *music 2*.
-No nó de **Gabriel — Heresia**, a música para no clique; o portão de Dis e o diálogo
-em tela preta ficam em silêncio, e a faixa de chefe só começa quando a batalha começa.
+**Exceções:**
+- `0-0-1` — *Unstopabble force*: toca no **tutorial**.
+- `2-3-1.5` — *I call to you lord jesus christ*: toca na **cutscene de Gabriel em
+  Heresy** e continua na morte, nas últimas palavras e no rank da camada.
+
+No nó de **Gabriel — Heresia**, a música para no clique; o portão de Dis fica em
+silêncio. Ao terminar o portão, começa a faixa exclusiva da cutscene; a faixa de
+chefe só entra quando a batalha começa.
 A **loja** e a tela de **ajustar movimentos** usam a mesma faixa (sem reiniciar a música
 ao trocar de uma para a outra).
 
 | Arquivo | Uso |
 |---|---|
-| `assets/music/music-1.mp3` | camadas ímpares |
-| `assets/music/music-1-boss.mp3` | chefes das camadas ímpares |
-| `assets/music/music-2.mp3` | camadas pares |
-| `assets/music/music-2-boss.mp3` | chefes das camadas pares |
 | `assets/music/lobby-title.mp3` | título e oficina |
 | `assets/music/shop.mp3` | loja e ajuste de movimentos |
-| `assets/music/power-off-v1.mp3` | desligamento do V1 (final e toda morte) |
+| `assets/music/power-off-v1.mp3` | desligamento do V1 (morte do jogador, V2 e Mão) |
 
 O volume da música fica em *Opções*. Se um arquivo faltar, o jogo continua
 funcionando com o ambiente sintetizado. As faixas são **mono 48 kbps** para o

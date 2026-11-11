@@ -102,6 +102,8 @@ BM.main = (function () {
     if (enemyId === 'gabriel_heresy') {
       BM.audio.stopMusic();
       BM.ui.heresyGate(layerIndex, function () {
+        // cutscene de Gabriel em Heresy: faixa exclusiva 2-3-1.5
+        BM.audio.playMusic('2-3-1.5');
         BM.ui.dialogue(D.STORY.gabrielHeresyBefore, comecar);
       });
       return;

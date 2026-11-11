@@ -12,13 +12,26 @@ BM.audio = (function () {
     titulo:  { file: 'assets/music/lobby-title.mp3',   loop: true },
     oficina: { file: 'assets/music/lobby-title.mp3',   loop: true },
     loja:    { file: 'assets/music/shop.mp3',          loop: true },
-    music1:     { file: 'assets/music/music-1.mp3',      loop: true },
-    music1boss: { file: 'assets/music/music-1-boss.mp3', loop: true },
-    music2:     { file: 'assets/music/music-2.mp3',      loop: true },
-    music2boss: { file: 'assets/music/music-2-boss.mp3', loop: true },
-    final:   { file: 'assets/music/music-1-boss.mp3', loop: true },
     creditos:    { file: 'assets/music/lobby-title.mp3',  loop: true },
-    desligamento:{ file: 'assets/music/power-off-v1.mp3',  loop: true }
+    desligamento:{ file: 'assets/music/power-off-v1.mp3',  loop: true },
+
+    /* Trilhas de fase: ato-camada-tipo.
+       tipo 1 = inimigos normais · tipo 2 = chefe.
+       O nome do arquivo é ignorado; só os números definem o destino. */
+    '0-0-1': { file: 'assets/music/Unstopabble force 0-0-1.mp3', loop: true },       // tutorial
+    '1-1-1': { file: 'assets/music/Castle Vein 1-1-1.mp3', loop: true },             // Ato 1 · Limbo
+    '1-1-2': { file: 'assets/music/Versus 1-1-2.mp3', loop: true },                  // Ato 1 · Limbo · chefe
+    '1-2-1': { file: 'assets/music/Requiem 1-2-1.mp3', loop: true },                 // Ato 1 · Lust
+    '1-2-2': { file: 'assets/music/Panic Betrayer 1-2-2.mp3', loop: true },          // Ato 1 · Lust · chefe
+    '1-3-1': { file: 'assets/music/Glory 1-3-1.mp3', loop: true },                   // Ato 1 · Gluttony
+    '1-3-2': { file: 'assets/music/Divine intervention 1-3-2.mp3', loop: true },     // Ato 1 · Gluttony · chefe
+    '2-1-1': { file: 'assets/music/Sands of tide 2-1-1.mp3', loop: true },           // Ato 2 · Greed
+    '2-1-2': { file: 'assets/music/Duel 2-1-2.mp3', loop: true },                    // Ato 2 · Greed · chefe
+    '2-2-1': { file: 'assets/music/Death Odyssey 2-2-1.mp3', loop: true },           // Ato 2 · Wrath
+    '2-2-2': { file: 'assets/music/He is the light of my darkness 2-2-2.mp3', loop: true }, // Ato 2 · Wrath · chefe
+    '2-3-1': { file: 'assets/music/Altars of Apostasy 2-3-1.mp3', loop: true },      // Ato 2 · Heresy
+    '2-3-2': { file: 'assets/music/The Death of gods will 2-3-2.mp3', loop: true },  // Ato 2 · Heresy · chefe
+    '2-3-1.5': { file: 'assets/music/I call to you lord jesus christ 2-3-1.5.mp3', loop: true } // cutscene de Gabriel em Heresy
   };
 
   let ctx = null, master = null, sfx = null, music = null, ambientOn = false, ambientNodes = null;
